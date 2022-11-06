@@ -4,6 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.WebApi", "WMS.WebApi\WMS.WebApi.csproj", "{AB982F41-3927-49EC-9C63-6BCA078E5F76}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1188D3B-BE26-40B2-8145-FBBE95143BE7} = {C1188D3B-BE26-40B2-8145-FBBE95143BE7}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.Database", "WMS.Database\WMS.Database.csproj", "{C1188D3B-BE26-40B2-8145-FBBE95143BE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.Database.Migrations", "WMS.Database.Migrations\WMS.Database.Migrations.csproj", "{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,14 @@ Global
 		{AB982F41-3927-49EC-9C63-6BCA078E5F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB982F41-3927-49EC-9C63-6BCA078E5F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB982F41-3927-49EC-9C63-6BCA078E5F76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1188D3B-BE26-40B2-8145-FBBE95143BE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1188D3B-BE26-40B2-8145-FBBE95143BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1188D3B-BE26-40B2-8145-FBBE95143BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1188D3B-BE26-40B2-8145-FBBE95143BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
