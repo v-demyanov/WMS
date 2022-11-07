@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMS.Database;
 
@@ -11,9 +12,10 @@ using WMS.Database;
 namespace WMS.Database.Migrations
 {
     [DbContext(typeof(WmsDbContext))]
-    partial class WmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221107144938_AddAddressEntity")]
+    partial class AddAddressEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,21 +292,6 @@ namespace WMS.Database.Migrations
                     b.ToTable("Wares");
                 });
 
-            modelBuilder.Entity("WMS.Database.Entities.WareTask", b =>
-                {
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WareId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskId", "WareId");
-
-                    b.HasIndex("WareId");
-
-                    b.ToTable("WareTasks");
-                });
-
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Address", b =>
                 {
                     b.HasOne("WMS.Database.Entities.Addresses.Area", "Area")
@@ -437,25 +424,6 @@ namespace WMS.Database.Migrations
                     b.Navigation("UnitOfMeasurement");
                 });
 
-            modelBuilder.Entity("WMS.Database.Entities.WareTask", b =>
-                {
-                    b.HasOne("WMS.Database.Entities.Task", "Task")
-                        .WithMany("Wares")
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WMS.Database.Entities.Ware", "Ware")
-                        .WithMany("Tasks")
-                        .HasForeignKey("WareId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Task");
-
-                    b.Navigation("Ware");
-                });
-
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Area", b =>
                 {
                     b.Navigation("Racks");
@@ -481,8 +449,6 @@ namespace WMS.Database.Migrations
                     b.Navigation("ChildTasks");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("Wares");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.User", b =>
@@ -494,11 +460,6 @@ namespace WMS.Database.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("PerformerTasks");
-                });
-
-            modelBuilder.Entity("WMS.Database.Entities.Ware", b =>
-                {
-                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

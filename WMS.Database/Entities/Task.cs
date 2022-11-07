@@ -31,4 +31,6 @@ public class Task : BaseEntity
     public ICollection<Task> ChildTasks { get; } = new HashSet<Task>();
 
     public ICollection<Comment> Comments { get; } = new HashSet<Comment>();
+
+    public ICollection<WareTask> Wares { get; } = new HashSet<WareTask>();
 }
