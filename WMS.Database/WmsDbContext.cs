@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WMS.Database.Entities;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Dictionaries;
+using WMS.Database.Entities.Tenants;
 
 public class WmsDbContext : DbContext
 {
@@ -32,6 +33,12 @@ public class WmsDbContext : DbContext
     public DbSet<Address> Addresses => this.Set<Address>();
 
     public DbSet<WareTask> WareTasks => this.Set<WareTask>();
+
+    public DbSet<Individual> Individuals => this.Set<Individual>();
+
+    public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();
+
+    public DbSet<Tenant> Tenants => this.Set<Tenant>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

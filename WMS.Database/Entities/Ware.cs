@@ -2,6 +2,7 @@
 
 using WMS.Database.Entities.Dictionaries;
 using WMS.Database.Entities.Addresses;
+using WMS.Database.Entities.Tenants;
 
 public class Ware : BaseEntity
 {
@@ -17,9 +18,13 @@ public class Ware : BaseEntity
 
     public int AddressId { get; set; }
 
+    public int TenantId { get; set; }
+
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
     public Address Address { get; set; } = default!;
+
+    public Tenant Tenant { get; set; } = default!;
 
     public ICollection<WareTask> Tasks { get; } = new HashSet<WareTask>();
 }
