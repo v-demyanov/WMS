@@ -3,14 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.WebApi", "WMS.WebApi\WMS.WebApi.csproj", "{AB982F41-3927-49EC-9C63-6BCA078E5F76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.WebApi", "WMS.WebApi\WMS.WebApi.csproj", "{AB982F41-3927-49EC-9C63-6BCA078E5F76}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C1188D3B-BE26-40B2-8145-FBBE95143BE7} = {C1188D3B-BE26-40B2-8145-FBBE95143BE7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.Database", "WMS.Database\WMS.Database.csproj", "{C1188D3B-BE26-40B2-8145-FBBE95143BE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Database", "WMS.Database\WMS.Database.csproj", "{C1188D3B-BE26-40B2-8145-FBBE95143BE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.Database.Migrations", "WMS.Database.Migrations\WMS.Database.Migrations.csproj", "{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Database.Migrations", "WMS.Database.Migrations\WMS.Database.Migrations.csproj", "{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{78BFE021-0CEA-4514-B44D-F46208BCCA36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +32,10 @@ Global
 		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CBA2C8A-AE7F-4B13-91DD-2CCE36D9B4C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78BFE021-0CEA-4514-B44D-F46208BCCA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78BFE021-0CEA-4514-B44D-F46208BCCA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78BFE021-0CEA-4514-B44D-F46208BCCA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78BFE021-0CEA-4514-B44D-F46208BCCA36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

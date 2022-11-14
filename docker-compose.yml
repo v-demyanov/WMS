@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  wms.webapi:
+    image: ${DOCKER_REGISTRY-}wmswebapi
+    build:
+      context: .
+      dockerfile: WMS.WebApi/Dockerfile
+
+  wms.frontend:
+    image: ${DOCKER_REGISTRY-}wmsfrontend:v1
+    build:
+      context: ./WMS.Frontend
+      dockerfile: Dockerfile
