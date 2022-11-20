@@ -15,3 +15,10 @@ services:
   wms.frontend:
     ports:
       - "4014:80"
+
+  wms.database:
+    environment:
+      SA_PASSWORD: "P@ssword123"
+      ACCEPT_EULA: "Y"
+    ports:
+     - "14350:1433"

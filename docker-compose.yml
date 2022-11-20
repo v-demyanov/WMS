@@ -9,6 +9,11 @@ services:
 
   wms.frontend:
     image: ${DOCKER_REGISTRY-}wmsfrontend:v1
+    container_name: WMS.Frontend
     build:
       context: ./WMS.Frontend
       dockerfile: Dockerfile
+  
+  wms.database:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: WMS.Database

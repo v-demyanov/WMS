@@ -12,7 +12,7 @@ export class AppComponent {
   }
 
   public ngOnInit(): void {
-    this.http.get('http://localhost:5000/test')
+    this.http.get('http://localhost:5162/test')
       .subscribe({
         next: (data) => {
           console.log(data);
