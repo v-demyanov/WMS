@@ -3,6 +3,9 @@ using System.Reflection;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 using WMS.Database;
 using WMS.Database.Constants;
@@ -19,11 +22,14 @@ _ = builder.Host.UseSerilog((context, configuration) => configuration
 builder.Services.AddControllers();
 
 builder.Services
+    .AddHttpContextAccessor()
     .AddScoped<IUserService, UserService>()
     .AddScoped<IMailService, MailService>()
-    .AddScoped<ITemplateService, TemplateService>();
+    .AddScoped<ITemplateService, TemplateService>()
+    .AddScoped<IAuthService, AuthService>();
 
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
+                .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
 
 var corsPolicyName = "Cors";
 builder.Services.AddCors(options =>
@@ -61,7 +67,26 @@ builder.Services.AddSwaggerGen(options =>
     }
 });
 
+var key = Encoding.UTF8.GetBytes(builder.Configuration["AuthOptions:Key"]);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["AuthOptions:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["AuthOptions:Audience"],
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuerSigningKey = true,
+        };
+    });
+
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 Log.Logger = app.Services.GetService<Serilog.ILogger>();
 
@@ -78,6 +103,8 @@ app.UseExceptionHandler(app => app.Run(async context =>
     context.Response.StatusCode = exception switch
     {
         ApiOperationFailedException => (int)HttpStatusCode.BadRequest,
+        AuthenticationFailedException => (int)HttpStatusCode.Unauthorized,
+        AuthorizationFailedException => (int)HttpStatusCode.Forbidden,
         _ => (int)HttpStatusCode.InternalServerError,
     };
 

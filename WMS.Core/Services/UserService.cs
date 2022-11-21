@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Task = Task;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 using WMS.Core.Services.Abstractions;
 using WMS.Database;
@@ -10,23 +12,30 @@ using WMS.Database.Entities;
 using WMS.Core.Exceptions;
 using WMS.Core.Helpers;
 using WMS.Core.Models.Templates;
+using WMS.Core.Models;
 
 public class UserService : IUserService
 {
     private readonly WmsDbContext _dbContext;
     private readonly IMailService _mailService;
     private readonly ITemplateService _templateService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserService(WmsDbContext dbContext, IMailService mailService, ITemplateService templateService)
+    public UserService(
+        WmsDbContext dbContext,
+        IMailService mailService,
+        ITemplateService templateService,
+        IHttpContextAccessor httpContextAccessor)
     {
         this._dbContext = dbContext;
         this._mailService = mailService;
         this._templateService = templateService;
+        this._httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<User> CreateAsync(User user)
+    public async Task<User> CreateAsync(UserCreateData userCreateData)
     {
-        bool hasUserAlreadyBeenAdded = this.HasUserAlreadyBeenAdded(user.Email);
+        bool hasUserAlreadyBeenAdded = this.GetByEmail(userCreateData.Email) != null;
         if (hasUserAlreadyBeenAdded)
         {
             throw new ApiOperationFailedException("Can't create user, because it has already been added.");
@@ -35,6 +44,7 @@ public class UserService : IUserService
         var password = SecretHelper.GeneratePassword();
         var (hashHex, saltHex) = SecretHelper.Hash(password);
 
+        var user = UserHelper.Parse(userCreateData);
         user.Password = hashHex;
         user.Salt = saltHex;
 
@@ -63,7 +73,11 @@ public class UserService : IUserService
             throw new ApiOperationFailedException("Can't delete user, because it doesn't exist.");
         }
 
-        // TODO: Check if user tries to delete himself
+        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
+        if (identity?.Name == user.Email)
+        {
+            throw new ApiOperationFailedException("Can't delete yourself");
+        }
 
         _ = this._dbContext.Users.Remove(user);
         _ = await this._dbContext.SaveChangesAsync();
@@ -71,12 +85,47 @@ public class UserService : IUserService
 
     public IEnumerable<User> GetAll() => this._dbContext.Users;
 
-    public Task UpdateAsync(int userId, User userUpdateData)
+    public async Task UpdateAsync(int userId, UserUpdateData userUpdateData)
     {
-        throw new NotImplementedException();
+        var user = this.GetById(userId);
+        if (user == null)
+        {
+            throw new ApiOperationFailedException("Can't update user, because it doesn't exist.");
+        }
+
+        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
+        var currentUser = this.GetByEmail(identity.Name);
+        var doesUserTryToUpdateHisRole = currentUser?.Id == userId && currentUser.Role != userUpdateData.Role;
+        if (doesUserTryToUpdateHisRole)
+        {
+            throw new ApiOperationFailedException("Can't update role, when you try to update yourself.");
+        }
+
+        UserHelper.Populate(user, userUpdateData);
+        this._dbContext.Entry(user).State = EntityState.Modified;
+
+        _ = await this._dbContext.SaveChangesAsync();
     }
 
-    private bool HasUserAlreadyBeenAdded(string userEmail) => this._dbContext.Users.Any(u => u.Email == userEmail);
+    public async Task UpdatePasswordAsync(string password)
+    {
+        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
+        var currentUser = this.GetByEmail(identity.Name);
+        if (currentUser == null)
+        {
+            throw new ApiOperationFailedException("Can't update user, because it doesn't exist.");
+        }
 
-    private User? GetById(int userId) => this._dbContext.Users.FirstOrDefault(user => user.Id == userId);
+        var (hashHex, saltHex) = SecretHelper.Hash(password);
+        currentUser.Password = hashHex;
+        currentUser.Salt = saltHex;
+
+        this._dbContext.Entry(currentUser).State = EntityState.Modified;
+
+        _ = await this._dbContext.SaveChangesAsync();
+    }
+
+    public User? GetById(int userId) => this._dbContext.Users.FirstOrDefault(user => user.Id == userId);
+
+    public User? GetByEmail(string userEmail) => this._dbContext.Users.FirstOrDefault(user => user.Email == userEmail);
 }
