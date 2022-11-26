@@ -18,7 +18,13 @@ public class LegalEntityEntityConfiguration : IEntityTypeConfiguration<LegalEnti
         _ = builder.HasIndex(x => x.UNN)
                    .IsUnique();
 
-        _ = builder.Property(x => x.TenantId)
+        _ = builder.Property(x => x.Type)
+                   .IsRequired();
+
+        _ = builder.Property(x => x.Phone)
+                   .IsRequired();
+
+        _ = builder.Property(x => x.Address)
                    .IsRequired();
     }
 }

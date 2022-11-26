@@ -6,6 +6,7 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FluentValidation.AspNetCore;
 
 using WMS.Database;
 using WMS.Database.Constants;
@@ -13,20 +14,35 @@ using WMS.Core.Services.Abstractions;
 using WMS.Core.Services;
 using WMS.Core.Exceptions;
 using WMS.Core.Models;
+using WMS.Core.Services.Abstractions.Tenants;
+using WMS.Core.Services.Tenants;
+using WMS.WebApi.Extensions;
+using WMS.Core.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 _ = builder.Host.UseSerilog((context, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration));
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddWmsOData();
+
+builder.Services
+    .AddFluentValidation(config =>
+    {
+        config.AutomaticValidationEnabled = false;
+    })
+    .AddScoped<LegalEntityValidator, LegalEntityValidator>();
 
 builder.Services
     .AddHttpContextAccessor()
     .AddScoped<IUserService, UserService>()
     .AddScoped<IMailService, MailService>()
     .AddScoped<ITemplateService, TemplateService>()
-    .AddScoped<IAuthService, AuthService>();
+    .AddScoped<IAuthService, AuthService>()
+    .AddScoped<IIndividualService, IndividualService>()
+    .AddScoped<ILegalEntityService, LegalEntityService>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
@@ -103,6 +119,7 @@ app.UseExceptionHandler(app => app.Run(async context =>
     context.Response.StatusCode = exception switch
     {
         ApiOperationFailedException => (int)HttpStatusCode.BadRequest,
+        EntityNotFoundException => (int)HttpStatusCode.NotFound,
         AuthenticationFailedException => (int)HttpStatusCode.Unauthorized,
         AuthorizationFailedException => (int)HttpStatusCode.Forbidden,
         _ => (int)HttpStatusCode.InternalServerError,

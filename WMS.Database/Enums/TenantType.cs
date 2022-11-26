@@ -2,6 +2,7 @@
 
 public enum TenantType
 {
-    Individual = 0,
+    Unknown = 0,
+    Individual,
     LegalEntity,
 }

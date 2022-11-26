@@ -1,6 +1,6 @@
 ﻿namespace WMS.Database.Entities.Tenants;
 
-public class Individual : BaseEntity
+public class Individual : Tenant
 {
     public string FirstName { get; set; } = default!;
 
@@ -9,8 +9,4 @@ public class Individual : BaseEntity
     public string LastName { get; set; } = default!;
 
     public string PassportNumber { get; set; } = default!;
-
-    public int TenantId { get; set; }
-
-    public Tenant Tenant { get; set; } = default!;
 }

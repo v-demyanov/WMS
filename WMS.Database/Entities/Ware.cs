@@ -18,13 +18,17 @@ public class Ware : BaseEntity
 
     public int AddressId { get; set; }
 
-    public int TenantId { get; set; }
+    public int? IndividualId { get; set; }
+
+    public int? LegalEntityId { get; set; }
 
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
     public Address Address { get; set; } = default!;
 
-    public Tenant Tenant { get; set; } = default!;
+    public Individual? Individual { get; set; }
+
+    public LegalEntity? LegalEntity { get; set; }
 
     public ICollection<WareTask> Tasks { get; } = new HashSet<WareTask>();
 }

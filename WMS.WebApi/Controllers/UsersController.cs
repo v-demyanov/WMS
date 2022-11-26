@@ -9,6 +9,7 @@ using WMS.Core.Services.Abstractions;
 using WMS.Database.Entities;
 using WMS.Database.Enums;
 using WMS.Core.Models;
+using System.Net;
 
 /// <summary>
 /// Manages users' accounts.
@@ -35,12 +36,15 @@ public class UsersController : ControllerBase
     /// <summary>
     /// Creates a new user.
     /// </summary>
-    /// <param name="userCreateData">Record model to create.</param>
+    /// <param name="userCreateData">Data to create new user.</param>
     /// <returns>Created user.</returns>
     [HttpPost]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<User> Post([FromBody] UserCreateData userCreateData) =>
-        await this._userService.CreateAsync(userCreateData);
+    public async Task<ActionResult<User>> Post([FromBody] UserCreateData userCreateData)
+    {
+        this.Response.StatusCode = (int)HttpStatusCode.Created;
+        return await this._userService.CreateAsync(userCreateData);
+    }
 
     /// <summary>
     /// Deletes user by id.
@@ -48,7 +52,11 @@ public class UsersController : ControllerBase
     /// <param name="userId">User Id.</param>
     [HttpDelete("{userId:int}")]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task Delete(int userId) => await this._userService.DeleteAsync(userId);
+    public async Task<ActionResult> Delete(int userId)
+    {
+        await this._userService.DeleteAsync(userId);
+        return this.NoContent();
+    }
 
     /// <summary>
     /// Updates user general info.
@@ -56,8 +64,11 @@ public class UsersController : ControllerBase
     /// <param name="userId">User Id.</param>
     /// <param name="userUpdateData">User create data.</param>
     [HttpPut("{userId:int}")]
-    public async Task Update(int userId, [FromBody] UserUpdateData userUpdateData) => 
+    public async Task<ActionResult> Update(int userId, [FromBody] UserUpdateData userUpdateData)
+    {
         await this._userService.UpdateAsync(userId, userUpdateData);
+        return this.NoContent();
+    }
 
     /// <summary>
     /// Sets a new password.
@@ -65,6 +76,10 @@ public class UsersController : ControllerBase
     /// <param name="password">New password.</param>
     [HttpPut("setPassword")]
     [Authorize]
-    public async Task UpdatePassword([FromBody] string password) => 
+    public async Task<ActionResult> UpdatePassword([FromBody] string password)
+    {
         await this._userService.UpdatePasswordAsync(password);
+        return this.NoContent();
+    }
+        
 }

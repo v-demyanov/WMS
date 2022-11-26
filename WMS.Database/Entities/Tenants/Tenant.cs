@@ -10,9 +10,5 @@ public class Tenant : BaseEntity
 
     public string Address { get; set; } = default!;
 
-    public LegalEntity? LegalEntity { get; set; }
-
-    public Individual? Individual { get; set; }
-
     public ICollection<Ware> Wares { get; } = new HashSet<Ware>();
 }

@@ -38,8 +38,6 @@ public class WmsDbContext : DbContext
 
     public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();
 
-    public DbSet<Tenant> Tenants => this.Set<Tenant>();
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

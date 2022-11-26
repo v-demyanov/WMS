@@ -24,7 +24,13 @@ public class IndividualEntityConfiguration : IEntityTypeConfiguration<Individual
         _ = builder.HasIndex(x => x.PassportNumber)
                    .IsUnique();
 
-        _ = builder.Property(x => x.TenantId)
+        _ = builder.Property(x => x.Type)
+                   .IsRequired();
+
+        _ = builder.Property(x => x.Phone)
+                   .IsRequired();
+
+        _ = builder.Property(x => x.Address)
                    .IsRequired();
     }
 }

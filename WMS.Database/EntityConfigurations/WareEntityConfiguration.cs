@@ -17,8 +17,5 @@ public class WareEntityConfiguration : IEntityTypeConfiguration<Ware>
 
         _ = builder.HasIndex(x => x.AddressId)
                    .IsUnique();
-
-        _ = builder.Property(x => x.TenantId)
-                   .IsRequired();
     }
 }
