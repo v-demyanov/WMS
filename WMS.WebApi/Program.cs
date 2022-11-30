@@ -18,6 +18,10 @@ using WMS.Core.Services.Abstractions.Tenants;
 using WMS.Core.Services.Tenants;
 using WMS.WebApi.Extensions;
 using WMS.Core.Validators;
+using WMS.Core.Services.Abstractions.Dictionaries;
+using WMS.Core.Services.Dictionaries;
+using WMS.Core.Services.Abstractions.Addresses;
+using WMS.Core.Services.Addresses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +33,9 @@ builder.Services
     .AddWmsOData();
 
 builder.Services
-    .AddFluentValidation(config =>
-    {
-        config.AutomaticValidationEnabled = false;
-    })
-    .AddScoped<LegalEntityValidator, LegalEntityValidator>();
+    .AddFluentValidation(config => config.AutomaticValidationEnabled = false)
+    .AddScoped<LegalEntityValidator, LegalEntityValidator>()
+    .AddScoped<RackCreateDataValidator, RackCreateDataValidator>();
 
 builder.Services
     .AddHttpContextAccessor()
@@ -42,7 +44,12 @@ builder.Services
     .AddScoped<ITemplateService, TemplateService>()
     .AddScoped<IAuthService, AuthService>()
     .AddScoped<IIndividualService, IndividualService>()
-    .AddScoped<ILegalEntityService, LegalEntityService>();
+    .AddScoped<ILegalEntityService, LegalEntityService>()
+    .AddScoped<IAreaService, AreaService>()
+    .AddScoped<IRackService, RackService>()
+    .AddScoped<IShelfService, ShelfService>()
+    .AddScoped<IVerticalSectionService, VerticalSectionService>()
+    .AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));

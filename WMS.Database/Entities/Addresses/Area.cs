@@ -4,5 +4,9 @@ public class Area : BaseEntity
 {
     public string Name { get; set; } = default!;
 
+    public int MaxVerticalSections { get; set; }
+
+    public int MaxShelfs { get; set; }
+
     public ICollection<Rack> Racks { get; } = new HashSet<Rack>();
 }

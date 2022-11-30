@@ -20,7 +20,7 @@ public class LegalEntitiesController : ODataController
     }
 
     /// <summary>
-    /// Get all legal entities.
+    /// Gets all legal entities.
     /// </summary>
     /// <returns>Collection of legal entities.</returns>
     [EnableQuery]
