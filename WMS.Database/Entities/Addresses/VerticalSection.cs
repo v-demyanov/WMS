@@ -4,6 +4,8 @@ public class VerticalSection : BaseEntity
 {
     public int RackId { get; set; }
 
+    public int Index { get; set; }
+
     public Rack Rack { get; set; } = default!;
 
     public ICollection<Shelf> Shelfs { get; } = new HashSet<Shelf>();

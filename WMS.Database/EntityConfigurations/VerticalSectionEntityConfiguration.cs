@@ -11,5 +11,8 @@ public class VerticalSectionEntityConfiguration : IEntityTypeConfiguration<Verti
     {
         _ = builder.Property(x => x.RackId)
                    .IsRequired();
+
+        _ = builder.HasIndex(x => new { x.Index, x.RackId })
+                   .IsUnique();
     }
 }

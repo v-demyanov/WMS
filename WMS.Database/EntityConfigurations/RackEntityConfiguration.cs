@@ -11,5 +11,8 @@ public class RackEntityConfiguration : IEntityTypeConfiguration<Rack>
     {
         _ = builder.Property(x => x.AreaId)
                    .IsRequired();
+
+        _ = builder.HasIndex(x => new { x.Index, x.AreaId })
+                   .IsUnique();
     }
 }

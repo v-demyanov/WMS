@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
+using System.Text.Json.Serialization;
 
 using WMS.Database;
 using WMS.Database.Constants;
@@ -32,10 +33,14 @@ builder.Services
     .AddControllers()
     .AddWmsOData();
 
+#pragma warning disable CS0618 // Type or member is obsolete
 builder.Services
     .AddFluentValidation(config => config.AutomaticValidationEnabled = false)
+#pragma warning restore CS0618 // Type or member is obsolete
     .AddScoped<LegalEntityValidator, LegalEntityValidator>()
-    .AddScoped<RackCreateDataValidator, RackCreateDataValidator>();
+    .AddScoped<RackCreateDataValidator, RackCreateDataValidator>()
+    .AddScoped<AddressValidator, AddressValidator>()
+    .AddScoped<WareValidator, WareValidator>();
 
 builder.Services
     .AddHttpContextAccessor()
@@ -49,7 +54,8 @@ builder.Services
     .AddScoped<IRackService, RackService>()
     .AddScoped<IShelfService, ShelfService>()
     .AddScoped<IVerticalSectionService, VerticalSectionService>()
-    .AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
+    .AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>()
+    .AddScoped<IWareService, WareService>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));

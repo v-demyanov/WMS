@@ -2,9 +2,6 @@
 
 using WMS.Database.Entities;
 
-public interface IWareService
+public interface IWareService : IBaseService<Ware>
 {
-    Ware Create(Ware wareCreateDate);
-
-    void Update(Ware wareUpdateData);
 }

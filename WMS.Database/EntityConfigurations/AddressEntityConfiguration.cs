@@ -11,5 +11,9 @@ public class AddressEntityConfiguration : IEntityTypeConfiguration<Address>
     {
         _ = builder.Property(x => x.AreaId)
                    .IsRequired();
+
+        _ = builder.HasOne(x => x.Shelf)
+                   .WithOne(x => x.Address)
+                   .OnDelete(DeleteBehavior.NoAction);
     }
 }

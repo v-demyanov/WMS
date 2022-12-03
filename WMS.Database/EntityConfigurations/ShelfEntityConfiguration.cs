@@ -11,5 +11,8 @@ public class ShelfEntityConfiguration : IEntityTypeConfiguration<Shelf>
     {
         _ = builder.Property(x => x.VerticalSectionId)
                    .IsRequired();
+
+        _ = builder.HasIndex(x => new { x.Index, x.VerticalSectionId })
+                   .IsUnique();
     }
 }

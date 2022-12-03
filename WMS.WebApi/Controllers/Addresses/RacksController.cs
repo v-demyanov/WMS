@@ -1,6 +1,7 @@
 ﻿namespace WMS.WebApi.Controllers.Addresses;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
@@ -25,8 +26,8 @@ public class RacksController : ODataController
     /// </summary>
     /// <param name="rackCreateData">Data to generate a new rack.</param>
     /// <returns>Generated rack.</returns>
-    [HttpPost("generate")]
-    public async Task<ActionResult<Rack>> Generate([FromBody] RackCreateData rackCreateData)
+    [HttpPost]
+    public async Task<ActionResult<Rack>> Post([FromBody] RackCreateData rackCreateData)
     {
         Rack rack = await this._rackService.GenerateAsync(rackCreateData);
         return this.Created(rack);
@@ -50,4 +51,13 @@ public class RacksController : ODataController
     [HttpGet]
     [EnableQuery]
     public IQueryable<Rack> Get() => this._rackService.GetAll();
+
+    /// <summary>
+    /// Gets rack.
+    /// </summary>
+    /// <param name="key">Rack's Id.</param>
+    /// <returns>Rack.</returns>
+    [HttpGet]
+    [EnableQuery]
+    public Rack Get(int key) => this._rackService.GetById(key);
 }

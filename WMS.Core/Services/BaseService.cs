@@ -74,7 +74,7 @@ public abstract class BaseService<TEntity> : IBaseService<TEntity>
         _ = await this.DbContext.SaveChangesAsync();
     }
 
-    protected virtual AbstractValidator<TEntity>? GetValidator() => null;
+    protected virtual AbstractValidator<TEntity>? GetValidator() => default;
 
     protected async Task ValidateAsync(TEntity entity)
     {

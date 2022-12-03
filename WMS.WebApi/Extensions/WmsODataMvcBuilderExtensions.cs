@@ -1,12 +1,15 @@
 ﻿namespace WMS.WebApi.Extensions;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData;
-using Microsoft.AspNetCore.OData.Query;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+
 using WMS.Core.Models;
+using WMS.Database.Entities;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Tenants;
+using WMS.WebApi.Controllers.Addresses;
 
 public static class WmsODataMvcBuilderExtensions
 {
@@ -24,10 +27,8 @@ public static class WmsODataMvcBuilderExtensions
         var modelBuilder = new ODataConventionModelBuilder();
         _ = modelBuilder.EntitySet<LegalEntity>("LegalEntities");
         _ = modelBuilder.EntitySet<Rack>("Racks");
-        _ = modelBuilder.EntitySet<Rack>("RackCreateDatas");
+        _ = modelBuilder.EntitySet<Ware>("Wares");
 
-        var endModel = modelBuilder.GetEdmModel();
-
-        return endModel;
+        return modelBuilder.GetEdmModel();
     }
 }
