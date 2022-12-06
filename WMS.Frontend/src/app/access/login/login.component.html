@@ -1,1 +1,25 @@
-<p>login works!</p>
+<div class="login-wrapper">
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="formGroup" class="login-content">
+        <mat-card-title class="login-title">
+          Вход в WMS
+        </mat-card-title>
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Пароль</mat-label>
+          <input matInput type="password">
+        </mat-form-field>
+
+        <mat-card-actions>
+          <button mat-raised-button color="accent">Войти</button>
+        </mat-card-actions>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <img src="./assets/login.png" class="login-image">
+</div>

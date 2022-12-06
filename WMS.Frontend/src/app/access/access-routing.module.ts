@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { AccessRoutingConstants } from './access.routing.constants';
+import { AccessRoute } from './access-routing.constants';
 import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {
-    path: AccessRoutingConstants.Default,
-    redirectTo: AccessRoutingConstants.Login,
+    path: AccessRoute.Default,
+    redirectTo: AccessRoute.Login,
     pathMatch: 'full',
   },
   {
-    path: AccessRoutingConstants.Login,
+    path: AccessRoute.Login,
     component: LoginComponent,
   },
 ];
