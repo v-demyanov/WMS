@@ -9,7 +9,7 @@ using WMS.Core.Exceptions;
 using WMS.Core.Helpers;
 using WMS.Core.Models;
 using WMS.Core.Services.Abstractions;
-using WMS.Database.Enums;
+using WMS.Database.Entities;
 
 public class AuthService : IAuthService
 {
@@ -24,13 +24,13 @@ public class AuthService : IAuthService
 
     public LoginResponse Login(LoginData loginData)
     {
-        var user = this._userService.GetByEmail(loginData.Email);
+        User? user = this._userService.GetByEmail(loginData.Email);
         if (user == null)
         {
             throw new AuthenticationFailedException("Can't login, because user doesn't exist");
         }
 
-        var isPasswordNotValid = !SecretHelper.Verify(loginData.Password, user.Password, user.Salt);
+        bool isPasswordNotValid = !SecretHelper.Verify(loginData.Password, user.Password, user.Salt);
         if (isPasswordNotValid)
         {
             throw new AuthenticationFailedException("Can't login, because password is not valid");
@@ -40,6 +40,11 @@ public class AuthService : IAuthService
         {
             new Claim(ClaimTypes.Name, loginData.Email),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim(nameof(user.Id), user.Id.ToString()),
+            new Claim(nameof(user.FirstName), user.FirstName),
+            new Claim(nameof(user.LastName), user.LastName),
+            new Claim(nameof(user.Role), user.Role.ToString()),
+            new Claim(nameof(user.Email), user.Email),
         };
 
         var jwt = new JwtSecurityToken(

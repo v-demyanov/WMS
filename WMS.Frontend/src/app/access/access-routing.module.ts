@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PublicGuard } from 'ngx-auth';
+
 import { AccessRoute } from './access-routing.constants';
 import { LoginComponent } from './login/login.component';
 
@@ -12,6 +14,7 @@ const routes: Routes = [
   {
     path: AccessRoute.Login,
     component: LoginComponent,
+    canActivate: [PublicGuard],
   },
 ];
 

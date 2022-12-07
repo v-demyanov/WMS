@@ -1,7 +1,7 @@
 export class AppRoute {
-  public static Default: string = '';
+  public static readonly Default: string = '';
 
-  public static Home: string = 'home';
+  public static readonly Home: string = 'home';
 
-  public static Access: string = 'access';
+  public static readonly Access: string = 'access';
 }

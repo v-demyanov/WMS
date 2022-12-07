@@ -1,11 +1,13 @@
 export class HomeRoute {
-  public static Default: string = ''
+  public static readonly Default: string = ''
 
-  public static Home: string = 'home';
+  public static readonly Home: string = 'home';
 
-  public static AdminPanel: string = 'admin-panel';
+  public static readonly AdminPanel: string = 'admin-panel';
 
-  public static Dictionaries: string = 'dictionaries';
+  public static readonly Dictionaries: string = 'dictionaries';
 
-  public static Wares: string = 'wares';
+  public static readonly Wares: string = 'wares';
+
+  public static readonly Tasks: string = 'tasks';
 }

@@ -1,5 +1,5 @@
 export class AccessRoute {
-  public static Default: string = ''
+  public static readonly Default: string = ''
 
-  public static Login: string = 'login';
+  public static readonly Login: string = 'login';
 }

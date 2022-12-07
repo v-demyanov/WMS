@@ -1,7 +1,7 @@
 export class AdminPanelRoute {
-  public static LegalEntities = 'tenants/legal-entities';
+  public static readonly LegalEntities = 'tenants/legal-entities';
 
-  public static Individuals = 'tenants/individuals';
+  public static readonly Individuals = 'tenants/individuals';
 
-  public static Employees = 'employees';
+  public static readonly Employees = 'employees';
 }

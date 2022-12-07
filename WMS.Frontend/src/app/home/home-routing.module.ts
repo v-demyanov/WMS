@@ -43,6 +43,17 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: HomeRoute.Default,
+    component: HomePageComponent,
+    children: [
+      {
+        path: HomeRoute.Tasks,
+        loadChildren: () => import('../tasks/tasks.module')
+          .then(m => m.TasksModule),
+      },
+    ],
+  },
 ];
 
 @NgModule({

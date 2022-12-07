@@ -1,3 +1,3 @@
 export class WaresRoute {
-  public static Default = '';
+  public static readonly Default = '';
 }

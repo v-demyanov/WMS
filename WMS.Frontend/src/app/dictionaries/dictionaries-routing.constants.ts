@@ -1,7 +1,7 @@
 export class DictionariesRoute {
-  public static Areas = 'addresses/areas';
+  public static readonly Areas = 'addresses/areas';
 
-  public static Racks = 'addresses/racks';
+  public static readonly Racks = 'addresses/racks';
 
-  public static UnitOfMeasurements = 'unit-of-measurements';
+  public static readonly UnitOfMeasurements = 'unit-of-measurements';
 }
