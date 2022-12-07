@@ -1,8 +1,10 @@
+import { UserRole } from '../enums/user-role.enum';
+
 export interface IUserClaims {
   Id: number;
   FirstName: string;
   LastName: string;
-  Role: string;
+  Role: UserRole;
   Email: string;
   Exp: number;
 }

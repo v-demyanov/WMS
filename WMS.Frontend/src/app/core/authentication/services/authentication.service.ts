@@ -7,6 +7,9 @@ import { map } from 'rxjs/operators';
 
 import { IUserClaims } from '../models/user-claims';
 import { AuthenticationDataService } from './authentication-data.service';
+import { ITokenResponse } from '../models/token-response';
+import { UserRole } from '../enums/user-role.enum';
+import { parseEnum } from '../../helpers/enum.helper';
 
 @Injectable()
 export class AuthenticationService implements AuthService {
@@ -14,7 +17,7 @@ export class AuthenticationService implements AuthService {
   private interruptedUrl: string = '';
 
   constructor(
-    private readonly authenticationDataService: AuthenticationDataService
+    private readonly authenticationDataService: AuthenticationDataService,
   ) {}
 
   public isAuthorized = (): Observable<boolean> =>
@@ -23,16 +26,17 @@ export class AuthenticationService implements AuthService {
   public getAccessToken = (): Observable<string> =>
     of(this.authenticationDataService.getAccessToken());
 
-  public getFullAccessToken = (): Observable<string> =>
-    of(this.authenticationDataService.getAccessToken()).pipe(
+  public getFullAccessToken(): Observable<string> {
+    return of(this.authenticationDataService.getAccessToken()).pipe(
       map((token) => `bearer ${token}`)
     );
-
-  public setTokens(tokens: any): void {
-    this.authenticationDataService.setAccessToken(tokens.AccessToken);
   }
 
-  public getUserClaims = (): IUserClaims =>
+  public setTokens(tokens: ITokenResponse): void {
+    this.authenticationDataService.setAccessToken(tokens.accessToken);
+  }
+
+  public getUserClaims = (): IUserClaims | null =>
     this.authenticationDataService.getUserClaims();
 
   public setUserClaims = (userClaims: IUserClaims): void =>
@@ -55,18 +59,26 @@ export class AuthenticationService implements AuthService {
 
   public decodeJwtToken(token: string): IUserClaims {
     const jwtHelper = new JwtHelperService();
-
-    return jwtHelper.decodeToken(token);
+    const rawClaims = jwtHelper.decodeToken(token);
+    
+    return {
+      Id: rawClaims.Id,
+      FirstName: rawClaims.FirstName,
+      LastName: rawClaims.LastName,
+      Role: parseEnum(UserRole, rawClaims.Role),
+      Email: rawClaims.Email,
+      Exp: rawClaims.exp,
+    };
   }
 
   public refreshToken(): Observable<any> {
-    throw new Error('Method not implemented.');
+    return of();
   }
 
   public refreshShouldHappen(
     response: HttpErrorResponse,
     request?: HttpRequest<any> | undefined
   ): boolean {
-    throw new Error('Method not implemented.');
+    return false;
   }
 }

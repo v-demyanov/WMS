@@ -52,6 +52,7 @@
   </mat-menu>
 
   <button
+    *ngIf="isAdmin()"
     mat-button
     [matMenuTriggerFor]="administration"
     class="dropdown-menu-item"
@@ -80,9 +81,9 @@
 
   <div class="spacer"></div>
   <div class="user-info">
-    <span>Владислав, Демьянов</span>
+    <span>{{ currentUser?.FirstName }}, {{ currentUser?.LastName }}</span>
   </div>
-  <a mat-icon-button color="basic">
+  <a mat-icon-button color="basic" (click)="logout()">
     <mat-icon>logout</mat-icon>
   </a>
 </mat-toolbar>

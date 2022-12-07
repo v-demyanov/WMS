@@ -7,10 +7,12 @@ import { AuthenticationDataService } from './authentication/services/authenticat
 import { AuthenticationService } from './authentication/services/authentication.service';
 import { AuthGuard } from './authentication/guards/auth.guard';
 import { HttpClientModule } from '@angular/common/http';
+import { PermissionsService } from './authentication';
 
 const providers: Provider[] = [
   AuthenticationDataService,
   AuthenticationService,
+  PermissionsService,
   AuthGuard,
 ];
 

@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AccessModule } from './access/access.module';
 import { CoreModule } from './core/core.module';
 import { AuthenticationService } from './core/authentication';
-import { NavigationUrls } from './core/authentication/constants/navigation-urls';
+import { NavigationUrls } from './core/authentication/constants/navigation-urls.constants';
 
 @NgModule({
   declarations: [AppComponent],

@@ -9,6 +9,7 @@ import {
 import { Observable, of, switchMap, throwError } from 'rxjs';
 import { ProtectedGuard, PUBLIC_FALLBACK_PAGE_URI } from 'ngx-auth';
 import * as _moment from 'moment';
+
 import { AuthenticationService } from '../services/authentication.service';
 import { AuthenticationDataService } from '../services/authentication-data.service';
 import { IUserClaims } from '../models/user-claims';
@@ -17,6 +18,7 @@ const moment = _moment;
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
+
   constructor(
     private protectedGuard: ProtectedGuard,
     private authenticationService: AuthenticationService,
@@ -29,9 +31,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> =>
-    this.protectedGuard
-      .canActivate(route, state)
-      .pipe(switchMap((authorized: boolean) => {
+    this.protectedGuard.canActivate(route, state).pipe(
+      switchMap((authorized: boolean) => {
         if (authorized && this.isExpiredAccessToken()) {
           this.router.navigateByUrl(this.publicFallbackPageUri);
 
@@ -39,7 +40,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         }
 
         return of(authorized);
-      }));
+      })
+    );
 
   public canActivateChild = (
     route: ActivatedRouteSnapshot,
@@ -54,7 +56,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
   private getAccessTokenExpirationUtc(): _moment.Moment {
     const accessToken: string = this.authenticationDataService.getAccessToken();
-    const tokenObject: IUserClaims = this.authenticationService.decodeJwtToken(accessToken);
+    const tokenObject: IUserClaims =
+      this.authenticationService.decodeJwtToken(accessToken);
     const expirationTimestamp: number = tokenObject.Exp;
 
     return moment.unix(expirationTimestamp).utc();

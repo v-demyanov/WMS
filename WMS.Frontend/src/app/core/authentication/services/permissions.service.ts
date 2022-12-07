@@ -9,5 +9,5 @@ export class PermissionsService {
   constructor(private readonly authenticationService: AuthenticationService) { }
 
   public isAdmin = (): boolean =>
-    this.authenticationService.getUserClaims().Role === UserRole[UserRole.Administrator];
+    this.authenticationService.getUserClaims()?.Role === UserRole.Administrator;
 }

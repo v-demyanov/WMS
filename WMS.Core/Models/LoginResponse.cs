@@ -2,5 +2,5 @@
 
 public record LoginResponse
 {
-    public string Jwt { get; set; } = string.Empty;
+    public string AccessToken { get; set; } = string.Empty;
 }

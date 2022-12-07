@@ -56,7 +56,7 @@ public class AuthService : IAuthService
 
         return new LoginResponse
         {
-            Jwt = new JwtSecurityTokenHandler().WriteToken(jwt),
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
         };
     }
 }

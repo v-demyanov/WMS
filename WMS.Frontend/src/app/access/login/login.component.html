@@ -1,22 +1,40 @@
 <div class="login-wrapper">
   <mat-card>
     <mat-card-content>
-      <form [formGroup]="formGroup" class="login-content">
+      <form 
+        [formGroup]="loginForm"
+        (ngSubmit)="login()"
+        class="login-content"
+      >
         <mat-card-title class="login-title">
           Вход в WMS
         </mat-card-title>
         <mat-form-field appearance="fill">
           <mat-label>Email</mat-label>
-          <input matInput>
+          <input formControlName="Email" matInput>
+          <mat-error *ngIf="loginForm.controls['Email'].hasError('required')">
+            Поле обязательно для заполнения
+          </mat-error>
+          <mat-error *ngIf="loginForm.controls['Email'].hasError('email')">
+            Введите валидный адрес электронной почты
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Пароль</mat-label>
-          <input matInput type="password">
+          <input formControlName="Password" matInput type="password">
+          <mat-error *ngIf="loginForm.controls['Password'].hasError('required')">
+            Поле обязательно для заполнения
+          </mat-error>
         </mat-form-field>
 
         <mat-card-actions>
-          <button mat-raised-button color="accent">Войти</button>
+          <button
+            [disabled]="loginForm.invalid || loading"
+            type="submit" 
+            color="accent"
+            mat-raised-button
+          >Войти</button>
         </mat-card-actions>
       </form>
     </mat-card-content>

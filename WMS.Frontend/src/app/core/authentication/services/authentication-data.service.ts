@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { TokenStorageKeys } from '../constants/token-storage-keys';
+import { TokenStorageKeys } from '../constants/token-storage-keys.constants';
 import { IUserClaims } from '../models/user-claims';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class AuthenticationDataService {
     }
   }
 
-  public getUserClaims(): IUserClaims
+  public getUserClaims(): IUserClaims | null
   {
     const userClaims: string | null = localStorage.getItem(TokenStorageKeys.UserClaims);
 
