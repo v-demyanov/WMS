@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
-using System.Text.Json.Serialization;
 
 using WMS.Database;
 using WMS.Database.Constants;

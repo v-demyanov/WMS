@@ -1,8 +1,9 @@
 ﻿namespace WMS.Core.Services.Abstractions;
-
-using WMS.Core.Models;
+using WMS.Core.Models.Authentication;
 
 public interface IAuthService
 {
-    LoginResponse Login(LoginData loginData);
+    Task<TokensResponse> LoginAsync(LoginRequest loginRequest);
+
+    Task<TokensResponse> RefreshTokensAsync(RefreshRequest refreshRequest);
 }

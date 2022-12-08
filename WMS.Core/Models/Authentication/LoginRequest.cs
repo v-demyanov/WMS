@@ -1,6 +1,6 @@
-﻿namespace WMS.Core.Models;
+﻿namespace WMS.Core.Models.Authentication;
 
-public record LoginData
+public record LoginRequest
 {
     public string Email { get; set; } = default!;
 

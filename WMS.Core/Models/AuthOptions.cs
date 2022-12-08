@@ -11,7 +11,9 @@ public class AuthOptions
 
     public string? Key { get; set; }
 
-    public int Expires { get; set; }
+    public int AccessTokenExpires { get; set; }
+
+    public int RefreshTokenExpires { get; set; }
 
     public SymmetricSecurityKey GetSymmetricSecurityKey() =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Key ?? string.Empty));

@@ -14,6 +14,10 @@ public class User : BaseEntity
 
     public string Salt { get; set; } = default!;
 
+    public string? RefreshToken { get; set; }
+
+    public string? RefreshTokenSalt { get; set; }
+
     public Role Role { get; set; }
 
     public ICollection<Task> PerformerTasks { get; } = new HashSet<Task>();
