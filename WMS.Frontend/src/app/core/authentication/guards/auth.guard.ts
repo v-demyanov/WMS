@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -6,13 +6,13 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Observable, of, switchMap, throwError } from 'rxjs';
-import { ProtectedGuard, PUBLIC_FALLBACK_PAGE_URI } from 'ngx-auth';
+import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
 import * as _moment from 'moment';
 
 import { AuthenticationService } from '../services/authentication.service';
 import { AuthenticationDataService } from '../services/authentication-data.service';
 import { IUserClaims } from '../models/user-claims';
+import { NavigationUrls } from '../../constants/navigation-urls.constants';
 
 const moment = _moment;
 
@@ -20,33 +20,32 @@ const moment = _moment;
 export class AuthGuard implements CanActivate, CanActivateChild {
 
   constructor(
-    private protectedGuard: ProtectedGuard,
     private authenticationService: AuthenticationService,
     private authenticationDataService: AuthenticationDataService,
     private router: Router,
-    @Inject(PUBLIC_FALLBACK_PAGE_URI) private publicFallbackPageUri: string
   ) {}
 
-  public canActivate = (
+  public async canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> =>
-    this.protectedGuard.canActivate(route, state).pipe(
-      switchMap((authorized: boolean) => {
-        if (authorized && this.isExpiredAccessToken()) {
-          this.router.navigateByUrl(this.publicFallbackPageUri);
+    state: RouterStateSnapshot,
+  ): Promise<boolean> {
+    const isAuthorized = this.authenticationService.isAuthorized();
+    if (!isAuthorized) {
+      this.router.navigateByUrl(NavigationUrls.PublicFallbackPage);
+      return false;
+    }
 
-          return throwError('The access token has been expired!');
-        }
+    if (this.isExpiredAccessToken()) {
+      return await firstValueFrom(this.refreshToken());
+    }
 
-        return of(authorized);
-      })
-    );
+    return isAuthorized;
+  }
 
-  public canActivateChild = (
+  public canActivateChild = async (
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> => this.canActivate(route, state);
+    state: RouterStateSnapshot,
+  ): Promise<boolean> => await this.canActivate(route, state);
 
   private isExpiredAccessToken(): boolean {
     const accessTokenExpiration = this.getAccessTokenExpirationUtc();
@@ -55,11 +54,22 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   private getAccessTokenExpirationUtc(): _moment.Moment {
-    const accessToken: string = this.authenticationDataService.getAccessToken();
-    const tokenObject: IUserClaims =
-      this.authenticationService.decodeJwtToken(accessToken);
+    const accessToken: string = this.authenticationDataService.getAccessToken() ?? '';
+    const tokenObject: IUserClaims = this.authenticationService.decodeJwtToken(accessToken);
     const expirationTimestamp: number = tokenObject.Exp;
 
     return moment.unix(expirationTimestamp).utc();
+  }
+
+  private refreshToken(): Observable<boolean> {
+    return this.authenticationService.refreshToken()
+    .pipe(
+      map(() => true),
+      catchError(() => {
+        this.router.navigateByUrl(NavigationUrls.PublicFallbackPage);
+
+        return of(false);
+      })
+    );
   }
 }

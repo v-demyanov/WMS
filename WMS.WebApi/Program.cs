@@ -101,6 +101,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            RequireExpirationTime = true,
             ValidateIssuer = true,
             ValidIssuer = builder.Configuration["AuthOptions:Issuer"],
             ValidateAudience = true,

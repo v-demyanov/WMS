@@ -8,12 +8,14 @@ import { AuthenticationService } from './authentication/services/authentication.
 import { AuthGuard } from './authentication/guards/auth.guard';
 import { HttpClientModule } from '@angular/common/http';
 import { PermissionsService } from './authentication';
+import { PublicGuard } from './authentication/guards/public.guard';
 
 const providers: Provider[] = [
   AuthenticationDataService,
   AuthenticationService,
   PermissionsService,
   AuthGuard,
+  PublicGuard,
 ];
 
 @NgModule({
@@ -25,7 +27,7 @@ export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
     if (parentModule) {
       throw new Error(
-        'CoreModule has already been loaded. Import Core modules in the AppModule only.'
+        'CoreModule has already been loaded. Import Core modules in the AppModule only.',
       );
     }
   }

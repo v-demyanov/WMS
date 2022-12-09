@@ -4,20 +4,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { ITokenResponse } from 'src/app/core/authentication/models/token-response';
-import { LoginService } from './services/login.service';
-import { AuthenticationService } from 'src/app/core/authentication';
+import { AuthenticationDataService, AuthenticationService } from 'src/app/core/authentication';
 import { IUserClaims } from '../../core/authentication/models/user-claims';
 import { AppRoute } from 'src/app/app-routing.constants';
-import { LoginDataService } from './services/login-data.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   providers: [
-    LoginService,
-    LoginDataService,
     AuthenticationService,
+    AuthenticationDataService,
   ],
 })
 export class LoginComponent implements OnInit {
@@ -27,7 +24,6 @@ export class LoginComponent implements OnInit {
   public loading: boolean = false;
 
   constructor(
-    private readonly loginService: LoginService,
     private readonly authenticationService: AuthenticationService,
     private readonly snackBar: MatSnackBar,
     private readonly router: Router,
@@ -43,7 +39,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.loginService.login(this.loginForm.value)
+    this.authenticationService.login(this.loginForm.value)
       .subscribe({
         next: (response: ITokenResponse) => {
           this.authenticationService.setTokens(response);

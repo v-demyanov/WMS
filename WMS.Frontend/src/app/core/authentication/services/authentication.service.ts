@@ -1,39 +1,41 @@
-import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from 'ngx-auth';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { IUserClaims } from '../models/user-claims';
 import { AuthenticationDataService } from './authentication-data.service';
 import { ITokenResponse } from '../models/token-response';
 import { UserRole } from '../enums/user-role.enum';
 import { parseEnum } from '../../helpers/enum.helper';
+import { IUserCredentials } from '../models/user-credentials';
+import { AppRoute } from 'src/app/app-routing.constants';
+import { HttpStatusCodes } from '../../constants/http-status-codes';
 
 @Injectable()
-export class AuthenticationService implements AuthService {
+export class AuthenticationService {
 
   private interruptedUrl: string = '';
 
   constructor(
     private readonly authenticationDataService: AuthenticationDataService,
+    private readonly router: Router,
   ) {}
 
-  public isAuthorized = (): Observable<boolean> =>
+  public isAuthorized = (): boolean =>
     this.authenticationDataService.isAuthorized();
 
-  public getAccessToken = (): Observable<string> =>
-    of(this.authenticationDataService.getAccessToken());
+  public getAccessToken = (): string =>
+    this.authenticationDataService.getAccessToken() ?? '';
 
-  public getFullAccessToken(): Observable<string> {
-    return of(this.authenticationDataService.getAccessToken()).pipe(
-      map((token) => `bearer ${token}`)
-    );
-  }
+  public getFullAccessToken = (): string =>
+    `Bearer ${ this.authenticationDataService.getAccessToken() }`;
 
   public setTokens(tokens: ITokenResponse): void {
-    this.authenticationDataService.setAccessToken(tokens.accessToken);
+    this.authenticationDataService
+      .setAccessToken(tokens.accessToken)
+      .setRefreshToken(tokens.refreshToken);
   }
 
   public getUserClaims = (): IUserClaims | null =>
@@ -51,12 +53,6 @@ export class AuthenticationService implements AuthService {
   public clearUserInfo = (): void =>
     this.authenticationDataService.clearUserInfo();
 
-  public verifyTokenRequest = (url: string): boolean =>
-    this.isTokenRequest(url);
-
-  public isTokenRequest = (url: string): boolean =>
-    url.endsWith('connect/token');
-
   public decodeJwtToken(token: string): IUserClaims {
     const jwtHelper = new JwtHelperService();
     const rawClaims = jwtHelper.decodeToken(token);
@@ -71,14 +67,18 @@ export class AuthenticationService implements AuthService {
     };
   }
 
-  public refreshToken(): Observable<any> {
-    return of();
-  }
+  public refreshToken = (): Observable<ITokenResponse> =>
+    this.authenticationDataService.refreshToken();
 
-  public refreshShouldHappen(
-    response: HttpErrorResponse,
-    request?: HttpRequest<any> | undefined
-  ): boolean {
-    return false;
+  public refreshShouldHappen = (response: HttpErrorResponse): boolean =>
+    response.status === HttpStatusCodes.Unauthorized
+    && this.authenticationDataService.isExistRefreshToken();
+
+  public login = (userCredentials: IUserCredentials): Observable<ITokenResponse> =>
+    this.authenticationDataService.login(userCredentials);  
+
+  public logout(): void {
+    this.authenticationDataService.logout();
+    this.router.navigate([AppRoute.Access]);
   }
 }

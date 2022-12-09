@@ -13,10 +13,10 @@
           <mat-label>Email</mat-label>
           <input formControlName="Email" matInput>
           <mat-error *ngIf="loginForm.controls['Email'].hasError('required')">
-            Поле обязательно для заполнения
+            Поле обязательное
           </mat-error>
           <mat-error *ngIf="loginForm.controls['Email'].hasError('email')">
-            Введите валидный адрес электронной почты
+            Не верный формат
           </mat-error>
         </mat-form-field>
 
@@ -24,7 +24,7 @@
           <mat-label>Пароль</mat-label>
           <input formControlName="Password" matInput type="password">
           <mat-error *ngIf="loginForm.controls['Password'].hasError('required')">
-            Поле обязательно для заполнения
+            Поле обязательное
           </mat-error>
         </mat-form-field>
 

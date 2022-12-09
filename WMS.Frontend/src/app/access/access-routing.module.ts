@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PublicGuard } from 'ngx-auth';
 
 import { AccessRoute } from './access-routing.constants';
 import { LoginComponent } from './login/login.component';
+import { PublicGuard } from '../core/authentication/guards/public.guard';
 
 const routes: Routes = [
   {

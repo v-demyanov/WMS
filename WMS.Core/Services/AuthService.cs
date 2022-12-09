@@ -134,20 +134,20 @@ public class AuthService : IAuthService
         var validationParameters = GetValidationParameters();
         try
         {
-            SecurityToken validatedToken;
-            _ = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+            var validationResult = tokenHandler.ValidateToken(token, validationParameters, out var securityToken);
+            var currentDate = new DateTimeOffset(DateTime.UtcNow);
+            return securityToken.ValidTo > currentDate;
         }
-        catch (Exception)
+        catch (SecurityTokenValidationException)
         {
             return false;
         }
-
-        return true;
     }
 
     private TokenValidationParameters GetValidationParameters() =>
         new TokenValidationParameters
         {
+            RequireExpirationTime = true,
             ValidateIssuer = true,
             ValidIssuer = this._authOptions.Issuer,
             ValidateAudience = true,
