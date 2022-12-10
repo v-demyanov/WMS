@@ -5,7 +5,7 @@ using WMS.Database.Entities;
 
 public static class UserHelper
 {
-    public static User Parse(UserCreateData createUserData)
+    public static User Parse(UserRecord createUserData)
     {
         return new User
         {
@@ -16,7 +16,19 @@ public static class UserHelper
         };
     }
 
-    public static void Populate(User destinationUser, UserUpdateData userUpdateData)
+    public static UserRecord ToRecord(User user)
+    {
+        return new UserRecord
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Role = user.Role,
+        };
+    }
+
+    public static void Populate(User destinationUser, UserRecord userUpdateData)
     {
         destinationUser.Email = userUpdateData.Email;
         destinationUser.Role = userUpdateData.Role;

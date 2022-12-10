@@ -14,13 +14,8 @@ export class AuthenticationDataService {
 
   constructor(private readonly http: HttpClient) {}
 
-  public isAuthorized(): boolean {
-    const isAuthorized: boolean = !!localStorage.getItem(
-      TokenStorageKeys.AccessToken
-    );
-
-    return isAuthorized;
-  }
+  public isAuthorized = (): boolean =>
+    !!localStorage.getItem(TokenStorageKeys.AccessToken);
 
   public getAccessToken = (): string | null =>
     localStorage.getItem(TokenStorageKeys.AccessToken);
@@ -33,11 +28,8 @@ export class AuthenticationDataService {
     return this;
   }
 
-  public setRefreshToken(
-    refreshToken: string | null
-  ): AuthenticationDataService {
+  public setRefreshToken(refreshToken: string | null): AuthenticationDataService {
     if (refreshToken !== null) {
-      console.log(refreshToken);
       localStorage.setItem(TokenStorageKeys.RefreshToken, refreshToken);
     }
 
@@ -100,6 +92,5 @@ export class AuthenticationDataService {
       userCredentials
     );
 
-  public logout = (): void =>
-    this.clearUserInfo();
+  public logout = (): void => this.clearUserInfo();
 }

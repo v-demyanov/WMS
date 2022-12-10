@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{ data.dialogName }}</h1>
+<div mat-dialog-content>
+  <p>{{ data.message }}</p>
+</div>
+<div mat-dialog-actions>
+  <button 
+  mat-raised-button
+    color="primary"
+    (click)="onNoClick()"
+    cdkFocusInitial
+  >
+    Нет
+  </button>
+  <button
+    mat-button
+    (click)="onYesClick()"
+  >
+    Да
+  </button>
+</div>

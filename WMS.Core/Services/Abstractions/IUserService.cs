@@ -8,11 +8,11 @@ using WMS.Core.Models;
 
 public interface IUserService
 {
-    IEnumerable<User> GetAll();
+    IEnumerable<UserRecord> GetAll();
 
-    Task<User> CreateAsync(UserCreateData createUserData);
+    Task<UserRecord> CreateAsync(UserRecord createUserData);
 
-    Task UpdateAsync(int userId, UserUpdateData userUpdateData);
+    Task UpdateAsync(int userId, UserRecord userUpdateData);
 
     Task UpdatePasswordAsync(string password);
 

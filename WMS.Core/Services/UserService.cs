@@ -33,7 +33,7 @@ public class UserService : IUserService
         this._httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<User> CreateAsync(UserCreateData userCreateData)
+    public async Task<UserRecord> CreateAsync(UserRecord userCreateData)
     {
         bool hasUserAlreadyBeenAdded = this.GetByEmail(userCreateData.Email) != null;
         if (hasUserAlreadyBeenAdded)
@@ -62,7 +62,7 @@ public class UserService : IUserService
         });
         this._mailService.SendMail(body, subject, new[] { user.Email });
 
-        return user;
+        return UserHelper.ToRecord(user);
     }
 
     public async Task DeleteAsync(int userId)
@@ -83,9 +83,9 @@ public class UserService : IUserService
         _ = await this._dbContext.SaveChangesAsync();
     }
 
-    public IEnumerable<User> GetAll() => this._dbContext.Users;
+    public IEnumerable<UserRecord> GetAll() => this._dbContext.Users.Select(x => UserHelper.ToRecord(x));
 
-    public async Task UpdateAsync(int userId, UserUpdateData userUpdateData)
+    public async Task UpdateAsync(int userId, UserRecord userUpdateData)
     {
         var user = this.GetById(userId);
         if (user == null)

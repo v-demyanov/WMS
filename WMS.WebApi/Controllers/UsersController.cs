@@ -2,14 +2,12 @@
 
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Task = Task;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 using WMS.Core.Services.Abstractions;
-using WMS.Database.Entities;
 using WMS.Database.Enums;
 using WMS.Core.Models;
-using System.Net;
 
 /// <summary>
 /// Manages users' accounts.
@@ -22,6 +20,7 @@ public class UsersController : ControllerBase
 
     public UsersController(IUserService userService)
     {
+        // TODO: Replace user entity class on record
         _userService = userService;
     }
 
@@ -31,7 +30,7 @@ public class UsersController : ControllerBase
     /// <returns>Collection of users.</returns>
     [HttpGet]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public IEnumerable<User> GetAll() => this._userService.GetAll();
+    public IEnumerable<UserRecord> GetAll() => this._userService.GetAll();
 
     /// <summary>
     /// Creates a new user.
@@ -40,7 +39,7 @@ public class UsersController : ControllerBase
     /// <returns>Created user.</returns>
     [HttpPost]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<ActionResult<User>> Post([FromBody] UserCreateData userCreateData)
+    public async Task<ActionResult<UserRecord>> Post([FromBody] UserRecord userCreateData)
     {
         this.Response.StatusCode = (int)HttpStatusCode.Created;
         return await this._userService.CreateAsync(userCreateData);
@@ -64,7 +63,7 @@ public class UsersController : ControllerBase
     /// <param name="userId">User Id.</param>
     /// <param name="userUpdateData">User create data.</param>
     [HttpPut("{userId:int}")]
-    public async Task<ActionResult> Update(int userId, [FromBody] UserUpdateData userUpdateData)
+    public async Task<ActionResult> Update(int userId, [FromBody] UserRecord userUpdateData)
     {
         await this._userService.UpdateAsync(userId, userUpdateData);
         return this.NoContent();

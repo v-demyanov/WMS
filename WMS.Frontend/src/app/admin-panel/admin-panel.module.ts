@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { LegalEntitiesComponent } from './tenants/legal-entities/legal-entities.component';
 import { IndividualsComponent } from './tenants/individuals/individuals.component';
 import { AdminPageRoutingModule } from './admin-page-routing.module';
 import { EmployeesComponent } from './employees/employees.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -12,8 +13,8 @@ import { EmployeesComponent } from './employees/employees.component';
     EmployeesComponent,
   ],
   imports: [
-    CommonModule,
     AdminPageRoutingModule,
+    SharedModule,
   ],
 })
 export class AdminPanelModule { }

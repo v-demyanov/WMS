@@ -1,1 +1,167 @@
-<p>employees works!</p>
+<div class="wrapper">
+  <h1>Сотрудники склада</h1>
+
+  <button 
+    mat-raised-button
+    color="primary"
+    class="add-btn"
+    [disabled]="isEditing || isAdding"
+    (click)="onAddBtnClick()"
+  >
+    Добавить
+  </button>
+
+  <form [formGroup]="employeeForm">
+    <table 
+      mat-table
+      [dataSource]="dataSource"
+      formArrayName="employees"
+      class="mat-elevation-z8"
+    >
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>Имя</th>
+        <td
+          mat-cell
+          *matCellDef="let employee; let index = index"
+          [formGroupName]="index"
+          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+        >
+          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
+            {{ employee.value.firstName }}
+          </span>
+          <mat-form-field
+            appearance="outline"
+            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          >
+            <input matInput formControlName="firstName" />
+            <mat-error *ngIf="employee.controls['firstName'].hasError('required')">
+              Поле обязательное
+            </mat-error>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>Фамилия</th>
+        <td
+          mat-cell
+          *matCellDef="let employee; let index = index"
+          [formGroupName]="index"
+          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+        >
+          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
+            {{ employee.value.lastName }}
+          </span>
+          <mat-form-field
+            appearance="outline"
+            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          >
+            <input matInput formControlName="lastName" />
+            <mat-error *ngIf="employee.controls['lastName'].hasError('required')">
+              Поле обязательное
+            </mat-error>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Почтовый адрес</th>
+        <td
+          mat-cell
+          *matCellDef="let employee; let index = index"
+          [formGroupName]="index"
+          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+        >
+          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
+            {{ employee.value.email }}
+          </span>
+          <mat-form-field
+            appearance="outline"
+            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          >
+            <input matInput formControlName="email" />
+            <mat-error *ngIf="employee.controls['email'].hasError('required')">
+              Поле обязательное
+            </mat-error>
+            <mat-error *ngIf="employee.controls['email'].hasError('email')">
+              Не верный формат
+            </mat-error>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Роль</th>
+        <td
+          mat-cell
+          *matCellDef="let employee; let index = index"
+          [formGroupName]="index"
+          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+        >
+          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
+            {{ getUserRoleDisplayName(employee.value.role) }}
+          </span>
+          <mat-form-field
+            appearance="outline"
+            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          >
+            <mat-select formControlName="role">
+              <mat-option
+                *ngFor="let userRole of userRoleTitles"
+                [value]="userRole.key"
+                [disabled]="employee.value.id == currentUser?.Id"
+              >
+                {{ userRole.value }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="employee.controls['role'].hasError('required')">
+              Поле обязательное
+            </mat-error>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Действия</th>
+        <td mat-cell *matCellDef="let employee" class="actions">
+          <button
+            mat-raised-button
+            color="warn"
+            class="remove-btn"
+            (click)="onRemoveBtnClick(employee.value.id)"
+            [disabled]="currentUser?.Id == employee.value.id || isLoading || (isAdding && employee.value.id !== 0)"
+          >
+            Удалить
+          </button>
+          <button
+            mat-raised-button
+            (click)="onEditBtnClick(employee.value)"
+            *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))"
+            [disabled]="isEditing && employee.value.id !== editingItemId || (isAdding && employee.value.id !== 0)"
+          >
+            Редактировать
+          </button>
+          <button
+            mat-raised-button
+            class="save-btn"
+            (click)="onSaveBtnClick(employee.value)"
+            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+            [disabled]="isLoading || employee.invalid || employee.pristine"
+          >
+            Сохранить
+          </button>
+          <button
+            mat-raised-button
+            (click)="onResetBtnClick(employee.value)"
+            *ngIf="isEditing && employee.value.id === editingItemId"
+          >
+            Отменить
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+    </table>
+  </form>
+</div>
