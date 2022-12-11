@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 using WMS.Core.Services.Abstractions;
 using WMS.Database.Entities;
@@ -44,7 +45,7 @@ public class WaresController : ODataController
     /// </summary>
     /// <returns>Collection of wares.</returns>
     [HttpGet]
-    [EnableQuery]
+    [EnableQuery(MaxExpansionDepth = 4)]
     public IQueryable<Ware> Get() => this._wareService.GetAll();
 
     /// <summary>

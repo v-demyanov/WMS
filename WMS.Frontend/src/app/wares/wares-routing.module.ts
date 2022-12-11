@@ -6,6 +6,10 @@ import { WaresComponent } from './wares.component';
 
 const routes: Routes = [
   {
+    path: `${WaresRoute.Create}`,
+    component: WaresComponent,
+  },
+  {
     path: `${WaresRoute.Default}:id`,
     component: WaresComponent,
   },

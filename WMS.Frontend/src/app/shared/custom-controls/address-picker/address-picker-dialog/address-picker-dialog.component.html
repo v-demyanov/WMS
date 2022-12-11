@@ -1,0 +1,61 @@
+<div class="wrapper">
+  <h1 mat-dialog-title>Адрес</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="addressForm" class="dialog-content">
+      <mat-form-field appearance="fill">
+        <mat-label>Зона склада</mat-label>
+        <mat-select formControlName="AreaId" (selectionChange)="onAreaSelected($event.value)">
+          <mat-option *ngFor="let area of areas" [value]="area.Id">
+            {{ area.Name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Стелаж</mat-label>
+        <mat-select formControlName="RackId" (selectionChange)="onRackSelected($event.value)">
+          <mat-option *ngFor="let rack of racks" [value]="rack.Id">
+            {{ rack.Index }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Секция</mat-label>
+        <mat-select formControlName="VerticalSectionId" (selectionChange)="onSectionSelected($event.value)">
+          <mat-option
+            *ngFor="let verticalSection of verticalSections"
+            [value]="verticalSection.Id"
+          >
+            {{ verticalSection.Index }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Полка</mat-label>
+        <mat-select formControlName="ShelfId">
+          <mat-option 
+            *ngFor="let shelf of shelfs"
+            [value]="shelf.Id"
+            [disabled]="!!shelf.Address"
+          >
+            {{ shelf.Index }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="closeDialog(false)">Отменить</button>
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="closeDialog(true)"
+      [disabled]="addressForm.invalid || isLoading"
+    >
+      Сохранить
+    </button>
+  </mat-dialog-actions>
+</div>

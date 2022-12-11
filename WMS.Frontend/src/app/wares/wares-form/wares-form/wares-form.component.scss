@@ -8,6 +8,10 @@
   justify-content: center;
   align-items: center;
 
+  .warning {
+    color: white;
+  }
+
   .header-padding {
     padding-bottom: 1rem;
   }
@@ -16,7 +20,7 @@
     margin-right: 1rem;
   }
 
-  .description-field {
+  .full-width-field {
     width: 100%;
   }
 }

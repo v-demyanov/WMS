@@ -14,4 +14,6 @@ export class WaresService {
   public getAllForNavigation = (): Observable<IWare[]> => this.waresDataService.getAllForNavigation();
 
   public get = (id: number): Observable<IWare | undefined> => this.waresDataService.get(id);
+
+  public create = (ware: IWare): Observable<IWare> => this.waresDataService.create(ware);
 }

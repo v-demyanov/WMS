@@ -1,0 +1,16 @@
+<div class="wrapper">
+  <mat-form-field>
+    <mat-label>Адрес</mat-label>
+    <input matInput [disabled]="true" [value]="displayValue">
+  </mat-form-field>
+  <button 
+    mat-icon-button
+    class="edit-btn"
+    (click)="openAddressPickerDialog()"
+    [disabled]="readonly"
+  >
+    <mat-icon>
+      edit
+    </mat-icon>
+  </button>
+</div>

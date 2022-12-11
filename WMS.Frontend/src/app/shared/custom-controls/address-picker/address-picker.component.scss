@@ -1,0 +1,9 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 7fr 1fr;
+
+  .edit-btn {
+    margin-top: 5px;
+    margin-left: 5px;
+  }
+}

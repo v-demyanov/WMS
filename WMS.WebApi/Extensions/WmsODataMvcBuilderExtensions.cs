@@ -28,6 +28,9 @@ public static class WmsODataMvcBuilderExtensions
         _ = modelBuilder.EntitySet<LegalEntity>("LegalEntities");
         _ = modelBuilder.EntitySet<Rack>("Racks");
         _ = modelBuilder.EntitySet<Ware>("Wares");
+        _ = modelBuilder.EntitySet<Area>("Areas");
+        _ = modelBuilder.EntitySet<VerticalSection>("VerticalSections");
+        _ = modelBuilder.EntitySet<Shelf>("Shelfs");
 
         return modelBuilder.GetEdmModel();
     }

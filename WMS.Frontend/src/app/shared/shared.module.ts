@@ -4,10 +4,14 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { MatModule } from '../mat/mat.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { AddressPickerComponent } from './custom-controls/address-picker/address-picker.component';
+import { AddressPickerDialogComponent } from './custom-controls/address-picker/address-picker-dialog/address-picker-dialog.component';
 
 @NgModule({
   declarations: [
     ConfirmDialogComponent,
+    AddressPickerComponent,
+    AddressPickerDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -17,6 +21,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
   ],
   exports: [
     ConfirmDialogComponent,
+    AddressPickerComponent,
     MatModule,
     ReactiveFormsModule,
     CommonModule,

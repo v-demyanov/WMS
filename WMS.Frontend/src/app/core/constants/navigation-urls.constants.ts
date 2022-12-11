@@ -3,5 +3,5 @@ export class NavigationUrls {
 
   public static readonly ProtectedFallbackPage = '/';
 
-  public static readonly Wares = '/home/wares/';
+  public static readonly Wares = '/home/wares';
 }

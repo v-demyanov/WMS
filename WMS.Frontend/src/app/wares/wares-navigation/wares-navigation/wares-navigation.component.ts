@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -38,7 +38,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
 
   public async onSelectWare(selectedWare: IWare): Promise<void> {
     await this.router.navigate(
-      [`${NavigationUrls.Wares}${selectedWare.Id}`],
+      [`${NavigationUrls.Wares}/${selectedWare.Id}`],
       {relativeTo: this.route},
     );
   }

@@ -7,6 +7,6 @@ public class Address : BaseEntity
     public int? ShelfId { get; set; }
 
     public Area Area { get; set; } = default!;
-
+    
     public Shelf? Shelf { get; set; }
 }

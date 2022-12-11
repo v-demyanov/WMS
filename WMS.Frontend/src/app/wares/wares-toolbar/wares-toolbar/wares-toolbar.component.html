@@ -1,9 +1,20 @@
 <div class="wrapper">
   <span class="info">Всего на складе: <b>{{ wareCount }}</b></span>
-  <button mat-mini-fab color="primary" class="add-btn">
+  <button 
+    mat-mini-fab
+    color="primary"
+    class="add-btn"
+    (click)="onAddBtnClick()"
+    [disabled]="isCreating"
+  >
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-mini-fab color="warn" class="remove-btn">
+  <button 
+    mat-mini-fab
+    color="warn"
+    class="remove-btn"
+    [disabled]="wareCount < 1 || !selectedWareId"
+  >
     <mat-icon>delete</mat-icon>
   </button>
 </div>

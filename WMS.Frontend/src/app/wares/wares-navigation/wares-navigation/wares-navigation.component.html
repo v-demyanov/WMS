@@ -9,7 +9,9 @@
       [multiple]="false"
       (selectionChange)="onSelectWare($event.options[0].value)"
     >
-      <mat-list-option *ngFor="let ware of wares" [value]="ware">
+      <mat-list-option
+        *ngFor="let ware of wares" [value]="ware"
+      >
         <mat-icon>category</mat-icon>
         <span style="padding: 0 0.5rem;">#{{ ware.Id }}</span>
         <span>{{ ware.Name }}</span>

@@ -1,3 +1,5 @@
+import { IAddress } from "src/app/dictionaries/addresses/models/address";
+
 export interface IWare {
   Id?: number;
   Name?: string;
@@ -7,4 +9,6 @@ export interface IWare {
   AddressId?: number;
   IndividualId?: number;
   LegalEntityId?: number;
+
+  Address?: IAddress;
 }

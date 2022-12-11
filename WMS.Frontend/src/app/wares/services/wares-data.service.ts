@@ -20,7 +20,15 @@ export class WaresDataService {
       .pipe(map((odataValue: ODataValue<IWare>) => odataValue.value));
   }
 
-  public get = (id: number): Observable<IWare | undefined> =>
-    this.http.get<ODataValue<IWare>>(`${ApiEndpoints.Wares}?$filter=Id eq ${id}`)
+  public get(id: number): Observable<IWare | undefined> {
+    const expandQuery: string = '$expand=Address($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const filterQuery: string = `$filter=Id eq ${id}`;
+
+    return this.http.get<ODataValue<IWare>>(`${ApiEndpoints.Wares}?${filterQuery}&${expandQuery}`)
       .pipe(map((odataValue: ODataValue<IWare>) => odataValue.value[0]));
+  }
+
+  public create(ware: IWare): Observable<IWare> {
+    return this.http.post<IWare>(ApiEndpoints.Wares, ware);
+  }
 }

@@ -1,18 +1,37 @@
 <div class="wrapper">
-  <mat-card>
+
+  <h3
+    *ngIf="!selectedWareId && !isCreating"
+    class="warning"
+  >
+    Выберите товар или создайте новый
+  </h3>
+
+  <mat-card *ngIf="selectedWareId || isCreating">
     <mat-card-header class="header-padding">
       <button 
         mat-raised-button
         color="primary"
         class="field-column-margin"
+        [disabled]="!isEditing && !isCreating || wareForm.invalid"
+        (click)="onSaveBtnClick()"
       >
         Сохранить
       </button>
-      <button 
+      <button
+        *ngIf="!isEditing && !isCreating"
         mat-raised-button
+        class="field-column-margin"
         (click)="onEditBtnClick()"
       >
         Редактировать
+      </button>
+      <button
+        *ngIf="isEditing || isCreating"
+        mat-raised-button
+        (click)="onResetBtnClick()"
+      >
+        Отменить
       </button>
     </mat-card-header>
     <mat-card-content>
@@ -27,37 +46,47 @@
 
           <mat-form-field appearance="fill">
             <mat-label>Значение</mat-label>
-            <input [readonly]="isReadonly" formControlName="TechnicalParameterValue" matInput />
+            <input [readonly]="isReadonly" type="number" formControlName="TechnicalParameterValue" matInput />
           </mat-form-field>
         </div>
 
         <div>
           <mat-form-field appearance="fill" class="field-column-margin">
+            <mat-label>Единица измерения</mat-label>
             <mat-select formControlName="UnitOfMeasurementId">
               <mat-option
                 [disabled]="isReadonly"
-                *ngFor="let userRole of userRoleTitles"
-                [value]="userRole.key"
+                *ngFor="let unitOfMeasurements of unitsOfMeasurements"
+                [value]="unitOfMeasurements.id"
               >
-                {{ userRole.value }}
+                {{ unitOfMeasurements.value }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-            <mat-select formControlName="TenantId">
+            <mat-label>Владелец</mat-label>
+            <mat-select formControlName="LegalEntityId">
               <mat-option
                 [disabled]="isReadonly"
-                *ngFor="let userRole of userRoleTitles"
-                [value]="userRole.key"
+                *ngFor="let legalEntity of legalEntities"
+                [value]="legalEntity.Id"
               >
-                {{ userRole.value }}
+                {{ legalEntity.Name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
 
-        <mat-form-field appearance="fill" class="description-field">
+        <div class="full-width-field">
+          <app-address-picker 
+            formControlName="Address"
+            [readonly]="isReadonly"
+          >
+          </app-address-picker>
+        </div>
+
+        <mat-form-field appearance="fill" class="full-width-field">
           <mat-label>Описание</mat-label>
           <textarea [readonly]="isReadonly" formControlName="Description" matInput></textarea>
         </mat-form-field>
