@@ -7,4 +7,6 @@ export class ApiEndpoints {
   public static readonly AuthRefresh = `${ environment.apiBaseUrl }/Auth/Refresh`;
 
   public static readonly Users = `${ environment.apiBaseUrl }/Users/`;
+
+  public static readonly Wares = `${ environment.apiBaseUrl }/Wares/`;
 }

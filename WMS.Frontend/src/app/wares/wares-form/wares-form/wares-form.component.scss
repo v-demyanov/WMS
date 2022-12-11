@@ -1,0 +1,22 @@
+@import 'src/styles/variables.scss';
+
+.wrapper {
+  background-color: $primary;
+  height: 100%;
+  box-shadow: 5px 5px 14px -5px rgba(34, 60, 80, 0.6) inset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .header-padding {
+    padding-bottom: 1rem;
+  }
+
+  .field-column-margin {
+    margin-right: 1rem;
+  }
+
+  .description-field {
+    width: 100%;
+  }
+}

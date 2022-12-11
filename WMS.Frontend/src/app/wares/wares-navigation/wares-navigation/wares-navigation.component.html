@@ -1,0 +1,19 @@
+<div class="wrapper">
+  <app-wares-toolbar [wareCount]="wares.length"></app-wares-toolbar>
+  <cdk-virtual-scroll-viewport
+    appendOnly
+    itemSize="13"
+    class="wares-scroll-wrapper"
+  >
+    <mat-selection-list 
+      [multiple]="false"
+      (selectionChange)="onSelectWare($event.options[0].value)"
+    >
+      <mat-list-option *ngFor="let ware of wares" [value]="ware">
+        <mat-icon>category</mat-icon>
+        <span style="padding: 0 0.5rem;">#{{ ware.Id }}</span>
+        <span>{{ ware.Name }}</span>
+      </mat-list-option>
+    </mat-selection-list>
+  </cdk-virtual-scroll-viewport>
+</div>

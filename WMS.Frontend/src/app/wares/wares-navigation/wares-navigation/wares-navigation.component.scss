@@ -1,0 +1,27 @@
+@import 'src/styles/variables.scss';
+
+::-webkit-scrollbar {
+  width: 0.40rem;
+  height: 0.25rem;
+  overflow-y: scroll;
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary;
+}
+
+:host ::ng-deep .mat-list-base {
+  padding: 0;
+}
+
+.wrapper {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 12fr;
+
+  .wares-scroll-wrapper {
+    padding: 0;
+    overflow-x: hidden;
+  }
+}

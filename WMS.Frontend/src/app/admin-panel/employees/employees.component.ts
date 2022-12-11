@@ -98,7 +98,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.employeesService.delete(id)
+    const subscription: Subscription = this.employeesService.delete(id)
       .subscribe({
         next: () => {
           const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.id === id);
@@ -122,6 +122,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         },
         complete: () => this.isLoading = false,
       });
+    this.componentSubscriptions.push(subscription);
   }
 
   public onEditBtnClick(employee: IEmployee): void {
@@ -197,7 +198,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.dataSource.next(this.employeeFormRows.controls);
 
   private updateEmployee(employeeUpdateData: IEmployee): void {
-    this.employeesService.update(employeeUpdateData.id, employeeUpdateData)
+    const subscription: Subscription = this.employeesService.update(employeeUpdateData.id, employeeUpdateData)
       .subscribe({
         next: () => {
           this.snackBar.open(
@@ -223,11 +224,12 @@ export class EmployeesComponent implements OnInit, OnDestroy {
           this.editingItemId = null;
         },
       });
+    this.componentSubscriptions.push(subscription);
   }
 
   private createEmployee(employeeCreateData: IEmployee): void {
     this.isLoading = true;
-    this.employeesService.create(employeeCreateData)
+    const subscription: Subscription = this.employeesService.create(employeeCreateData)
       .subscribe({
         next: (employee: IEmployee) => {
           const employeeIndex: number = 0;
@@ -258,5 +260,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
           this.isAdding = false;
         },
       });
+    this.componentSubscriptions.push(subscription);
   }
 }

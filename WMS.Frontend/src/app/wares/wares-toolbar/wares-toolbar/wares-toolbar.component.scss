@@ -1,0 +1,26 @@
+@import 'src/styles/variables.scss';
+
+.wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  .info {
+    padding-left: 1rem;
+  }
+
+  .add-btn {
+    display: block;
+    margin-left: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .remove-btn {
+    display: block;
+    margin-left: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+}
