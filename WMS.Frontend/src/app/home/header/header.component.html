@@ -79,6 +79,15 @@
     >Юр. лица</button>
   </mat-menu>
 
+  <button
+    mat-raised-button
+    color="primary"
+    style="margin-left: 1rem;"
+    (click)="openTaskDialog()"
+  >
+    Создать задачу
+  </button>
+
   <div class="spacer"></div>
   <div class="user-info">
     <span>{{ currentUser?.FirstName }}, {{ currentUser?.LastName }}</span>

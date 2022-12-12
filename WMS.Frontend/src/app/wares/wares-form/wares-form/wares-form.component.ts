@@ -14,6 +14,7 @@ import { LegalEntitiesService } from 'src/app/admin-panel/tenants/legal-entities
 import { ILegalEntity } from 'src/app/admin-panel/tenants/legal-entities/models/legal-entity';
 import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
 import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
+import { WaresEventBusService } from '../../services/wares-event-bus.service';
 
 @Component({
   selector: 'app-wares-form',
@@ -48,6 +49,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     private readonly unitOfMeasurementsService: UnitOfMeasurementsService,
     private readonly legalEntitiesService: LegalEntitiesService,
     private readonly verticalSectionsService: VerticalSectionsService,
+    private readonly waresEventBusService: WaresEventBusService,
   ) {}
 
   public ngOnInit(): void {
@@ -91,8 +93,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
         this.selectedWare = ware;
         this.initializeWareForm();
         this.isLoading = false;
-
-        console.log(ware);
       },
       error: (error) => {
         this.isLoading = false;
@@ -131,13 +131,12 @@ export class WaresFormComponent implements OnInit, OnDestroy {
   }
 
   private createWare(): void {
-    console.log(JSON.stringify(this.wareForm.value));
     const wareCreateData: IWare = this.wareForm.value;
-    console.log(wareCreateData);
     const subscription: Subscription = this.waresService.create(wareCreateData)
       .subscribe({
         next: (ware: IWare) => {
           this.isLoading = false;
+          this.waresEventBusService.create(ware);
           this.snackBar.open('Товар добавлен на склад', 'Закрыть', {
             duration: 3000,
           });
@@ -149,7 +148,8 @@ export class WaresFormComponent implements OnInit, OnDestroy {
           });
         },
         complete: () => this.isLoading = false,
-      })
+      });
+    this.componentSubscriptions.push(subscription);
   }
 
   private updateWare(): void {

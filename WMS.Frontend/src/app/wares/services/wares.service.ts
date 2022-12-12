@@ -16,4 +16,6 @@ export class WaresService {
   public get = (id: number): Observable<IWare | undefined> => this.waresDataService.get(id);
 
   public create = (ware: IWare): Observable<IWare> => this.waresDataService.create(ware);
+
+  public delete = (id: number): Observable<void> => this.waresDataService.delete(id);
 }
