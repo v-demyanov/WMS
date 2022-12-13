@@ -1,56 +1,66 @@
 <div class="wrapper">
-  <h1 mat-dialog-title>Создание задачи</h1>
+  <h1 mat-dialog-title>{{ dialogTitle }}</h1>
   <div mat-dialog-content>
-    <form class="dialog-content">
+    <form [formGroup]="problemForm" class="dialog-content">
       <div class="dialog-content-column-1">
         <mat-form-field appearance="fill">
           <mat-label>Заголовок</mat-label>
-          <input matInput />
+          <input [readonly]="isReadonly" matInput formControlName="Title" />
+          <mat-error *ngIf="problemForm.controls['Title'].hasError('required')">
+            Поле обязательное
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Статус</mat-label>
-          <mat-select>
+          <mat-select formControlName="Status">
             <mat-option
+              [disabled]="isReadonly"
               *ngFor="let title of problemStatusTitles"
               [value]="title.key"
             >
               {{ title.value }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="problemForm.controls['Status'].hasError('required')">
+            Поле обязательное
+          </mat-error>
         </mat-form-field>
 
         <div class="dates">
           <mat-form-field appearance="fill" class="field-column-margin">
             <mat-label>Дата создания</mat-label>
             <input
+              [readonly]="isReadonly"
+              formControlName="CreatedDate"
               matInput
               [matDatepicker]="createdDatePicker"
-              [readonly]="true"
             />
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle
-              [disabled]="true"
               matIconSuffix
               [for]="createdDatePicker"
             ></mat-datepicker-toggle>
-            <mat-datepicker #createdDatePicker></mat-datepicker>
+            <mat-datepicker [disabled]="isReadonly" #createdDatePicker></mat-datepicker>
+            <mat-error *ngIf="problemForm.controls['CreatedDate'].hasError('required')">
+              Поле обязательное
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Дата обновления</mat-label>
             <input
+              [readonly]="isReadonly"
+              formControlName="LastUpdateDate"
               matInput
               [matDatepicker]="lastUpdateDatePicker"
-              [readonly]="true"
             />
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle
-              [disabled]="true"
               matIconSuffix
               [for]="lastUpdateDatePicker"
             ></mat-datepicker-toggle>
-            <mat-datepicker #lastUpdateDatePicker></mat-datepicker>
+            <mat-datepicker [disabled]="isReadonly" #lastUpdateDatePicker></mat-datepicker>
           </mat-form-field>
         </div>
       </div>
@@ -58,45 +68,54 @@
       <div class="dialog-content-column-2">
         <mat-form-field appearance="fill">
           <mat-label>Автор</mat-label>
-          <mat-select #authors>
+          <mat-select
+            formControlName="AuthorId"
+            #authorsList
+          >
             <mat-option
-              *ngFor="let title of problemStatusTitles"
-              [value]="title.key"
+              [disabled]="true"
+              *ngFor="let employee of employees"
+              [value]="employee.id"
             >
-              {{ title.value }}
+              {{ employee.firstName + ' ' + employee.lastName }}
             </mat-option>
           </mat-select>
-          <button *ngIf="authors.selected" matSuffix mat-icon-button aria-label="Clear" (click)="authors.value=''">
-            <mat-icon>close</mat-icon>
-          </button>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Исполнитель</mat-label>
-          <mat-select #performers>
+          <mat-select
+            formControlName="PerformerId"
+            #performersList
+          >
             <mat-option
-              *ngFor="let title of problemStatusTitles"
-              [value]="title.key"
+              [disabled]="isReadonly"
+              *ngFor="let performer of employees"
+              [value]="performer.id"
             >
-              {{ title.value }}
+              {{ performer.firstName + ' ' + performer.lastName }}
             </mat-option>
           </mat-select>
-          <button *ngIf="performers.selected" matSuffix mat-icon-button aria-label="Clear" (click)="performers.value=''">
+          <button *ngIf="performersList.selected && !isReadonly" matSuffix mat-icon-button aria-label="Clear" (click)="performersList.value=''">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Аудитор</mat-label>
-          <mat-select #auditors>
+          <mat-select
+            formControlName="AuditorId"  
+            #auditorsList
+          >
             <mat-option
-              *ngFor="let title of problemStatusTitles"
-              [value]="title.key"
+              [disabled]="isReadonly"
+              *ngFor="let auditor of auditors"
+              [value]="auditor.id"
             >
-              {{ title.value }}
+              {{ auditor.firstName + ' ' + auditor.lastName }}
             </mat-option>
           </mat-select>
-          <button *ngIf="auditors.selected" matSuffix mat-icon-button aria-label="Clear" (click)="auditors.value=''">
+          <button *ngIf="auditorsList.selected && !isReadonly" matSuffix mat-icon-button aria-label="Clear" (click)="auditorsList.value=''">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -105,14 +124,22 @@
       <div class="description-section">
         <mat-form-field class="description-field" appearance="fill">
           <mat-label>Описание</mat-label>
-          <textarea matInput></textarea>
+          <textarea [readonly]="isReadonly" formControlName="Description" matInput></textarea>
         </mat-form-field>
       </div>
     </form>
   </div>
 
   <mat-dialog-actions>
-    <button mat-button>Отменить</button>
-    <button mat-raised-button color="primary">Сохранить</button>
+    <button (click)="closeDialog()" mat-button>Закрыть</button>
+    <button
+      [disabled]="problemForm.invalid"
+      *ngIf="!isReadonly"
+      mat-raised-button 
+      color="primary"
+      (click)="onSaveBtnClick()"
+    >
+      Сохранить
+    </button>
   </mat-dialog-actions>
 </div>

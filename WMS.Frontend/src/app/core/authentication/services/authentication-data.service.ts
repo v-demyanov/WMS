@@ -8,6 +8,8 @@ import { ITokenResponse } from '../models/token-response';
 import { IUserClaims } from '../models/user-claims';
 import { IUserCredentials } from '../models/user-credentials';
 import { ApiEndpoints } from '../../constants/api-endpoints.constants';
+import { parseEnum } from '../../helpers/enum.helper';
+import { UserRole } from '../enums/user-role.enum';
 
 @Injectable()
 export class AuthenticationDataService {
@@ -58,11 +60,19 @@ export class AuthenticationDataService {
   }
 
   public getUserClaims(): IUserClaims | null {
-    const userClaims: string | null = localStorage.getItem(
+    const userClaimsJson: string | null = localStorage.getItem(
       TokenStorageKeys.UserClaims
     );
 
-    return userClaims === null ? null : JSON.parse(userClaims);
+    if (userClaimsJson === null) {
+      return null;
+    }
+    const userClaimsRaw: IUserClaims = JSON.parse(userClaimsJson);
+
+    return {
+      ...userClaimsRaw,
+      Id: Number(userClaimsRaw.Id),
+    };
   }
 
   public refreshToken(): Observable<ITokenResponse> {

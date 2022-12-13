@@ -58,7 +58,7 @@ export class AuthenticationService {
     const rawClaims = jwtHelper.decodeToken(token);
     
     return {
-      Id: rawClaims.Id,
+      Id: Number(rawClaims.Id),
       FirstName: rawClaims.FirstName,
       LastName: rawClaims.LastName,
       Role: parseEnum(UserRole, rawClaims.Role),

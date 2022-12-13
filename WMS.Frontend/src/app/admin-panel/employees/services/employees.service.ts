@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { EmployeesDataService } from './employees-data.service';
 import { IEmployee } from '../models/employee';

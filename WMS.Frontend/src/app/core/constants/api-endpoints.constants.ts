@@ -21,4 +21,6 @@ export class ApiEndpoints {
   public static readonly Racks = `${ environment.apiBaseUrl }/Racks/`;
   
   public static readonly Shelfs = `${ environment.apiBaseUrl }/Shelfs/`;
+
+  public static readonly Problems = `${ environment.apiBaseUrl }/Problems/`;
 }

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { AuthenticationService, PermissionsService } from 'src/app/core/authentication';
 import { IUserClaims } from 'src/app/core/authentication/models/user-claims';
+import { ProblemDialogData } from 'src/app/tasks/models/problem-dialog-data';
 import { TaskDialogComponent } from 'src/app/tasks/task-dialog/task-dialog.component';
 
 @Component({
@@ -34,6 +35,10 @@ export class HeaderComponent implements OnInit {
     const dialogRef = this.dialog.open(
       TaskDialogComponent, {
         width: 'auto',
+        data: <ProblemDialogData> {
+          isCreating: true,
+          isEditing: false,
+        },
       },
     );
   }

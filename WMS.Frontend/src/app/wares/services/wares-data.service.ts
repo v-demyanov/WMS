@@ -7,7 +7,7 @@ import { ODataValue } from 'src/app/core/models/odata-value';
 import { IWare } from '../models/ware';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WaresDataService {
 
