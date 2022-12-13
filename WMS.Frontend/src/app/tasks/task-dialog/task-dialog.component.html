@@ -1,1 +1,118 @@
-<p>task-dialog works!</p>
+<div class="wrapper">
+  <h1 mat-dialog-title>Создание задачи</h1>
+  <div mat-dialog-content>
+    <form class="dialog-content">
+      <div class="dialog-content-column-1">
+        <mat-form-field appearance="fill">
+          <mat-label>Заголовок</mat-label>
+          <input matInput />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Статус</mat-label>
+          <mat-select>
+            <mat-option
+              *ngFor="let title of problemStatusTitles"
+              [value]="title.key"
+            >
+              {{ title.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="dates">
+          <mat-form-field appearance="fill" class="field-column-margin">
+            <mat-label>Дата создания</mat-label>
+            <input
+              matInput
+              [matDatepicker]="createdDatePicker"
+              [readonly]="true"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              [disabled]="true"
+              matIconSuffix
+              [for]="createdDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #createdDatePicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Дата обновления</mat-label>
+            <input
+              matInput
+              [matDatepicker]="lastUpdateDatePicker"
+              [readonly]="true"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              [disabled]="true"
+              matIconSuffix
+              [for]="lastUpdateDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #lastUpdateDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="dialog-content-column-2">
+        <mat-form-field appearance="fill">
+          <mat-label>Автор</mat-label>
+          <mat-select #authors>
+            <mat-option
+              *ngFor="let title of problemStatusTitles"
+              [value]="title.key"
+            >
+              {{ title.value }}
+            </mat-option>
+          </mat-select>
+          <button *ngIf="authors.selected" matSuffix mat-icon-button aria-label="Clear" (click)="authors.value=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Исполнитель</mat-label>
+          <mat-select #performers>
+            <mat-option
+              *ngFor="let title of problemStatusTitles"
+              [value]="title.key"
+            >
+              {{ title.value }}
+            </mat-option>
+          </mat-select>
+          <button *ngIf="performers.selected" matSuffix mat-icon-button aria-label="Clear" (click)="performers.value=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Аудитор</mat-label>
+          <mat-select #auditors>
+            <mat-option
+              *ngFor="let title of problemStatusTitles"
+              [value]="title.key"
+            >
+              {{ title.value }}
+            </mat-option>
+          </mat-select>
+          <button *ngIf="auditors.selected" matSuffix mat-icon-button aria-label="Clear" (click)="auditors.value=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <div class="description-section">
+        <mat-form-field class="description-field" appearance="fill">
+          <mat-label>Описание</mat-label>
+          <textarea matInput></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <mat-dialog-actions>
+    <button mat-button>Отменить</button>
+    <button mat-raised-button color="primary">Сохранить</button>
+  </mat-dialog-actions>
+</div>

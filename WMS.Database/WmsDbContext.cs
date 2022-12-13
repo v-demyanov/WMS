@@ -14,7 +14,7 @@ public class WmsDbContext : DbContext
 
     public DbSet<User> Users => this.Set<User>();
 
-    public DbSet<Task> Tasks => this.Set<Task>();
+    public DbSet<Problem> Problems => this.Set<Problem>();
 
     public DbSet<Comment> Comments => this.Set<Comment>();
 
@@ -32,7 +32,7 @@ public class WmsDbContext : DbContext
 
     public DbSet<Address> Addresses => this.Set<Address>();
 
-    public DbSet<WareTask> WareTasks => this.Set<WareTask>();
+    public DbSet<WareProblem> WareProblems => this.Set<WareProblem>();
 
     public DbSet<Individual> Individuals => this.Set<Individual>();
 

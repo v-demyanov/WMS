@@ -14,6 +14,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
@@ -32,6 +35,9 @@ import { MatChipsModule } from '@angular/material/chips';
     MatGridListModule,
     MatListModule,
     MatChipsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    DragDropModule,
   ],
   exports: [
     MatCardModule,
@@ -48,6 +54,9 @@ import { MatChipsModule } from '@angular/material/chips';
     MatGridListModule,
     MatListModule,
     MatChipsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    DragDropModule,
   ],
 })
 export class MatModule {}

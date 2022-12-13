@@ -3,9 +3,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class TaskEntityConfiguration : IEntityTypeConfiguration<Entities.Task>
+using WMS.Database.Entities;
+
+public class ProblemEntityConfiguration : IEntityTypeConfiguration<Problem>
 {
-    public void Configure(EntityTypeBuilder<Entities.Task> builder)
+    public void Configure(EntityTypeBuilder<Problem> builder)
     {
         _ = builder.Property(x => x.Title)
                    .IsRequired();
@@ -21,23 +23,23 @@ public class TaskEntityConfiguration : IEntityTypeConfiguration<Entities.Task>
                    .IsRequired();
 
         _ = builder.HasOne(x => x.Performer)
-                   .WithMany(x => x.PerformerTasks)
+                   .WithMany(x => x.PerformerProblems)
                    .HasForeignKey(x => x.PerformerId)
                    .OnDelete(DeleteBehavior.NoAction);
 
         _ = builder.HasOne(x => x.Author)
-                   .WithMany(x => x.AuthorTasks)
+                   .WithMany(x => x.AuthorProblems)
                    .HasForeignKey(x => x.AuthorId)
                    .OnDelete(DeleteBehavior.Cascade);
 
         _ = builder.HasOne(x => x.Auditor)
-                   .WithMany(x => x.AuditorTasks)
+                   .WithMany(x => x.AuditorProblems)
                    .HasForeignKey(x => x.AuditorId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-        _ = builder.HasOne(x => x.ParentTask)
-                   .WithMany(x => x.ChildTasks)
-                   .HasForeignKey(x => x.ParentTaskId)
+        _ = builder.HasOne(x => x.ParentProblem)
+                   .WithMany(x => x.ChildrenProblems)
+                   .HasForeignKey(x => x.ParentProblemId)
                    .OnDelete(DeleteBehavior.NoAction);
     }
 }

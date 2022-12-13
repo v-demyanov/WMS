@@ -1,0 +1,43 @@
+.wrapper {
+  .dialog-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    grid-template-areas:
+      "a b"
+      "c c";
+
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr 1fr;
+
+    .dialog-content-column-1 {
+      display: flex;
+      flex-direction: column;
+      margin-right: 1rem;
+      grid-area: a;
+    }
+
+    .dialog-content-column-2 {
+      display: flex;
+      flex-direction: column;
+      grid-area: b;
+    }
+
+    .dates {
+      display: flex;
+    }
+
+    .field-column-margin {
+      margin-right: 1rem;
+    }
+
+    .description-section {
+      grid-area: c;
+    }
+
+    .description-field {
+      width: 100%;
+    }
+  }
+}

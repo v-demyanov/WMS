@@ -15,4 +15,4 @@ export const UserRoleTitles: KeyValue<UserRole, string>[] =
     key: UserRole.Worker,
     value: 'Рабочий',
   },
-]
+];

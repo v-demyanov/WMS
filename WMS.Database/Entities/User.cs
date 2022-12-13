@@ -20,11 +20,11 @@ public class User : BaseEntity
 
     public Role Role { get; set; }
 
-    public ICollection<Task> PerformerTasks { get; } = new HashSet<Task>();
+    public ICollection<Problem> PerformerProblems { get; } = new HashSet<Problem>();
 
-    public ICollection<Task> AuthorTasks { get; } = new HashSet<Task>();
+    public ICollection<Problem> AuthorProblems { get; } = new HashSet<Problem>();
 
-    public ICollection<Task> AuditorTasks { get; } = new HashSet<Task>();
+    public ICollection<Problem> AuditorProblems { get; } = new HashSet<Problem>();
 
     public ICollection<Comment> Comments { get; } = new HashSet<Comment>();
 }

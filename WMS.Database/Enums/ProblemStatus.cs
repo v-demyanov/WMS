@@ -1,6 +1,6 @@
 ﻿namespace WMS.Database.Enums;
 
-public enum TaskStatus
+public enum ProblemStatus
 {
     ToDo = 0,
     InProgress,

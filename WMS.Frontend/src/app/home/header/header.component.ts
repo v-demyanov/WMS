@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
   public openTaskDialog(): void {
     const dialogRef = this.dialog.open(
       TaskDialogComponent, {
-        width: '33.5rem',
+        width: 'auto',
       },
     );
   }

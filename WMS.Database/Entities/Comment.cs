@@ -8,9 +8,9 @@ public class Comment : BaseEntity
 
     public int OwnerId { get; set; }
 
-    public int TaskId { get; set; }
+    public int ProblemId { get; set; }
 
     public User Owner { get; set; } = default!;
 
-    public Task Task { get; set; } = default!;
+    public Problem Problem { get; set; } = default!;
 }

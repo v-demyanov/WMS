@@ -1,15 +1,12 @@
 ﻿namespace WMS.WebApi.Extensions;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 
-using WMS.Core.Models;
 using WMS.Database.Entities;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Tenants;
-using WMS.WebApi.Controllers.Addresses;
 
 public static class WmsODataMvcBuilderExtensions
 {
@@ -31,6 +28,7 @@ public static class WmsODataMvcBuilderExtensions
         _ = modelBuilder.EntitySet<Area>("Areas");
         _ = modelBuilder.EntitySet<VerticalSection>("VerticalSections");
         _ = modelBuilder.EntitySet<Shelf>("Shelfs");
+        _ = modelBuilder.EntitySet<Problem>("Problems");
 
         return modelBuilder.GetEdmModel();
     }

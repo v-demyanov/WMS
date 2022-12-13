@@ -1,1 +1,89 @@
-<p>tasks works!</p>
+<div class="wrapper">
+  <div class="container">
+    <h2>{{ getColumnTitle(problemStatus.ToDo) }}</h2>
+
+    <div
+      cdkDropList
+      #todoList="cdkDropList"
+      [cdkDropListData]="toDo"
+      [cdkDropListConnectedTo]="[
+        doneList,
+        inProgressList,
+        awaitingForApprovalList
+      ]"
+      class="list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div [cdkDragDisabled]="true" class="box" *ngFor="let item of toDo" cdkDrag>
+        {{ item.val }}
+        <button mat-icon-button color="primary" (click)="(openTaskDialog())">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>{{ getColumnTitle(problemStatus.InProgress) }}</h2>
+
+    <div
+      cdkDropList
+      #inProgressList="cdkDropList"
+      [cdkDropListData]="inProgress"
+      [cdkDropListConnectedTo]="[todoList, awaitingForApprovalList, doneList]"
+      class="list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="box" *ngFor="let item of inProgress" cdkDrag>
+        {{ item.val }}
+        <button mat-icon-button color="primary" (click)="(openTaskDialog())">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>{{ getColumnTitle(problemStatus.AwaitingForApproval) }}</h2>
+
+    <div
+      cdkDropList
+      #awaitingForApprovalList="cdkDropList"
+      [cdkDropListData]="awaitingForApproval"
+      [cdkDropListConnectedTo]="[todoList, inProgressList, doneList]"
+      class="list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="box" *ngFor="let item of awaitingForApproval" cdkDrag>
+        {{ item.val }}
+        <button mat-icon-button color="primary" (click)="(openTaskDialog())">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>{{ getColumnTitle(problemStatus.Done) }}</h2>
+
+    <div
+      cdkDropList
+      #doneList="cdkDropList"
+      [cdkDropListData]="done"
+      [cdkDropListConnectedTo]="[
+        todoList,
+        awaitingForApprovalList,
+        inProgressList
+      ]"
+      class="list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="box" *ngFor="let item of done" cdkDrag>
+        {{ item.val }}
+        <button mat-icon-button color="primary" (click)="(openTaskDialog())">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

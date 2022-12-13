@@ -1,12 +1,14 @@
 ﻿namespace WMS.Database.Entities;
 
-public class Task : BaseEntity
+using WMS.Database.Enums;
+
+public class Problem : BaseEntity
 {
     public string Title { get; set; } = default!;
 
     public string? Description { get; set; }
 
-    public Enums.TaskStatus Status { get; set; } = Enums.TaskStatus.ToDo;
+    public ProblemStatus Status { get; set; } = ProblemStatus.ToDo;
 
     public DateTimeOffset CreatedDate { get; set; }
 
@@ -14,13 +16,13 @@ public class Task : BaseEntity
 
     public int? PerformerId { get; set; }
 
-    public int? ParentTaskId { get; set; }
+    public int? ParentProblemId { get; set; }
 
     public int AuthorId { get; set; }
 
     public int? AuditorId { get; set; }
 
-    public Task? ParentTask { get; set; }
+    public Problem? ParentProblem { get; set; }
 
     public User? Performer { get; set; }
 
@@ -28,9 +30,9 @@ public class Task : BaseEntity
 
     public User? Auditor { get; set; }
 
-    public ICollection<Task> ChildTasks { get; } = new HashSet<Task>();
+    public ICollection<Problem> ChildrenProblems { get; } = new HashSet<Problem>();
 
     public ICollection<Comment> Comments { get; } = new HashSet<Comment>();
 
-    public ICollection<WareTask> Wares { get; } = new HashSet<WareTask>();
+    public ICollection<WareProblem> Wares { get; } = new HashSet<WareProblem>();
 }
