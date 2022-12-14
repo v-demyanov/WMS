@@ -67,6 +67,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     );
 
   public closeDialog(isSaving: boolean): void {
+    console.log(this.addressForm.value);
     if (isSaving) {
       this.dialogRef.close(<IAddress> {
         AreaId: this.addressForm.value.AreaId,

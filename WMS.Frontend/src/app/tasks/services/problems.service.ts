@@ -14,14 +14,22 @@ import { IRawProblem } from '../models/raw-problem';
 })
 export class ProblemsService {
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(
+    private readonly http: HttpClient,
+  ) { }
 
-  public getAll = (): Observable<IProblem[]> =>
-    this.http.get<ODataValue<IRawProblem>>(ApiEndpoints.Problems)
-      .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map(x => this.parseProblem(x))));
+  public getAll(): Observable<IProblem[]> {
+    const expandQuery: string = '$expand=TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${expandQuery}`)
+      .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map((x) => this.parseProblem(x))));
+  }
 
   public updateStatus = (status: ProblemStatus, problemId: number): Observable<void> =>
     this.http.put<void>(`${ApiEndpoints.Problems}${problemId}/UpdateStatus`, status);
+
+  public create = (problem: IProblem): Observable<IProblem> => 
+    this.http.post<IRawProblem>(ApiEndpoints.Problems, problem)
+      .pipe(map((problem: IRawProblem) => this.parseProblem(problem)));
 
   private parseProblem(rawProblem: IRawProblem): IProblem {
     return {

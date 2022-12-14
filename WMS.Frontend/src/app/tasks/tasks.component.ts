@@ -6,7 +6,7 @@ import {
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 
 import { ProblemStatusTitles } from './enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from './enums/problem-status.enum';
@@ -15,6 +15,8 @@ import { ProblemDialogData } from './models/problem-dialog-data';
 import { ProblemsService } from './services/problems.service';
 import { TaskDialogComponent } from './task-dialog/task-dialog.component';
 import { PermissionsService } from '../core/authentication';
+import { IVerticalSection } from '../dictionaries/addresses/models/vertical-section';
+import { VerticalSectionsService } from '../dictionaries/addresses/racks/services/vertical-sections.service';
 
 @Component({
   selector: 'app-tasks',
@@ -42,6 +44,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     private readonly problemService: ProblemsService,
     private readonly snackBar: MatSnackBar,
     private readonly permissionsService: PermissionsService,
+    private readonly verticalSectionsService: VerticalSectionsService,
   ) {}
 
   public ngOnDestroy = (): void =>
@@ -127,7 +130,9 @@ export class TasksComponent implements OnInit, OnDestroy {
   public loadProblems(): Subscription {
     return this.problemService.getAll()
       .subscribe({
-        next: (problems: IProblem[]) => {
+        next: async (problems: IProblem[]) => {
+          problems = await Promise.all(problems.map(async (x) => await this.setVerticalSections(x)));
+
           this.toDo = problems.filter(x => x.Status === ProblemStatus.ToDo);
           this.inProgress = problems.filter(x => x.Status === ProblemStatus.InProgress);
           this.awaitingForApproval = problems.filter(x => x.Status === ProblemStatus.AwaitingForApproval);
@@ -145,5 +150,14 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   public formatDate(date: Date): string {
     return date.toLocaleDateString();
+  }
+
+  private async setVerticalSections(problem: IProblem): Promise<IProblem> {
+    const verticalSectionId: number | undefined = problem?.TargetAddress?.Shelf?.VerticalSectionId;
+    if (verticalSectionId) {
+      const verticalSection: IVerticalSection = await firstValueFrom(this.verticalSectionsService.get(verticalSectionId));
+      problem!.TargetAddress!.Shelf!.VerticalSection = verticalSection;
+    }
+    return problem;
   }
 }

@@ -22,7 +22,7 @@ public class ProblemsController : ODataController
     /// </summary>
     /// <returns>Collection of problems.</returns>
     [HttpGet]
-    [EnableQuery]
+    [EnableQuery(MaxExpansionDepth = 5)]
     public IQueryable<Problem> Get() => this._problemService.GetAll();
 
     /// <summary>

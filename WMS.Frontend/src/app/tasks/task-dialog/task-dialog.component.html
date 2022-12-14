@@ -63,6 +63,14 @@
             <mat-datepicker [disabled]="isReadonly" #lastUpdateDatePicker></mat-datepicker>
           </mat-form-field>
         </div>
+
+        <div class="full-width-field">
+          <app-address-picker 
+            formControlName="TargetAddress"
+            [readonly]="isReadonly"
+          >
+          </app-address-picker>
+        </div>
       </div>
 
       <div class="dialog-content-column-2">
@@ -96,7 +104,13 @@
               {{ performer.firstName + ' ' + performer.lastName }}
             </mat-option>
           </mat-select>
-          <button *ngIf="performersList.selected && !isReadonly" matSuffix mat-icon-button aria-label="Clear" (click)="performersList.value=''">
+          <button 
+            *ngIf="performersList.selected && !isReadonly"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="performersList.value=null"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -115,7 +129,38 @@
               {{ auditor.firstName + ' ' + auditor.lastName }}
             </mat-option>
           </mat-select>
-          <button *ngIf="auditorsList.selected && !isReadonly" matSuffix mat-icon-button aria-label="Clear" (click)="auditorsList.value=''">
+          <button 
+            *ngIf="auditorsList.selected && !isReadonly"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="auditorsList.value=null"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Товар</mat-label>
+          <mat-select
+            formControlName="WareId"  
+            #waresList
+          >
+            <mat-option
+              [disabled]="isReadonly"
+              *ngFor="let ware of wares"
+              [value]="ware.Id"
+            >
+              {{ ware.Name }}
+            </mat-option>
+          </mat-select>
+          <button 
+            *ngIf="waresList.selected && !isReadonly"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="waresList.value=null"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>

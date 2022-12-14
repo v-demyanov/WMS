@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { ProblemStatusTitles } from '../enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from '../enums/problem-status.enum';
@@ -11,9 +12,12 @@ import { EmployeesDataService } from 'src/app/admin-panel/employees/services/emp
 import { IEmployee } from 'src/app/admin-panel/employees/models/employee';
 import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 import { IProblem } from '../models/problem';
-import { ProblemsService } from '../services/problems.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ProblemDialogData } from '../models/problem-dialog-data';
+import { WaresService } from 'src/app/wares/services/wares.service';
+import { IWare } from 'src/app/wares/models/ware';
+import { ProblemsService } from '../services/problems.service';
+import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-dialog',
@@ -37,6 +41,8 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
 
   public employees: IEmployee[] = [];
 
+  public wares: IWare[] = [];
+
   public problemForm: FormGroup = new FormGroup({});
 
   public problem?: IProblem;
@@ -49,6 +55,10 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
     private readonly userService: EmployeesService,
     private readonly snackBar: MatSnackBar,
     private readonly authenticationService: AuthenticationService,
+    private readonly waresService: WaresService,
+    private readonly problemsService: ProblemsService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {}
 
   public ngOnDestroy = (): void =>
@@ -65,6 +75,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
 
     this.componentSubscriptions = [
       this.loadEmployees(),
+      this.loadWares(),
     ];
   }
 
@@ -81,11 +92,51 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
   }
 
   public closeDialog(): void {
-    this.dialogRef.close()
+    this.dialogRef.close();
   }
 
   public onSaveBtnClick(): void {
-    
+    if (this.isCreating) {
+      this.createProblem();
+    }
+    else if (this.isEditing) {
+      this.updateProblem();
+    }
+  }
+
+  private createProblem(): void {
+    const problem: IProblem = this.prepareProblemToCreate();
+    const subscription: Subscription = this.problemsService.create(problem)
+      .subscribe({
+        next: async (problem: IProblem) => {
+          this.snackBar.open(
+            'Задача создана',
+            'Закрыть',
+            { duration: 3000 },
+          );
+          this.isLoading = false;
+
+          this.dialogRef.close();
+          await this.router.navigate(
+            [NavigationUrls.Tasks],
+            {relativeTo: this.route},
+          );
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(
+            error.error.errorMessage,
+            'Закрыть',
+            { duration: 3000 },
+          );
+        },
+        complete: () => this.isLoading = false,
+      });
+    this.componentSubscriptions.push(subscription);
+  }
+
+  private updateProblem(): void {
+
   }
 
   private loadEmployees(): Subscription {
@@ -95,6 +146,26 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
         next: (employees: IEmployee[]) => {
           this.employees = employees;
           this.auditors = employees.filter(x => x.role === UserRole.Auditor)
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(
+            error.error.errorMessage,
+            'Закрыть',
+            { duration: 3000 },
+          );
+        },
+        complete: () => this.isLoading = false,
+      });
+  }
+
+  private loadWares(): Subscription {
+    this.isLoading = true;
+    return this.waresService.getAllForNavigation()
+      .subscribe({
+        next: (wares: IWare[]) => {
+          this.wares = wares;
           this.isLoading = false;
         },
         error: (error) => {
@@ -119,6 +190,8 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
       PerformerId: new FormControl(undefined),
       AuthorId: new FormControl(undefined, [Validators.required]),
       AuditorId: new FormControl(undefined),
+      WareId: new FormControl(undefined),
+      TargetAddress: new FormControl(undefined),
     });
   }
 
@@ -132,6 +205,8 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
       PerformerId: this.problem?.PerformerId ?? null,
       AuthorId: this.getAuthorId(),
       AuditorId: this.problem?.AuditorId ?? null,
+      WareId: this.problem?.WareId ?? null,
+      TargetAddress: this.problem?.TargetAddress ?? null,
     });
   }
 
@@ -139,4 +214,11 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
     this.isCreating 
       ? (this.authenticationService.getUserClaims()?.Id ?? null)
       : this.problem?.AuthorId ?? null;
+
+  private prepareProblemToCreate(): IProblem {
+    return {
+      ...this.problemForm.value,
+      Status: ProblemStatus[this.problemForm.value.Status],
+    };
+  }
 }

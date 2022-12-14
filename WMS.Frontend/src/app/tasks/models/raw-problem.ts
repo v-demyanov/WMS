@@ -1,3 +1,4 @@
+import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 import { ProblemStatus } from '../enums/problem-status.enum';
 
 export interface IRawProblem {
@@ -11,4 +12,7 @@ export interface IRawProblem {
   ParentProblemId?: number;
   AuthorId: number;
   AuditorId?: number;
+  TargetAddressId?: number;
+
+  TargetAddress?: IAddress;
 }

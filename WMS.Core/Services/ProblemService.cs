@@ -61,6 +61,8 @@ public class ProblemService : BaseService<Problem>, IProblemService
             this.UpdateWareAddress(problem);
         }
 
+        _ = await this.DbContext.SaveChangesAsync();
+
         var templateName = "ProblemStatus.cshtml";
         var subject = $"Статус задачи #{problem.Id} '{problem.Title}'";
 
@@ -72,8 +74,6 @@ public class ProblemService : BaseService<Problem>, IProblemService
             CurrentStatus = problem.Status.ToString(),
         });
         this._mailService.SendMail(body, subject, GetReceivers(problem));
-
-        _ = await this.DbContext.SaveChangesAsync();
     }
 
     protected override void Update(Problem entity, Problem entityUpdateData)
@@ -90,8 +90,12 @@ public class ProblemService : BaseService<Problem>, IProblemService
         {
             var oldAddress = problem.Ware!.Address;
             problem.Ware!.Address = problem.TargetAddress;
+            problem.TargetAddressId = null;
 
-            this.DbContext.Addresses.Remove(oldAddress);
+            if (problem.TargetAddress?.Id != oldAddress.Id)
+            {
+                this.DbContext.Addresses.Remove(oldAddress);
+            }
         }
     }
 
