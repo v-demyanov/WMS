@@ -30,5 +30,5 @@ public class Ware : BaseEntity
 
     public LegalEntity? LegalEntity { get; set; }
 
-    public ICollection<WareProblem> Problems { get; } = new HashSet<WareProblem>();
+    public ICollection<Problem> Problems { get; } = new HashSet<Problem>();
 }

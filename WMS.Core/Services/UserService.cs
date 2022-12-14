@@ -54,7 +54,7 @@ public class UserService : IUserService
         var templateName = "Welcome.cshtml";
         var subject = "Welcome to WMS!";
 
-        var body = await this._templateService.CompileTemplateAsync<WelcomeModel>(templateName, new WelcomeModel
+        var body = await this._templateService.CompileTemplateAsync(templateName, new WelcomeModel
         {
             Email = user.Email,
             UserName = user.FirstName,

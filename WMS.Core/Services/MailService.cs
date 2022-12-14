@@ -25,7 +25,6 @@ public class MailService : IMailService
         var credential = new NetworkCredential(
             this._mailSettings.SystemEmailAddress,
             this._mailSettings.SystemEmailPassword);
-
         var client = new SmtpClient(this._mailSettings.SmtpHost, this._mailSettings.SmtpPort)
         {
             EnableSsl = this._mailSettings.EnableSsl,
@@ -33,15 +32,16 @@ public class MailService : IMailService
             UseDefaultCredentials = this._mailSettings.UseDefaultCredentials,
             Credentials = credential,
         };
+        string addresses = PrepareRecipientAddresses(recipientAddresses);
 
-        var mail = new MailMessage(this._mailSettings.SystemEmailAddress, string.Join(',', recipientAddresses))
+        var mail = new MailMessage(this._mailSettings.SystemEmailAddress, addresses)
         {
             Body = body,
             Subject = subject,
             IsBodyHtml = true,
         };
 
-        var logEmailInfo = $"Subject: {subject}; Recipients: {string.Join(',', recipientAddresses)}";
+        var logEmailInfo = $"Subject: {subject}; Recipients: {addresses}";
 
         try
         {
@@ -49,7 +49,7 @@ public class MailService : IMailService
             client.Send(mail);
             this._logger.LogInformation($"Email has been sent successfully. {logEmailInfo}");
         }
-        catch (Exception error)
+        catch (Exception)
         {
             this._logger.LogError($"Email has't been sent. {logEmailInfo}");
             throw;
@@ -59,5 +59,11 @@ public class MailService : IMailService
             client.Dispose();
             mail.Dispose();
         }
+    }
+
+    private static string PrepareRecipientAddresses(IEnumerable<string> recipientAddresses)
+    {
+        var uniqueRecipientAddresses = new HashSet<string>(recipientAddresses).ToArray();
+        return string.Join(',', uniqueRecipientAddresses);
     }
 }

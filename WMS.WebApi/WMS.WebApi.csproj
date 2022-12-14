@@ -31,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Templates\ProblemStatus.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="Templates\Welcome.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

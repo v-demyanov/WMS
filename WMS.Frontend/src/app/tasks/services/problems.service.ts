@@ -20,6 +20,9 @@ export class ProblemsService {
     this.http.get<ODataValue<IRawProblem>>(ApiEndpoints.Problems)
       .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map(x => this.parseProblem(x))));
 
+  public updateStatus = (status: ProblemStatus, problemId: number): Observable<void> =>
+    this.http.put<void>(`${ApiEndpoints.Problems}${problemId}/UpdateStatus`, status);
+
   private parseProblem(rawProblem: IRawProblem): IProblem {
     return {
       ...rawProblem,

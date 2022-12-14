@@ -1,0 +1,36 @@
+﻿<style>
+    table {
+        border: solid 1px black;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background-color: lightgray;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
+
+@if (@Model != null)
+{
+    <p>Статус задачи обновлён:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Идентификатор задачи</th>
+                <th>Заголовок задачи</th>
+                <th>Предыдущий статус</th>
+                <th>Текущий статус</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>@Model.TaskId</td>
+            <td>@Model.TaskTitle</td>
+            <td style="color: red;">@Model.PreviousStatus</td>
+            <td style="color: green;">@Model.CurrentStatus</td>
+        </tr>
+    </table>
+}

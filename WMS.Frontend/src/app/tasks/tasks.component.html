@@ -3,10 +3,12 @@
     <h2>{{ getColumnTitle(problemStatus.ToDo) }}</h2>
 
     <div
+      id="ToDo"
       cdkDropList
       #todoList="cdkDropList"
       [cdkDropListData]="toDo"
       [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [doneList,inProgressList,awaitingForApprovalList] : [inProgressList,awaitingForApprovalList]"
+      [cdkDropListDisabled]="isLoading"
       class="list"
       (cdkDropListDropped)="drop($event)"
     >
@@ -35,10 +37,12 @@
     <h2>{{ getColumnTitle(problemStatus.InProgress) }}</h2>
 
     <div
+      id="InProgress"
       cdkDropList
       #inProgressList="cdkDropList"
       [cdkDropListData]="inProgress"
       [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, awaitingForApprovalList, doneList] : [todoList, awaitingForApprovalList]"
+      [cdkDropListDisabled]="isLoading"
       class="list"
       (cdkDropListDropped)="drop($event)"
     >
@@ -67,10 +71,12 @@
     <h2>{{ getColumnTitle(problemStatus.AwaitingForApproval) }}</h2>
 
     <div
+      id="AwaitingForApproval"
       cdkDropList
       #awaitingForApprovalList="cdkDropList"
       [cdkDropListData]="awaitingForApproval"
       [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, inProgressList, doneList] : [todoList, inProgressList]"
+      [cdkDropListDisabled]="isLoading"
       class="list"
       (cdkDropListDropped)="drop($event)"
     >
@@ -99,10 +105,12 @@
     <h2>{{ getColumnTitle(problemStatus.Done) }}</h2>
 
     <div
+      id="Done"
       cdkDropList
       #doneList="cdkDropList"
       [cdkDropListData]="done"
       [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, awaitingForApprovalList, inProgressList] : []"
+      [cdkDropListDisabled]="isLoading"
       class="list"
       (cdkDropListDropped)="drop($event)"
     >

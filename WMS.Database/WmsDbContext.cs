@@ -32,8 +32,6 @@ public class WmsDbContext : DbContext
 
     public DbSet<Address> Addresses => this.Set<Address>();
 
-    public DbSet<WareProblem> WareProblems => this.Set<WareProblem>();
-
     public DbSet<Individual> Individuals => this.Set<Individual>();
 
     public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();

@@ -73,12 +73,41 @@ export class TasksComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const problem: IProblem = event.previousContainer.data[event.previousIndex];
+    const problemId: number = problem.Id;
+    const newStatus: ProblemStatus = ProblemStatus[event.container.id as keyof typeof ProblemStatus]
+
+    this.isLoading = true;
     transferArrayItem(
       event.previousContainer.data,
       event.container.data,
       event.previousIndex,
       event.currentIndex
     );
+
+    this.problemService.updateStatus(newStatus, problemId)
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.snackBar.open('Статус задачи обновлён', 'Закрыть', {
+            duration: 3000,
+          });
+          problem.Status = newStatus;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+            duration: 3000,
+          });
+          transferArrayItem(
+            event.container.data,
+            event.previousContainer.data,
+            event.currentIndex,
+            event.previousIndex,
+          );
+        },
+        complete: () => this.isLoading = false,
+      });
   }
 
   public getColumnTitle = (problemStatus: ProblemStatus): string =>

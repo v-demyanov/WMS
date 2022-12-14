@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMS.Database;
 
@@ -11,9 +12,10 @@ using WMS.Database;
 namespace WMS.Database.Migrations
 {
     [DbContext(typeof(WmsDbContext))]
-    partial class WmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221214053408_UpdateWareProblem")]
+    partial class UpdateWareProblem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,15 +227,9 @@ namespace WMS.Database.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TargetAddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("WareId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -244,10 +240,6 @@ namespace WMS.Database.Migrations
                     b.HasIndex("ParentProblemId");
 
                     b.HasIndex("PerformerId");
-
-                    b.HasIndex("TargetAddressId");
-
-                    b.HasIndex("WareId");
 
                     b.ToTable("Problems");
                 });
@@ -422,6 +414,26 @@ namespace WMS.Database.Migrations
                     b.ToTable("Wares");
                 });
 
+            modelBuilder.Entity("WMS.Database.Entities.WareProblem", b =>
+                {
+                    b.Property<int>("ProblemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WareId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TargetAddressId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProblemId", "WareId");
+
+                    b.HasIndex("TargetAddressId");
+
+                    b.HasIndex("WareId");
+
+                    b.ToTable("WareProblems");
+                });
+
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Address", b =>
                 {
                     b.HasOne("WMS.Database.Entities.Addresses.Area", "Area")
@@ -515,14 +527,6 @@ namespace WMS.Database.Migrations
                         .HasForeignKey("PerformerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("WMS.Database.Entities.Addresses.Address", "TargetAddress")
-                        .WithMany("Problems")
-                        .HasForeignKey("TargetAddressId");
-
-                    b.HasOne("WMS.Database.Entities.Ware", "Ware")
-                        .WithMany("Problems")
-                        .HasForeignKey("WareId");
-
                     b.Navigation("Auditor");
 
                     b.Navigation("Author");
@@ -530,10 +534,6 @@ namespace WMS.Database.Migrations
                     b.Navigation("ParentProblem");
 
                     b.Navigation("Performer");
-
-                    b.Navigation("TargetAddress");
-
-                    b.Navigation("Ware");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Ware", b =>
@@ -567,9 +567,34 @@ namespace WMS.Database.Migrations
                     b.Navigation("UnitOfMeasurement");
                 });
 
+            modelBuilder.Entity("WMS.Database.Entities.WareProblem", b =>
+                {
+                    b.HasOne("WMS.Database.Entities.Problem", "Problem")
+                        .WithMany("Wares")
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Database.Entities.Addresses.Address", "TargetAddress")
+                        .WithMany("Wares")
+                        .HasForeignKey("TargetAddressId");
+
+                    b.HasOne("WMS.Database.Entities.Ware", "Ware")
+                        .WithMany("Problems")
+                        .HasForeignKey("WareId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Problem");
+
+                    b.Navigation("TargetAddress");
+
+                    b.Navigation("Ware");
+                });
+
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Address", b =>
                 {
-                    b.Navigation("Problems");
+                    b.Navigation("Wares");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Area", b =>
@@ -602,6 +627,8 @@ namespace WMS.Database.Migrations
                     b.Navigation("ChildrenProblems");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("Wares");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Tenants.Individual", b =>

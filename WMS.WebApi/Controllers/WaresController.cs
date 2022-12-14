@@ -53,7 +53,7 @@ public class WaresController : ODataController
     /// <param name="wareUpdateData">Ware' update data.</param>
     /// <param name="key">Ware' Id.</param>
     [HttpPut]
-    public async Task<ActionResult> Update([FromBody] Ware wareUpdateData, int key)
+    public async Task<ActionResult> Put([FromBody] Ware wareUpdateData, int key)
     {
         await this._wareService.UpdateAsync(key, wareUpdateData);
         return this.NoContent();

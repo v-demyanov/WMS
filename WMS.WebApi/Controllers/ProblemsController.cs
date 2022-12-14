@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 using WMS.Core.Services.Abstractions;
 using WMS.Database.Entities;
+using WMS.Database.Enums;
 
 public class ProblemsController : ODataController
 {
@@ -34,5 +35,18 @@ public class ProblemsController : ODataController
     {
         var problem = await this._problemService.AddAsync(problemCreateData);
         return this.Created(problem);
+    }
+
+    /// <summary>
+    /// Updates problem status.
+    /// </summary>
+    /// <param name="status">Problem's status.</param>
+    /// <param name="problemId">Problem's Id.</param>
+    /// <returns></returns>
+    [HttpPut("api/[controller]/{problemId:int}/UpdateStatus")]
+    public async Task<ActionResult> UpdateStatus([FromBody] ProblemStatus status, int problemId)
+    {
+        await this._problemService.UpdateStatusAsync(status, problemId);
+        return this.NoContent();
     }
 }

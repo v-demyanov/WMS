@@ -10,7 +10,7 @@ public interface IUserService
 {
     IEnumerable<UserRecord> GetAll();
 
-    Task<UserRecord> CreateAsync(UserRecord createUserData);
+    Task<UserRecord> CreateAsync(UserRecord userCreateData);
 
     Task UpdateAsync(int userId, UserRecord userUpdateData);
 
