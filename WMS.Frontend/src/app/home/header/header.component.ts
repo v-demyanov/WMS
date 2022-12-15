@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
     this.permissionsService.isAdmin();
 
   public openTaskDialog(): void {
-    const dialogRef = this.dialog.open(
+    this.dialog.open(
       TaskDialogComponent, {
         width: 'auto',
         data: <ProblemDialogData> {

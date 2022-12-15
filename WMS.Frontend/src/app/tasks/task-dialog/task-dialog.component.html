@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" style="max-height: 100vh">
   <h1 mat-dialog-title>{{ dialogTitle }}</h1>
   <div mat-dialog-content>
     <form [formGroup]="problemForm" class="dialog-content">
@@ -22,7 +22,9 @@
               {{ title.value }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="problemForm.controls['Status'].hasError('required')">
+          <mat-error
+            *ngIf="problemForm.controls['Status'].hasError('required')"
+          >
             Поле обязательное
           </mat-error>
         </mat-form-field>
@@ -41,8 +43,13 @@
               matIconSuffix
               [for]="createdDatePicker"
             ></mat-datepicker-toggle>
-            <mat-datepicker [disabled]="isReadonly" #createdDatePicker></mat-datepicker>
-            <mat-error *ngIf="problemForm.controls['CreatedDate'].hasError('required')">
+            <mat-datepicker
+              [disabled]="isReadonly"
+              #createdDatePicker
+            ></mat-datepicker>
+            <mat-error
+              *ngIf="problemForm.controls['CreatedDate'].hasError('required')"
+            >
               Поле обязательное
             </mat-error>
           </mat-form-field>
@@ -60,12 +67,15 @@
               matIconSuffix
               [for]="lastUpdateDatePicker"
             ></mat-datepicker-toggle>
-            <mat-datepicker [disabled]="isReadonly" #lastUpdateDatePicker></mat-datepicker>
+            <mat-datepicker
+              [disabled]="isReadonly"
+              #lastUpdateDatePicker
+            ></mat-datepicker>
           </mat-form-field>
         </div>
 
         <div class="full-width-field">
-          <app-address-picker 
+          <app-address-picker
             formControlName="TargetAddress"
             [readonly]="isReadonly"
           >
@@ -76,40 +86,34 @@
       <div class="dialog-content-column-2">
         <mat-form-field appearance="fill">
           <mat-label>Автор</mat-label>
-          <mat-select
-            formControlName="AuthorId"
-            #authorsList
-          >
+          <mat-select formControlName="AuthorId" #authorsList>
             <mat-option
               [disabled]="true"
               *ngFor="let employee of employees"
               [value]="employee.id"
             >
-              {{ employee.firstName + ' ' + employee.lastName }}
+              {{ employee.firstName + " " + employee.lastName }}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Исполнитель</mat-label>
-          <mat-select
-            formControlName="PerformerId"
-            #performersList
-          >
+          <mat-select formControlName="PerformerId" #performersList>
             <mat-option
               [disabled]="isReadonly"
               *ngFor="let performer of employees"
               [value]="performer.id"
             >
-              {{ performer.firstName + ' ' + performer.lastName }}
+              {{ performer.firstName + " " + performer.lastName }}
             </mat-option>
           </mat-select>
-          <button 
+          <button
             *ngIf="performersList.selected && !isReadonly"
             matSuffix
             mat-icon-button
             aria-label="Clear"
-            (click)="performersList.value=null"
+            (click)="performersList.value = null"
           >
             <mat-icon>close</mat-icon>
           </button>
@@ -117,24 +121,21 @@
 
         <mat-form-field appearance="fill">
           <mat-label>Аудитор</mat-label>
-          <mat-select
-            formControlName="AuditorId"  
-            #auditorsList
-          >
+          <mat-select formControlName="AuditorId" #auditorsList>
             <mat-option
               [disabled]="isReadonly"
               *ngFor="let auditor of auditors"
               [value]="auditor.id"
             >
-              {{ auditor.firstName + ' ' + auditor.lastName }}
+              {{ auditor.firstName + " " + auditor.lastName }}
             </mat-option>
           </mat-select>
-          <button 
+          <button
             *ngIf="auditorsList.selected && !isReadonly"
             matSuffix
             mat-icon-button
             aria-label="Clear"
-            (click)="auditorsList.value=null"
+            (click)="auditorsList.value = null"
           >
             <mat-icon>close</mat-icon>
           </button>
@@ -142,10 +143,7 @@
 
         <mat-form-field appearance="fill">
           <mat-label>Товар</mat-label>
-          <mat-select
-            formControlName="WareId"  
-            #waresList
-          >
+          <mat-select formControlName="WareId" #waresList>
             <mat-option
               [disabled]="isReadonly"
               *ngFor="let ware of wares"
@@ -154,12 +152,12 @@
               {{ ware.Name }}
             </mat-option>
           </mat-select>
-          <button 
+          <button
             *ngIf="waresList.selected && !isReadonly"
             matSuffix
             mat-icon-button
             aria-label="Clear"
-            (click)="waresList.value=null"
+            (click)="waresList.value = null"
           >
             <mat-icon>close</mat-icon>
           </button>
@@ -169,22 +167,47 @@
       <div class="description-section">
         <mat-form-field class="description-field" appearance="fill">
           <mat-label>Описание</mat-label>
-          <textarea [readonly]="isReadonly" formControlName="Description" matInput></textarea>
+          <textarea
+            [readonly]="isReadonly"
+            formControlName="Description"
+            matInput
+          ></textarea>
         </mat-form-field>
       </div>
     </form>
   </div>
 
-  <mat-dialog-actions>
-    <button (click)="closeDialog()" mat-button>Закрыть</button>
-    <button
-      [disabled]="problemForm.invalid"
-      *ngIf="!isReadonly"
-      mat-raised-button 
-      color="primary"
-      (click)="onSaveBtnClick()"
-    >
-      Сохранить
-    </button>
+  <mat-dialog-actions class="dialog-actions">
+    <div>
+      <button
+        *ngIf="isReadonly"
+        mat-icon-button
+        matTooltip="Комментарии"
+        (click)="onCommentBtnClick()"
+      >
+        <mat-icon color="primary">comment</mat-icon>
+      </button>
+    </div>
+    <div>
+      <button (click)="closeDialog()" mat-button>Закрыть</button>
+      <button
+        [disabled]="problemForm.invalid"
+        *ngIf="!isReadonly"
+        mat-raised-button
+        color="primary"
+        (click)="onSaveBtnClick()"
+      >
+        Сохранить
+      </button>
+    </div>
   </mat-dialog-actions>
+
+  <div 
+    style="padding: 0 2rem 2rem 2rem;"
+    *ngIf="isReadonly && isCommentsDisplayed"
+  >
+    <app-task-dialog-comments
+      [problemId]="problem?.Id"
+    ></app-task-dialog-comments>
+  </div>
 </div>

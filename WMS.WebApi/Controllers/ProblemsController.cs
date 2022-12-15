@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 using WMS.Core.Services.Abstractions;
+using WMS.Database.Constants;
 using WMS.Database.Entities;
 using WMS.Database.Enums;
 
@@ -22,7 +23,7 @@ public class ProblemsController : ODataController
     /// </summary>
     /// <returns>Collection of problems.</returns>
     [HttpGet]
-    [EnableQuery(MaxExpansionDepth = 5)]
+    [EnableQuery(MaxExpansionDepth = ODataSettings.MaxExpansionDepth)]
     public IQueryable<Problem> Get() => this._problemService.GetAll();
 
     /// <summary>

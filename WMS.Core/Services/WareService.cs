@@ -19,7 +19,7 @@ public class WareService : BaseService<Ware>, IWareService
         this._wareValidator = wareValidator;
     }
 
-    public override async System.Threading.Tasks.Task DeleteAsync(int id)
+    public override async Task DeleteAsync(int id)
     {
         var ware = this.DbSet
             .Include(x => x.Address)

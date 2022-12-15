@@ -11,11 +11,18 @@ export class WaresService {
 
   constructor(private readonly waresDataService: WaresDataService) { }
 
-  public getAllForNavigation = (): Observable<IWare[]> => this.waresDataService.getAllForNavigation();
+  public getAllForNavigation = (): Observable<IWare[]> => 
+    this.waresDataService.getAllForNavigation();
 
-  public get = (id: number): Observable<IWare | undefined> => this.waresDataService.get(id);
+  public get = (id: number): Observable<IWare | undefined> => 
+    this.waresDataService.get(id);
 
-  public create = (ware: IWare): Observable<IWare> => this.waresDataService.create(ware);
+  public create = (ware: IWare): Observable<IWare> => 
+    this.waresDataService.create(ware);
 
-  public delete = (id: number): Observable<void> => this.waresDataService.delete(id);
+  public delete = (id: number): Observable<void> => 
+    this.waresDataService.delete(id);
+
+  public update = (id: number, wareUpdateData: IWare) => 
+    this.waresDataService.update(id, wareUpdateData);
 }

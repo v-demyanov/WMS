@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
     /// </summary>
     /// <returns>Collection of users.</returns>
     [HttpGet]
-    [Authorize(Roles = nameof(Role.Administrator))]
+    [Authorize]
     public IEnumerable<UserRecord> GetAll() => this._userService.GetAll();
 
     /// <summary>
@@ -63,6 +63,7 @@ public class UsersController : ControllerBase
     /// <param name="userId">User Id.</param>
     /// <param name="userUpdateData">User create data.</param>
     [HttpPut("{userId:int}")]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Update(int userId, [FromBody] UserRecord userUpdateData)
     {
         await this._userService.UpdateAsync(userId, userUpdateData);

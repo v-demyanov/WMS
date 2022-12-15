@@ -4,4 +4,5 @@ export interface ProblemDialogData {
   isCreating: boolean;
   isEditing: boolean;
   problem?: IProblem,
+  initialProblemId?: number;
 }

@@ -23,4 +23,6 @@ export class ApiEndpoints {
   public static readonly Shelfs = `${ environment.apiBaseUrl }/Shelfs/`;
 
   public static readonly Problems = `${ environment.apiBaseUrl }/Problems/`;
+
+  public static readonly Comments = `${ environment.apiBaseUrl }/Comments/`;
 }

@@ -19,9 +19,17 @@ export class ProblemsService {
   ) { }
 
   public getAll(): Observable<IProblem[]> {
-    const expandQuery: string = '$expand=TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
-    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${expandQuery}`)
+    return this.http.get<ODataValue<IRawProblem>>(ApiEndpoints.Problems)
       .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map((x) => this.parseProblem(x))));
+  }
+
+  public get(problemId: number): Observable<IProblem> {
+    const expandQuery: string = '$expand=TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const filterQuery: string = `$filter=Id eq ${problemId}`;
+    const odataQuery: string = `${filterQuery}&${expandQuery}`;
+
+    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${odataQuery}`)
+      .pipe(map((odataValue: ODataValue<IRawProblem>) => this.parseProblem(odataValue.value[0])));
   }
 
   public updateStatus = (status: ProblemStatus, problemId: number): Observable<void> =>

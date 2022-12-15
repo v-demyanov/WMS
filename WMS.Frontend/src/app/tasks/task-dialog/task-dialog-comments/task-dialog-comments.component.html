@@ -1,0 +1,38 @@
+<div class="comments-section">
+  <form [formGroup]="messageForm" class="comments-input">
+    <mat-form-field appearance="fill">
+      <mat-label>Оставьте комментарий</mat-label>
+      <input matInput maxlength="800" formControlName="Message" />
+    </mat-form-field>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Отправить"
+      class="send-btn"
+      (click)="onSendBtnClick()"
+      [disabled]="messageForm.invalid"
+    >
+      <mat-icon>send</mat-icon>
+    </button>
+  </form>
+  <mat-nav-list>
+    <a *ngFor="let comment of comments" mat-list-item class="comment-item">
+      <div class="comment-wrapper">
+        <div class="comment-info">
+          <img
+            mat-card-avatar
+            class="comment-avatar"
+            src="assets/default-profile.png"
+            alt="Avatar image"
+          />
+          <span>
+            {{ comment.Owner?.email }}
+          </span>
+        </div>
+        <span class="comment-text">
+          {{ comment.Message }}
+        </span>
+      </div>
+    </a>
+  </mat-nav-list>
+</div>

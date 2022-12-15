@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -18,6 +18,8 @@ import { IWare } from 'src/app/wares/models/ware';
 import { ProblemsService } from '../services/problems.service';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
+import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
 
 @Component({
   selector: 'app-task-dialog',
@@ -36,6 +38,8 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
   public isEditing: boolean = false;
 
   public isReadonly: boolean = false;
+
+  public isCommentsDisplayed: boolean = false;
 
   public auditors: IEmployee[] = [];
 
@@ -59,6 +63,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
     private readonly problemsService: ProblemsService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly verticalSectionsService: VerticalSectionsService,
   ) {}
 
   public ngOnDestroy = (): void =>
@@ -68,10 +73,15 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
     this.isCreating = this.dialogData.isCreating;
     this.isEditing = this.dialogData.isEditing;
     this.isReadonly = !this.isCreating && ! this.isEditing;
-    this.problem = this.dialogData?.problem;
 
     this.problemForm = this.createProblemForm();
-    this.initializeProblemForm();
+
+    if (this.isReadonly || this.isEditing) {
+      this.loadProblem();
+    }
+    else {
+      this.initializeProblemForm();
+    }
 
     this.componentSubscriptions = [
       this.loadEmployees(),
@@ -102,6 +112,10 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
     else if (this.isEditing) {
       this.updateProblem();
     }
+  }
+
+  public onCommentBtnClick(): void {
+    this.isCommentsDisplayed = this.isCommentsDisplayed ? false : true;
   }
 
   private createProblem(): void {
@@ -137,6 +151,42 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
 
   private updateProblem(): void {
 
+  }
+
+  private loadProblem(): void {
+    if (!this.dialogData.initialProblemId) {
+      return;
+    }
+
+    this.isLoading = true;
+    const subscription = this.problemsService.get(this.dialogData.initialProblemId)
+      .subscribe({
+        next: async (problem: IProblem) => {
+          await this.setVerticalSections(problem);
+          this.problem = problem;
+          this.initializeProblemForm();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(
+            error.error.errorMessage,
+            'Закрыть',
+            { duration: 3000 },
+          );
+        },
+        complete: () => this.isLoading = false,
+      });
+    this.componentSubscriptions.push(subscription);
+  }
+
+  // TODO: Remove this method after MaxExpansionDepth will be set up right
+  private async setVerticalSections(problem: IProblem): Promise<void> {
+    const verticalSectionId: number | undefined = problem?.TargetAddress?.Shelf?.VerticalSectionId;
+    if (verticalSectionId) {
+      const verticalSection: IVerticalSection = await firstValueFrom(this.verticalSectionsService.get(verticalSectionId));
+      problem!.TargetAddress!.Shelf!.VerticalSection = verticalSection;
+    }
   }
 
   private loadEmployees(): Subscription {
@@ -211,7 +261,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
   }
 
   private getAuthorId = (): number | null =>
-    this.isCreating 
+    this.isCreating
       ? (this.authenticationService.getUserClaims()?.Id ?? null)
       : this.problem?.AuthorId ?? null;
 

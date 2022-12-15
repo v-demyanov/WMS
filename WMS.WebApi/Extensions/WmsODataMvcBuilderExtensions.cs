@@ -29,6 +29,7 @@ public static class WmsODataMvcBuilderExtensions
         _ = modelBuilder.EntitySet<VerticalSection>("VerticalSections");
         _ = modelBuilder.EntitySet<Shelf>("Shelfs");
         _ = modelBuilder.EntitySet<Problem>("Problems");
+        _ = modelBuilder.EntitySet<Comment>("Comments");
 
         return modelBuilder.GetEdmModel();
     }

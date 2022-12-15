@@ -33,13 +33,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
     public async Task UpdateStatusAsync(ProblemStatus status, int problemId)
     {
-        var problem = this.DbContext.Problems
-                .Include(x => x.TargetAddress)
-                .Include(x => x.Auditor)
-                .Include(x => x.Performer)
-                .Include(x => x.Ware)
-                    .ThenInclude(ware => ware.Address)
-                .FirstOrDefault(x => x.Id == problemId);
+        var problem = this.GetWithLinkedEntities(problemId);
         if (problem == null)
         {
             throw new EntityNotFoundException($"Can't delete problem with Id = {problemId}, " + 
@@ -56,6 +50,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
         var oldStatus = problem.Status;
         problem.Status = status;
+
         if (status == ProblemStatus.Done)
         {
             this.UpdateWareAddress(problem);
@@ -86,16 +81,18 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
     private void UpdateWareAddress(Problem problem)
     {
-        if (problem.TargetAddress != null && problem.Ware != null)
+        if (problem.TargetAddress == null || problem.Ware == null)
         {
-            var oldAddress = problem.Ware!.Address;
-            problem.Ware!.Address = problem.TargetAddress;
-            problem.TargetAddressId = null;
+            return;
+        }
 
-            if (problem.TargetAddress?.Id != oldAddress.Id)
-            {
-                this.DbContext.Addresses.Remove(oldAddress);
-            }
+        var oldAddress = problem.Ware!.Address;
+        problem.Ware!.Address = problem.TargetAddress;
+        problem.TargetAddressId = null;
+
+        if (problem.TargetAddress?.Id != oldAddress.Id)
+        {
+            this.DbContext.Addresses.Remove(oldAddress);
         }
     }
 
@@ -115,4 +112,12 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
         return emails.ToArray();
     }
+
+    private Problem? GetWithLinkedEntities(int problemId) => this.DbContext.Problems
+        .Include(x => x.TargetAddress)
+        .Include(x => x.Auditor)
+        .Include(x => x.Performer)
+        .Include(x => x.Ware)
+            .ThenInclude(ware => ware.Address)
+        .FirstOrDefault(x => x.Id == problemId);
 }

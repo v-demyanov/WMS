@@ -55,7 +55,8 @@ builder.Services
     .AddScoped<IVerticalSectionService, VerticalSectionService>()
     .AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>()
     .AddScoped<IWareService, WareService>()
-    .AddScoped<IProblemService, ProblemService>();
+    .AddScoped<IProblemService, ProblemService>()
+    .AddScoped<ICommentService, CommentService>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));

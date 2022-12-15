@@ -40,4 +40,9 @@
       width: 100%;
     }
   }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: space-between;
+  }
 }

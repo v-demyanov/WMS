@@ -34,4 +34,7 @@ export class WaresDataService {
 
   public delete = (id: number): Observable<void> => 
     this.http.delete<void>(`${ApiEndpoints.Wares}${id}`);
+
+  public update = (id: number, wareUpdateData: IWare): Observable<void> =>
+    this.http.put<void>(`${ApiEndpoints.Wares}${id}`, wareUpdateData);
 }

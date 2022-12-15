@@ -109,7 +109,12 @@ export class WaresFormComponent implements OnInit, OnDestroy {
   }
 
   public async onResetBtnClick(): Promise<void> {
-    this.isEditing = false;
+    if (this.isEditing) {
+      this.isEditing = false;
+      this.initializeWareForm();
+
+      return;
+    }
 
     if (this.isCreating) {
       this.isCreating = false;
@@ -153,13 +158,41 @@ export class WaresFormComponent implements OnInit, OnDestroy {
   }
 
   private updateWare(): void {
-    
+    if (!this.selectedWareId) {
+      return;
+    }
+
+    const wareUpdateData: IWare = this.wareForm.value;
+    this.isLoading = true;
+    const subscription: Subscription = this.waresService.update(this.selectedWareId ?? 1, wareUpdateData)
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.isEditing = false;
+          this.selectedWare = {
+            Id: this.selectedWareId,
+            ...wareUpdateData
+          };
+          this.snackBar.open('Товар обновлён', 'Закрыть', {
+            duration: 3000,
+          });
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+            duration: 3000,
+          });
+        },
+        complete: () => this.isLoading = false,
+      });
+    this.componentSubscriptions.push(subscription);
   }
 
   private subscribeOnRouteParamsChanges(): Subscription {
     return this.route.params.subscribe((params: Params) => {
       this.selectedWareId = params['id'];
       if (this.selectedWareId) {
+        this.isEditing = false;
         this.loadWare(this.selectedWareId);
       }
     })
