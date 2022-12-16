@@ -1,5 +1,5 @@
-# Stage 1: Build an Angular Docker Image
-FROM node:14.16.0-alpine AS build
+# Stage 1: Build an Angular Docker Image FROM node:14.16.0-alpine AS build
+FROM node AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install

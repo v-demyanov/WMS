@@ -9,6 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["WMS.WebApi/WMS.WebApi.csproj", "WMS.WebApi/"]
 COPY ["WMS.Database/WMS.Database.csproj", "WMS.Database/"]
+COPY ["WMS.Core/WMS.Core.csproj", "WMS.Core/"]
 COPY ["WMS.Database.Migrations/WMS.Database.Migrations.csproj", "WMS.Database.Migrations/"]
 RUN dotnet restore "WMS.WebApi/WMS.WebApi.csproj"
 COPY . .

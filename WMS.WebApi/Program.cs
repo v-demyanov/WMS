@@ -121,11 +121,14 @@ app.UseAuthorization();
 
 Log.Logger = app.Services.GetService<Serilog.ILogger>();
 
-if (builder.Environment.IsDevelopment())
-{
-    _ = app.UseSwagger();
-    _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API"));
-}
+//if (builder.Environment.IsDevelopment())
+//{
+//    _ = app.UseSwagger();
+//    _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API"));
+//}
+
+_ = app.UseSwagger();
+_ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API"));
 
 app.UseExceptionHandler(app => app.Run(async context =>
 {
