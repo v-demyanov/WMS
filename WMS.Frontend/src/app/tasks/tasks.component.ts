@@ -69,13 +69,6 @@ export class TasksComponent implements OnInit, OnDestroy {
       return;
     }
 
-    transferArrayItem(
-      event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
-      event.currentIndex
-    );
-
     this.updateStatus(event);
   }
 
@@ -103,9 +96,9 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.awaitingForApproval = problems.filter((x) => x.Status === ProblemStatus.AwaitingForApproval);
         this.done = problems.filter((x) => x.Status === ProblemStatus.Done);
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
-        this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+        this.snackBar.open('Ошибка при загрузке задач', 'Закрыть', {
           duration: 3000,
         });
       },
@@ -120,21 +113,28 @@ export class TasksComponent implements OnInit, OnDestroy {
   private updateStatus(event: CdkDragDrop<IProblem[]>): void {
     // TODO: Fix problem with Id
     const problem: IProblem = event.previousContainer.data[event.previousIndex];
-    const problemId: number = problem.Id;
+    const problemId: number | undefined = problem?.Id;
     const newStatus: ProblemStatus = ProblemStatus[event.container.id as keyof typeof ProblemStatus];
 
     this.isLoading = true;
-    const subscription: Subscription = this.problemService.updateStatus(newStatus, problemId).subscribe({
+    const subscription: Subscription = this.problemService.updateStatus(newStatus, problemId ?? 0).subscribe({
       next: () => {
         this.isLoading = false;
         this.snackBar.open('Статус задачи обновлён', 'Закрыть', {
           duration: 3000,
         });
         problem.Status = newStatus;
+
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
-        this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+        this.snackBar.open('Ошибка при обновлении статуса задачи', 'Закрыть', {
           duration: 3000,
         });
         transferArrayItem(

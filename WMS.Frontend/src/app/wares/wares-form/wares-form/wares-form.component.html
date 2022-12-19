@@ -8,7 +8,7 @@
   </h3>
 
   <mat-card *ngIf="selectedWareId || isCreating">
-    <mat-card-header class="header-padding">
+    <mat-card-header class="header-padding" *ngIf="areActionsVisible">
       <button 
         mat-raised-button
         color="primary"

@@ -67,7 +67,6 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     );
 
   public closeDialog(isSaving: boolean): void {
-    console.log(this.addressForm.value);
     if (isSaving) {
       this.dialogRef.close(<IAddress> {
         AreaId: this.addressForm.value.AreaId,
@@ -111,9 +110,9 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.areas = areas;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при загрузке зон', 'Закрыть', {
             duration: 3000,
           });
         },
@@ -129,9 +128,9 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.racks = racks;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при загрузке стелажей', 'Закрыть', {
             duration: 3000,
           });
         },
@@ -149,7 +148,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при загрузке секций', 'Закрыть', {
             duration: 3000,
           });
         },
@@ -167,7 +166,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при загрузке полок', 'Закрыть', {
             duration: 3000,
           });
         },

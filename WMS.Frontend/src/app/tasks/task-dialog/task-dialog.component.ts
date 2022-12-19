@@ -139,7 +139,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при создании задачи',
             'Закрыть',
             { duration: 3000 },
           );
@@ -170,7 +170,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при загрузке задачи',
             'Закрыть',
             { duration: 3000 },
           );
@@ -201,7 +201,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при загрузке пользователей',
             'Закрыть',
             { duration: 3000 },
           );
@@ -221,7 +221,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при загрузке товаров',
             'Закрыть',
             { duration: 3000 },
           );

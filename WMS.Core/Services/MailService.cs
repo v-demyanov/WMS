@@ -52,7 +52,6 @@ public class MailService : IMailService
         catch (Exception)
         {
             this._logger.LogError($"Email has't been sent. {logEmailInfo}");
-            throw;
         }
         finally
         {

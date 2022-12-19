@@ -79,6 +79,9 @@ public class UserService : IUserService
             throw new ApiOperationFailedException("Can't delete yourself");
         }
 
+        var problems = this._dbContext.Problems.Where(x => x.AuthorId == userId);
+        this._dbContext.Problems.RemoveRange(problems);
+
         _ = this._dbContext.Users.Remove(user);
         _ = await this._dbContext.SaveChangesAsync();
     }

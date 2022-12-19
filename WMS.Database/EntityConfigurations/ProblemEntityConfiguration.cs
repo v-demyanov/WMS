@@ -30,7 +30,7 @@ public class ProblemEntityConfiguration : IEntityTypeConfiguration<Problem>
         _ = builder.HasOne(x => x.Author)
                    .WithMany(x => x.AuthorProblems)
                    .HasForeignKey(x => x.AuthorId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .OnDelete(DeleteBehavior.NoAction);
 
         _ = builder.HasOne(x => x.Auditor)
                    .WithMany(x => x.AuditorProblems)

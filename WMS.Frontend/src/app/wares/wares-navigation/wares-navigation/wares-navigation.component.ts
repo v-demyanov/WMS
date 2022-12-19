@@ -72,7 +72,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при загрузке товаров',
             'Закрыть',
             { duration: 3000 },
           );

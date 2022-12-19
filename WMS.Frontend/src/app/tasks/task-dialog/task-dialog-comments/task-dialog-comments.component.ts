@@ -60,10 +60,10 @@ export class TaskDialogCommentsComponent implements OnInit, OnDestroy {
           );
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при отправке комментария',
             'Закрыть',
             { duration: 3000 },
           );
@@ -88,7 +88,7 @@ export class TaskDialogCommentsComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при загрузке комментариев',
             'Закрыть',
             { duration: 3000 },
           );

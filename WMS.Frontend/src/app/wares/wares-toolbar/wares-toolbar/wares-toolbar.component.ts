@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';
 import { firstValueFrom, Subscription, take } from 'rxjs';
+import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -34,6 +35,7 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
     private readonly waresService: WaresService,
     private readonly snackBar: MatSnackBar,
     private readonly waresEventBusService: WaresEventBusService,
+    private readonly authenticationService: AuthenticationService,
     private readonly dialog: MatDialog,
   ) {}
 
@@ -60,6 +62,11 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
       [`${NavigationUrls.Wares}/${WaresRoute.Create}`],
       {relativeTo: this.route},
     );
+  }
+
+  public get areActionsVisible(): boolean {
+    const currentUserRole = this.authenticationService.getUserClaims()?.Role;
+    return currentUserRole === UserRole.Administrator;
   }
 
   public async onDeleteBtnClick(): Promise<void> {
@@ -97,7 +104,7 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при удалении товара', 'Закрыть', {
             duration: 3000,
           });
         },

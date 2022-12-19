@@ -115,7 +115,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка удаления пользователя',
             'Закрыть',
             { duration: 3000 },
           );
@@ -169,7 +169,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isLoading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка загрузки пользователей',
             'Закрыть',
             { duration: 3000 },
           );
@@ -212,7 +212,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка обновления пользователя',
             'Закрыть',
             { duration: 3000 },
           );
@@ -250,7 +250,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
           this.isLoading = false;
 
           this.snackBar.open(
-            error.error.errorMessage,
+            'Ошибка при добавлении пользователя',
             'Закрыть',
             { duration: 3000 },
           );

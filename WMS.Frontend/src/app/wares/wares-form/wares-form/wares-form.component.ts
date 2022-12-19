@@ -15,6 +15,7 @@ import { ILegalEntity } from 'src/app/admin-panel/tenants/legal-entities/models/
 import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
 import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
+import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 
 @Component({
   selector: 'app-wares-form',
@@ -50,6 +51,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     private readonly legalEntitiesService: LegalEntitiesService,
     private readonly verticalSectionsService: VerticalSectionsService,
     private readonly waresEventBusService: WaresEventBusService,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   public ngOnInit(): void {
@@ -71,6 +73,11 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     this.componentSubscriptions.forEach((subscription) =>
       subscription.unsubscribe()
     );
+
+  public get areActionsVisible(): boolean {
+    const currentUserRole = this.authenticationService.getUserClaims()?.Role;
+    return currentUserRole === UserRole.Administrator;
+  }
   
   public get isReadonly(): boolean {
     return !this.isEditing && !this.isCreating;
@@ -94,9 +101,9 @@ export class WaresFormComponent implements OnInit, OnDestroy {
         this.initializeWareForm();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
-        this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+        this.snackBar.open('Ошибка при загрузке товара', 'Закрыть', {
           duration: 3000,
         });
       },
@@ -148,7 +155,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при добавлении товара', 'Закрыть', {
             duration: 3000,
           });
         },
@@ -179,7 +186,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при обновлении товара', 'Закрыть', {
             duration: 3000,
           });
         },
@@ -228,9 +235,9 @@ export class WaresFormComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.unitsOfMeasurements = unitsOfMeasurements;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при загрузке единиц измерения', 'Закрыть', {
             duration: 3000,
           });
         },
@@ -248,7 +255,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          this.snackBar.open(error.error.errorMessage, 'Закрыть', {
+          this.snackBar.open('Ошибка при загрузке юридических лиц', 'Закрыть', {
             duration: 3000,
           });
         },

@@ -71,7 +71,6 @@ export class AddressPickerComponent implements ControlValueAccessor {
 
     // TODO: Fix setting Address field after updating or creating
     const result = await firstValueFrom(dialogRef.afterClosed());
-    console.log(result);
 
     if (result) {
       this.address = result;
