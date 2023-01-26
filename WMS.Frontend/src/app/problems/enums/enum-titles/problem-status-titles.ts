@@ -5,18 +5,18 @@ export const ProblemStatusTitles: KeyValue<ProblemStatus, string>[] =
 [
   {
     key: ProblemStatus.ToDo,
-    value: 'Выполнить',
+    value: 'TO DO',
   },
   {
     key: ProblemStatus.InProgress,
-    value: 'В прогрессе',
+    value: 'IN PROGRESS',
   },
   {
     key: ProblemStatus.AwaitingForApproval,
-    value: 'Ожидает подтверждения',
+    value: 'AWAITING FOR APPROVAL',
   },
   {
     key: ProblemStatus.Done,
-    value: 'Готово',
+    value: 'DONE',
   },
 ];

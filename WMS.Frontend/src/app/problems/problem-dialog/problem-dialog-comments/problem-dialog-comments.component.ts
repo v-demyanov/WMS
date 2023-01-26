@@ -7,11 +7,11 @@ import { IComment } from '../../models/comment';
 import { CommentsService } from '../../services/comments.service';
 
 @Component({
-  selector: 'app-task-dialog-comments',
-  templateUrl: './task-dialog-comments.component.html',
-  styleUrls: ['./task-dialog-comments.component.scss']
+  selector: 'app-problem-dialog-comments',
+  templateUrl: './problem-dialog-comments.component.html',
+  styleUrls: ['./problem-dialog-comments.component.scss']
 })
-export class TaskDialogCommentsComponent implements OnInit, OnDestroy {
+export class ProblemDialogCommentsComponent implements OnInit, OnDestroy {
 
   @Input('problemId')
   public problemId?: number;

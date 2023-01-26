@@ -1,3 +1,3 @@
-export class TasksRoute {
+export class ProblemsRoute {
     public static readonly Default = '';
 }

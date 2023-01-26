@@ -1,0 +1,18 @@
+<div class="wrapper">
+  <div class="problem-info">
+    <div class="title">
+      {{ item.Title }}
+    </div>
+    <div class="date">
+      {{ formatDate(item.LastUpdateDate ?? item.CreatedDate) }}
+    </div>
+  </div>
+  <div>
+    <button mat-icon-button color="primary" [routerLink]="item.Id.toString()">
+      <mat-icon>open_in_new</mat-icon>
+    </button>
+    <button *ngIf="canUserEditProblem" mat-icon-button color="warn" (click)="(openTaskDialog(item, true))">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+</div>

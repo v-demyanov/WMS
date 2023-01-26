@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .problem-info {
+    display: flex;
+    flex-direction: column;
+  
+    .title {
+      padding-bottom: 0.5rem;
+    }
+  
+    .date {
+      color: darkgray;
+      font-size: 0.8rem;
+    }
+  }
+}

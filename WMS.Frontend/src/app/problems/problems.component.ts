@@ -13,15 +13,15 @@ import { ProblemStatus } from './enums/problem-status.enum';
 import { IProblem } from './models/problem';
 import { ProblemDialogData } from './models/problem-dialog-data';
 import { ProblemsService } from './services/problems.service';
-import { TaskDialogComponent } from './task-dialog/task-dialog.component';
+import { ProblemDialogComponent } from './problem-dialog/problem-dialog.component';
 import { PermissionsService } from '../core/authentication';
 
 @Component({
-  selector: 'app-tasks',
-  templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.scss'],
+  selector: 'app-problems',
+  templateUrl: './problems.component.html',
+  styleUrls: ['./problems.component.scss'],
 })
-export class TasksComponent implements OnInit, OnDestroy {
+export class ProblemsComponent implements OnInit, OnDestroy {
 
   public toDo: IProblem[] = [];
 
@@ -59,6 +59,10 @@ export class TasksComponent implements OnInit, OnDestroy {
     return this.permissionsService.isAdmin();
   }
 
+  public getAllTasksCount(): number {
+    return this.toDo.length + this.inProgress.length + this.awaitingForApproval.length + this.done.length;
+  }
+
   public drop(event: CdkDragDrop<IProblem[]>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -76,7 +80,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     ProblemStatusTitles[problemStatus].value;
 
   public openTaskDialog(problem: IProblem, isEditing: boolean = false): void {
-    const dialogRef = this.dialog.open(TaskDialogComponent, {
+    const dialogRef = this.dialog.open(ProblemDialogComponent, {
       width: 'auto',
       data: <ProblemDialogData>{
         initialProblemId: problem.Id,
@@ -89,6 +93,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   public loadProblems(): Subscription {
+    this.isLoading = true;
     return this.problemService.getAll().subscribe({
       next: (problems: IProblem[]) => {
         this.toDo = problems.filter((x) => x.Status === ProblemStatus.ToDo);
@@ -111,7 +116,6 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   private updateStatus(event: CdkDragDrop<IProblem[]>): void {
-    // TODO: Fix problem with Id
     const problem: IProblem = event.previousContainer.data[event.previousIndex];
     const problemId: number | undefined = problem?.Id;
     const newStatus: ProblemStatus = ProblemStatus[event.container.id as keyof typeof ProblemStatus];
@@ -119,18 +123,18 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     const subscription: Subscription = this.problemService.updateStatus(newStatus, problemId ?? 0).subscribe({
       next: () => {
-        this.isLoading = false;
-        this.snackBar.open('Статус задачи обновлён', 'Закрыть', {
-          duration: 3000,
-        });
         problem.Status = newStatus;
-
         transferArrayItem(
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
           event.currentIndex
         );
+
+        this.isLoading = false;
+        this.snackBar.open('Статус задачи обновлён', 'Закрыть', {
+          duration: 3000,
+        });
       },
       error: () => {
         this.isLoading = false;
@@ -144,7 +148,9 @@ export class TasksComponent implements OnInit, OnDestroy {
           event.previousIndex
         );
       },
-      complete: () => (this.isLoading = false),
+      complete: () => {
+        this.isLoading = false;
+      },
     });
     this.componentSubscriptions.push(subscription);
   }

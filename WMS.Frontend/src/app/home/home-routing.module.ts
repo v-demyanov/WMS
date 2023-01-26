@@ -49,8 +49,8 @@ const routes: Routes = [
     children: [
       {
         path: HomeRoute.Tasks,
-        loadChildren: () => import('../tasks/tasks.module')
-          .then(m => m.TasksModule),
+        loadChildren: () => import('../problems/problems.module')
+          .then(m => m.ProblemsModule),
       },
     ],
   },

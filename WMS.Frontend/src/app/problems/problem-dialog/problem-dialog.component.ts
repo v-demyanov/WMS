@@ -22,12 +22,12 @@ import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical
 import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
 
 @Component({
-  selector: 'app-task-dialog',
-  templateUrl: './task-dialog.component.html',
-  styleUrls: ['./task-dialog.component.scss'],
+  selector: 'app-problem-dialog',
+  templateUrl: './problem-dialog.component.html',
+  styleUrls: ['./problem-dialog.component.scss'],
   providers: [EmployeesService, EmployeesDataService],
 })
-export class TaskDialogComponent implements OnInit, OnDestroy {
+export class ProblemDialogComponent implements OnInit, OnDestroy {
 
   public problemStatusTitles: KeyValue<ProblemStatus, string>[] = ProblemStatusTitles;
 
@@ -55,7 +55,7 @@ export class TaskDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: ProblemDialogData,
-    private dialogRef: MatDialogRef<TaskDialogComponent>,
+    private dialogRef: MatDialogRef<ProblemDialogComponent>,
     private readonly userService: EmployeesService,
     private readonly snackBar: MatSnackBar,
     private readonly authenticationService: AuthenticationService,

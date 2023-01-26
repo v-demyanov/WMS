@@ -28,6 +28,8 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
         <mat-card-actions>
           <button
             [disabled]="loginForm.invalid || loading"

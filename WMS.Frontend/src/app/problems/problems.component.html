@@ -1,0 +1,83 @@
+<div class="wrapper">
+  <div class="info-section">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  </div>
+
+  <div class="tasks-section">
+    <div class="container">
+      <span class="list-title">{{ getColumnTitle(problemStatus.ToDo) }} {{ toDo.length }} из {{ getAllTasksCount() }}</span>
+  
+      <div
+        id="ToDo"
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="toDo"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [doneList,inProgressList,awaitingForApprovalList] : [inProgressList,awaitingForApprovalList]"
+        [cdkDropListDisabled]="isLoading"
+        class="list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div class="box" *ngFor="let item of toDo" cdkDrag>
+          <app-problem-card class="task-card" [item]="item"></app-problem-card>
+        </div>
+      </div>
+    </div>
+  
+    <div class="container">
+      <span class="list-title">{{ getColumnTitle(problemStatus.InProgress) }} {{ inProgress.length }} из {{ getAllTasksCount() }}</span>
+  
+      <div
+        id="InProgress"
+        cdkDropList
+        #inProgressList="cdkDropList"
+        [cdkDropListData]="inProgress"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, awaitingForApprovalList, doneList] : [todoList, awaitingForApprovalList]"
+        [cdkDropListDisabled]="isLoading"
+        class="list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div class="box" *ngFor="let item of inProgress" cdkDrag>
+          <app-problem-card class="task-card" [item]="item"></app-problem-card>
+        </div>
+      </div>
+    </div>
+  
+    <div class="container">
+      <span class="list-title">{{ getColumnTitle(problemStatus.AwaitingForApproval) }} {{ awaitingForApproval.length }} из {{ getAllTasksCount() }}</span>
+  
+      <div
+        id="AwaitingForApproval"
+        cdkDropList
+        #awaitingForApprovalList="cdkDropList"
+        [cdkDropListData]="awaitingForApproval"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, inProgressList, doneList] : [todoList, inProgressList]"
+        [cdkDropListDisabled]="isLoading"
+        class="list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div class="box" *ngFor="let item of awaitingForApproval" cdkDrag>
+          <app-problem-card class="task-card" [item]="item"></app-problem-card>
+        </div>
+      </div>
+    </div>
+  
+    <div class="container">
+      <span class="list-title">{{ getColumnTitle(problemStatus.Done) }} {{ done.length }} из {{ getAllTasksCount() }}</span>
+  
+      <div
+        id="Done"
+        cdkDropList
+        #doneList="cdkDropList"
+        [cdkDropListData]="done"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, awaitingForApprovalList, inProgressList] : []"
+        [cdkDropListDisabled]="isLoading"
+        class="list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div class="box" *ngFor="let item of done" cdkDrag>
+          <app-problem-card class="task-card" [item]="item"></app-problem-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
