@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
+using System.ComponentModel;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 
@@ -25,6 +26,7 @@ public class MailService : IMailService
         var credential = new NetworkCredential(
             this._mailSettings.SystemEmailAddress,
             this._mailSettings.SystemEmailPassword);
+
         var client = new SmtpClient(this._mailSettings.SmtpHost, this._mailSettings.SmtpPort)
         {
             EnableSsl = this._mailSettings.EnableSsl,
@@ -32,8 +34,9 @@ public class MailService : IMailService
             UseDefaultCredentials = this._mailSettings.UseDefaultCredentials,
             Credentials = credential,
         };
-        string addresses = PrepareRecipientAddresses(recipientAddresses);
+        client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
 
+        string addresses = PrepareRecipientAddresses(recipientAddresses);
         var mail = new MailMessage(this._mailSettings.SystemEmailAddress, addresses)
         {
             Body = body,
@@ -42,22 +45,18 @@ public class MailService : IMailService
         };
 
         var logEmailInfo = $"Subject: {subject}; Recipients: {addresses}";
+        client.SendAsync(mail, logEmailInfo);
+    }
 
-        try
+    private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
+    {
+        if (e.Error != null)
         {
-            this._logger.LogInformation($"Sending email... {logEmailInfo}");
-            client.Send(mail);
-            this._logger.LogInformation($"Email has been sent successfully. {logEmailInfo}");
+            this._logger.LogError($"Email hasn't been sent. Email info: {e.UserState}. Errors: {e.Error.ToString()}");
+            return;
         }
-        catch (Exception)
-        {
-            this._logger.LogError($"Email has't been sent. {logEmailInfo}");
-        }
-        finally
-        {
-            client.Dispose();
-            mail.Dispose();
-        }
+
+        this._logger.LogInformation($"Email has been sent successfully. Email info: {e.UserState}.");
     }
 
     private static string PrepareRecipientAddresses(IEnumerable<string> recipientAddresses)
