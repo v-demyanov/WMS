@@ -102,13 +102,12 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open('Ошибка при удалении товара', 'Закрыть', {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
   }
 }

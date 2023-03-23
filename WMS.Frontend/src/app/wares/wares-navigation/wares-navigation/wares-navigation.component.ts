@@ -68,6 +68,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (wares: IWare[]) => {
           this.wares = wares;
+          this.isLoading = false;
         },
         error: (error) => {
           this.isLoading = false;
@@ -77,7 +78,6 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
   }
 }

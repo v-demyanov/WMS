@@ -120,7 +120,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
     this.componentSubscriptions.push(subscription);
   }
@@ -174,7 +173,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
   }
 
@@ -218,11 +216,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
           );
           this.isLoading = false;
         },
-        complete: () => {
-          this.isLoading = false;
-          this.isEditing = false;
-          this.editingItemId = null;
-        },
       });
     this.componentSubscriptions.push(subscription);
   }
@@ -254,10 +247,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
             'Закрыть',
             { duration: 3000 },
           );
-        },
-        complete: () => {
-          this.isLoading = false;
-          this.isAdding = false;
         },
       });
     this.componentSubscriptions.push(subscription);

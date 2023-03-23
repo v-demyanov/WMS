@@ -57,7 +57,6 @@ export class LoginComponent implements OnInit {
             { duration: 3000 },
           );
         },
-        complete: () => this.loading = false,
       });
   }
 

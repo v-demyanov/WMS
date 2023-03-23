@@ -107,7 +107,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
           duration: 3000,
         });
       },
-      complete: () => (this.isLoading = false),
     });
   }
 
@@ -159,7 +158,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
     this.componentSubscriptions.push(subscription);
   }
@@ -190,7 +188,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
     this.componentSubscriptions.push(subscription);
   }
@@ -241,7 +238,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = true,
       });
   }
 
@@ -253,13 +249,12 @@ export class WaresFormComponent implements OnInit, OnDestroy {
           this.legalEntities = legalEntities;
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open('Ошибка при загрузке юридических лиц', 'Закрыть', {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = true,
       });
   }
 }

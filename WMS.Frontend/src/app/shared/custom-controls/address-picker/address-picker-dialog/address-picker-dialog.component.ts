@@ -116,7 +116,6 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
   }
 
@@ -134,7 +133,6 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
   }
 
@@ -152,7 +150,6 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
   }
 
@@ -170,7 +167,6 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        complete: () => this.isLoading = false,
       });
   }
 

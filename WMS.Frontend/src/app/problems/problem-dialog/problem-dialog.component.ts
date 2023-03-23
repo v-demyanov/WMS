@@ -144,7 +144,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
     this.componentSubscriptions.push(subscription);
   }
@@ -175,7 +174,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
     this.componentSubscriptions.push(subscription);
   }
@@ -206,7 +204,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
   }
 
@@ -226,7 +223,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
             { duration: 3000 },
           );
         },
-        complete: () => this.isLoading = false,
       });
   }
 

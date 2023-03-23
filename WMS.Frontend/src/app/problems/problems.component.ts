@@ -100,6 +100,7 @@ export class ProblemsComponent implements OnInit, OnDestroy {
         this.inProgress = problems.filter((x) => x.Status === ProblemStatus.InProgress);
         this.awaitingForApproval = problems.filter((x) => x.Status === ProblemStatus.AwaitingForApproval);
         this.done = problems.filter((x) => x.Status === ProblemStatus.Done);
+        this.isLoading = false;
       },
       error: () => {
         this.isLoading = false;
@@ -107,7 +108,6 @@ export class ProblemsComponent implements OnInit, OnDestroy {
           duration: 3000,
         });
       },
-      complete: () => (this.isLoading = false),
     });
   }
 
@@ -147,9 +147,6 @@ export class ProblemsComponent implements OnInit, OnDestroy {
           event.currentIndex,
           event.previousIndex
         );
-      },
-      complete: () => {
-        this.isLoading = false;
       },
     });
     this.componentSubscriptions.push(subscription);
