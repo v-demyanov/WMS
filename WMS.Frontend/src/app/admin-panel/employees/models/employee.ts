@@ -6,4 +6,5 @@ export interface IEmployee {
   lastName: string;
   email: string;
   role: UserRole;
+  imageUrl?: string;
 }

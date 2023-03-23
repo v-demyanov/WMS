@@ -1,1 +1,126 @@
-<p>task-info works!</p>
+<div class="wrapper">
+  <button class="parent-btn" mat-stroked-button *ngIf="problem?.ParentProblemId">
+    <mat-icon>keyboard_backspace</mat-icon>
+    <span>Parent problem</span>
+  </button>
+  <h1 class="problem-title">{{ problem?.Title }}</h1>
+  <div class="toolbar">
+    <button mat-flat-button>
+      <mat-icon>edit</mat-icon>
+      Редактировать
+    </button>
+    <button mat-flat-button (click)="scrollToCommentForm()">
+      <mat-icon>comment</mat-icon>
+      Добавить комментарий
+    </button>
+  </div>
+  <div class="general-section">
+    <div class="column-1">
+      <mat-expansion-panel [expanded]="true" class="details">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Детали задачи
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="content">
+          <div class="item">
+            <span class="header">Статус задачи:</span>
+            <span class="value">
+              <span class="status" [style.background-color]="getProblemStatusColor()">{{ getProblemStatusTitle() }}</span>
+            </span>
+          </div>
+          <div class="item">
+            <span class="header">Адрес назначения:</span>
+            <span class="value">
+              123
+            </span>
+          </div>
+          <div class="item">
+            <span class="header">Товар:</span>
+            <span class="value">
+              123
+            </span>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded]="true" class="description">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Описание
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        {{ problem?.Description }}
+      </mat-expansion-panel>
+
+      <mat-expansion-panel class="sub-tasks">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Подзадачи
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel id="activitiesTab" [(expanded)]="isActivitiesPanelExpanded" class="activities">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Активность
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-tab-group dynamicHeight>
+          <mat-tab>
+            <ng-template mat-tab-label>Комментарии</ng-template>
+            <app-problem-comments [(isCommentFormVisible)]="isCommentFormVisible"></app-problem-comments>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-expansion-panel>
+    </div>
+
+    <div class="column-2">
+      <mat-expansion-panel [expanded]="true" class="humans">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Люди
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="content">
+          <div class="item">
+            <span class="header">Исполнитель:</span>
+            <span class="value">Исполнитель ASD</span>
+          </div>
+          <div class="item">
+            <span class="header">Автор:</span>
+            <span class="value">Автор ASD</span>
+          </div>
+          <div class="item">
+            <span class="header">Аудитор:</span>
+            <span class="value">Аудитор ASD</span>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded]="true" class="dates">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Даты
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="content">
+          <div class="item">
+            <span class="header">Создано:</span>
+            <span class="value">{{ formatDate('', problem?.CreatedDate) }}</span>
+          </div>
+          <div class="item">
+            <span class="header">Обновлено:</span>
+            <span class="value">{{ formatDate('', problem?.LastUpdateDate) }}</span>
+          </div>
+          <div class="item">
+            <span class="header">Deadline:</span>
+            <span class="value">{{ formatDate('Will be implemented soon', null) }}</span>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </div>
+</div>
+

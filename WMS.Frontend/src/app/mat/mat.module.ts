@@ -19,30 +19,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatMenuModule,
-    MatIconModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatGridListModule,
-    MatListModule,
-    MatChipsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    DragDropModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-  ],
   exports: [
     MatCardModule,
     MatFormFieldModule,
@@ -63,6 +43,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     DragDropModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatExpansionModule,
+    MatTabsModule,
   ],
 })
 export class MatModule {}

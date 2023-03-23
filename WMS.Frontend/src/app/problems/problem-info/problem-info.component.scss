@@ -1,0 +1,128 @@
+.wrapper {
+  padding: 1.5rem;
+
+  .parent-btn {
+    margin-bottom: 1rem;
+
+    span {
+      color: blue;
+    }
+  }
+
+  .problem-title {
+    font-weight: bold;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    button {
+      background: rgba(9,30,66,0.08);
+      color: black;
+    }
+  }
+
+  .general-section {
+    display: flex;
+    align-items: stretch;
+    gap: 1rem;
+
+    .column-1 {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 8;
+      gap: 1rem;
+
+      .details {
+        .content {
+          display: flex;
+          flex-direction: column;
+          row-gap: 0.5rem;
+
+          .item {
+            display: flex;
+            gap: 1rem;
+        
+            .header {
+              width: 15%;
+            }
+        
+            .value {
+              width: 85%;
+            }
+
+            .status {
+              //background-color: green;
+              color: white;
+              border-radius: 3px;
+              font-size: 11px;
+              font-weight: 700;
+              padding: 2px 5px 3px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    
+      .description {
+      }
+
+      .sub-tasks {
+      }
+    
+      .activities {
+      }
+    }
+
+    .column-2 {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 2;
+      gap: 1rem;
+
+      .humans {
+        .content {
+          display: flex;
+          flex-direction: column;
+          row-gap: 0.5rem;
+        
+          .item {
+            display: flex;
+            gap: 1rem;
+        
+            .header {
+              width: 35%;
+            }
+        
+            .value {
+              width: 65%;
+            }
+          }
+        }
+      }
+    
+      .dates {
+        .content {
+          display: flex;
+          flex-direction: column;
+          row-gap: 0.5rem;
+
+          .item {
+            display: flex;
+            gap: 1rem;
+        
+            .header {
+              width: 35%;
+            }
+        
+            .value {
+              width: 65%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

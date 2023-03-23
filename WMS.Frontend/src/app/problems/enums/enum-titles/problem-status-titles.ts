@@ -20,3 +20,23 @@ export const ProblemStatusTitles: KeyValue<ProblemStatus, string>[] =
     value: 'DONE',
   },
 ];
+
+export const ProblemStatusColors: KeyValue<ProblemStatus, string>[] =
+[
+  {
+    key: ProblemStatus.ToDo,
+    value: 'red',
+  },
+  {
+    key: ProblemStatus.InProgress,
+    value: 'blue',
+  },
+  {
+    key: ProblemStatus.AwaitingForApproval,
+    value: 'orange',
+  },
+  {
+    key: ProblemStatus.Done,
+    value: 'green',
+  },
+];
