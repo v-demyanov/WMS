@@ -19,6 +19,9 @@ public class ProblemEntityConfiguration : IEntityTypeConfiguration<Problem>
                    .IsRequired()
                    .ValueGeneratedOnAdd();
 
+        _ = builder.Property(x => x.LastUpdateDate)
+                   .ValueGeneratedOnAddOrUpdate();
+
         _ = builder.Property(x => x.AuthorId)
                    .IsRequired();
 
