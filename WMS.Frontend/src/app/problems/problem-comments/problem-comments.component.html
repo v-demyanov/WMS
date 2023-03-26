@@ -1,0 +1,65 @@
+<div *ngFor="let comment of comments" class="comment">
+  <div
+    class="comment-img"
+    [style.background-image]="'url(' + (comment.Owner?.AvatarUrl ?? commonConstants.DEFAULT_USER_AVATAR) + ')'"
+  ></div>
+  <div class="comment-content">
+    <div class="comment-author">
+      <a href="">
+        {{ comment.Owner?.FirstName + " " + comment.Owner?.LastName }}
+      </a>
+    </div>
+    <div class="comment-message">
+      {{ comment.Message }}
+    </div>
+    <div class="comment-date">
+      {{ formatDate(comment.CreatedDate) }}
+    </div>
+  </div>
+</div>
+
+<div 
+  *ngIf="isLoadMoreBtnVisible"
+  class="load-more-btn-wrapper"
+>
+  <button 
+    mat-flat-button
+    class="load-more-btn"
+    (click)="onLoadMoreBtnClick()"
+  >
+    Загрузить ещё
+  </button>
+</div>
+
+<button
+  class="comment-form-btn"
+  mat-flat-button
+  *ngIf="!isCommentFormVisible"
+  (click)="toggleCommentFormVisibility()"
+>
+  <mat-icon>comment</mat-icon>
+  Добавить комментарий
+</button>
+
+<div class="comment-form-wrapper" *ngIf="isCommentFormVisible">
+  <label class="comment-form-label" for="commentForm">Комментарий</label>
+  <div class="comment-form">
+    <textarea id="commentForm" rows="10"></textarea>
+    <div class="comment-form-controls">
+      <button 
+        mat-raised-button
+        color="primary"
+        class="add-comment-btn"
+      >
+        Добавить
+      </button>
+      <button
+        mat-button
+        class="cancel-comment-btn"
+        (click)="toggleCommentFormVisibility()"
+      >
+        Отменить
+      </button>
+    </div>
+  </div>
+</div>
