@@ -90,9 +90,9 @@
             <mat-option
               [disabled]="true"
               *ngFor="let employee of employees"
-              [value]="employee.id"
+              [value]="employee.Id"
             >
-              {{ employee.firstName + " " + employee.lastName }}
+              {{ employee.FirstName + " " + employee.LastName }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -103,9 +103,9 @@
             <mat-option
               [disabled]="isReadonly"
               *ngFor="let performer of employees"
-              [value]="performer.id"
+              [value]="performer.Id"
             >
-              {{ performer.firstName + " " + performer.lastName }}
+              {{ performer.FirstName + " " + performer.LastName }}
             </mat-option>
           </mat-select>
           <button
@@ -125,9 +125,9 @@
             <mat-option
               [disabled]="isReadonly"
               *ngFor="let auditor of auditors"
-              [value]="auditor.id"
+              [value]="auditor.Id"
             >
-              {{ auditor.firstName + " " + auditor.lastName }}
+              {{ auditor.FirstName + " " + auditor.LastName }}
             </mat-option>
           </mat-select>
           <button

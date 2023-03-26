@@ -30,6 +30,7 @@ _ = builder.Host.UseSerilog((context, configuration) => configuration
 
 builder.Services
     .AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null)
     .AddWmsOData();
 
 #pragma warning disable CS0618 // Type or member is obsolete

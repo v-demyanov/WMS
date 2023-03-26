@@ -193,7 +193,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (employees: IEmployee[]) => {
           this.employees = employees;
-          this.auditors = employees.filter(x => x.role === UserRole.Auditor)
+          this.auditors = employees.filter(x => x.Role === UserRole.Auditor)
           this.isLoading = false;
         },
         error: (error) => {

@@ -126,7 +126,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   public onEditBtnClick(employee: IEmployee): void {
     this.isEditing = true;
-    this.editingItemId = employee.id;
+    this.editingItemId = employee.Id;
     this.employeeTemp = employee;
   }
 
@@ -141,7 +141,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   public onResetBtnClick(employee: IEmployee): void {
     if (this.employeeTemp !== null) {
-      const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.id === employee.id);
+      const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.id === employee.Id);
       this.employeeFormRows.controls.splice(employeeIndex, 1, this.createFormGroup(this.employeeTemp));
       this.updateView();
     }
@@ -153,7 +153,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   public onAddBtnClick(): void {
     this.isAdding = true;
-    this.addFormGroup({ id: 0, lastName: '', firstName: '', role: UserRole.Worker, email: '' });
+    this.addFormGroup({ Id: 0, LastName: '', FirstName: '', Role: UserRole.Worker, Email: '' });
   }
 
   private loadEmployees(): Subscription {
@@ -184,11 +184,11 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   private createFormGroup(employee: IEmployee): FormGroup {
     return this.formBuilder.group({
-      'id': [employee.id, []],
-      'firstName': [employee.firstName, [Validators.required]],
-      'lastName': [employee.lastName, [Validators.required]],
-      'email': [employee.email, [Validators.required, Validators.email]],
-      'role': [employee.role, [Validators.required]],
+      'id': [employee.Id, []],
+      'firstName': [employee.FirstName, [Validators.required]],
+      'lastName': [employee.LastName, [Validators.required]],
+      'email': [employee.Email, [Validators.required, Validators.email]],
+      'role': [employee.Role, [Validators.required]],
     });
   }
   
@@ -196,7 +196,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.dataSource.next(this.employeeFormRows.controls);
 
   private updateEmployee(employeeUpdateData: IEmployee): void {
-    const subscription: Subscription = this.employeesService.update(employeeUpdateData.id, employeeUpdateData)
+    const subscription: Subscription = this.employeesService.update(employeeUpdateData.Id, employeeUpdateData)
       .subscribe({
         next: () => {
           this.snackBar.open(

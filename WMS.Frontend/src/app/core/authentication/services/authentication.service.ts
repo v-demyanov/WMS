@@ -34,8 +34,8 @@ export class AuthenticationService {
 
   public setTokens(tokens: ITokenResponse): void {
     this.authenticationDataService
-      .setAccessToken(tokens.accessToken)
-      .setRefreshToken(tokens.refreshToken);
+      .setAccessToken(tokens.AccessToken)
+      .setRefreshToken(tokens.RefreshToken);
   }
 
   public getUserClaims = (): IUserClaims | null =>

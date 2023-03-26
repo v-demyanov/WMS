@@ -86,8 +86,8 @@ export class AuthenticationDataService {
       })
       .pipe(
         tap((tokens: ITokenResponse) =>
-          this.setAccessToken(tokens.accessToken)
-              .setRefreshToken(tokens.refreshToken)),
+          this.setAccessToken(tokens.AccessToken)
+              .setRefreshToken(tokens.RefreshToken)),
         catchError((error) => {
           this.logout();
 

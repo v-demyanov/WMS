@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (response: ITokenResponse) => {
           this.authenticationService.setTokens(response);
-          const userClaims: IUserClaims = this.authenticationService.decodeJwtToken(response.accessToken);
+          const userClaims: IUserClaims = this.authenticationService.decodeJwtToken(response.AccessToken);
           this.authenticationService.setUserClaims(userClaims);
           this.router.navigate([AppRoute.Home]);
 

@@ -1,10 +1,10 @@
 import { UserRole } from 'src/app/core/authentication/enums/user-role.enum';
 
 export interface IEmployee {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: UserRole;
-  imageUrl?: string;
+  Id: number;
+  FirstName: string;
+  LastName: string;
+  Email: string;
+  Role: UserRole;
+  AvatarUrl?: string;
 }
