@@ -60,8 +60,7 @@ public class AuthService : IAuthService
 
     public async Task<TokensResponse> RefreshTokensAsync(RefreshRequest refreshRequest)
     {
-        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
-        var currentUser = this._userService.GetByEmail(identity.Name);
+        User currentUser = this.GetCurrentUser();
         if (currentUser == null)
         {
             throw new AuthenticationFailedException("Can't refresh tokens, because user doesn't exist");
@@ -82,6 +81,12 @@ public class AuthService : IAuthService
         await this.UpdateRefreshTokenAsync(currentUser, tokens.RefreshToken);
 
         return tokens;
+    }
+
+    public User GetCurrentUser()
+    {
+        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
+        return this._userService.GetByEmail(identity.Name);
     }
 
     private List<Claim> GenerateUserClaims(User user) =>

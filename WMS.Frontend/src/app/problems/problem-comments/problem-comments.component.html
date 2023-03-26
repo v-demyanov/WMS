@@ -43,13 +43,22 @@
 
 <div class="comment-form-wrapper" *ngIf="isCommentFormVisible">
   <label class="comment-form-label" for="commentForm">Комментарий</label>
-  <div class="comment-form">
-    <textarea id="commentForm" rows="10"></textarea>
+  <div 
+    class="comment-form"
+    [formGroup]="commentForm"
+  >
+    <textarea 
+      id="commentForm"
+      rows="10"
+      formControlName="Message"
+    ></textarea>
     <div class="comment-form-controls">
       <button 
         mat-raised-button
         color="primary"
         class="add-comment-btn"
+        (click)="onSubmitComment()"
+        [disabled]="commentForm.invalid"
       >
         Добавить
       </button>

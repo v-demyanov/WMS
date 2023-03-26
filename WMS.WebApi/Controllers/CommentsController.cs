@@ -1,4 +1,9 @@
-﻿namespace WMS.WebApi.Controllers;
+﻿using System.Collections;
+using Microsoft.AspNetCore.Authorization;
+using WMS.Core.Helpers;
+using WMS.Core.Models;
+
+namespace WMS.WebApi.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -23,17 +28,19 @@ public class CommentsController : ODataController
     /// <returns>Collection of comments.</returns>
     [HttpGet]
     [EnableQuery(MaxExpansionDepth = ODataSettings.MaxExpansionDepth)]
-    public IQueryable<Comment> Get() => this._commentService.GetAll();
+    public IQueryable<Comment> Get() =>
+        this._commentService.GetAll();
 
-    /// <summary>
+            /// <summary>
     /// Creates new comment.
     /// </summary>
     /// <param name="commentCreateData">Comment's create data.</param>
     /// <returns>New comment.</returns>
     [HttpPost]
-    public async Task<ActionResult<Problem>> Post([FromBody] Comment commentCreateData)
+    [Authorize]
+    public async Task<ActionResult<CommentRecord>> Post([FromBody] Comment commentCreateData)
     {
         var comment = await this._commentService.AddAsync(commentCreateData);
-        return this.Created(comment);
+        return this.Created(CommentHelper.ToRecord(comment));
     }
 }

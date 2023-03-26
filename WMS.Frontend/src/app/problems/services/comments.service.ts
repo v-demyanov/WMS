@@ -25,7 +25,7 @@ export class CommentsService {
     const filterQuery = `$filter=ProblemId eq ${problemId}`;
     const paggingQuery = `$top=${top}&$skip=${offset}&$count=true`;
     const expandQuery = '$expand=Owner';
-    const url = `${ApiEndpoints.Comments}?${filterQuery}&${paggingQuery}&${expandQuery}`;
+    const url = `${ApiEndpoints.Comments}?${filterQuery}&${paggingQuery}&${expandQuery}&$orderby=Id desc`;
 
     return this.http.get<ODataValue<IRawComment>>(url)
       .pipe(map((odataValue: ODataValue<IRawComment>) => {

@@ -6,6 +6,9 @@ import * as commonConstants from 'src/app/core/constants/common.constants';
 import { CommentsService } from '../services/comments.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IComments } from '../models/comments';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/core/authentication';
+import { IUserClaims } from 'src/app/core/authentication/models/user-claims';
 
 @Component({
   selector: 'app-problem-comments',
@@ -37,12 +40,20 @@ export class ProblemCommentsComponent implements OnInit {
 
   public isLoadMoreBtnVisible = true;
 
+  public commentForm: FormGroup = new FormGroup({});
+
+  private userClaims?: IUserClaims | null;
+
   public constructor(
     private readonly commentsService: CommentsService,
     private readonly snackBar: MatSnackBar,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   public ngOnInit(): void {
+    this.commentForm = this.createCommentForm();
+    this.userClaims = this.authenticationService.getUserClaims();
+
     this.loadComments(this.commonConstants.DEFAULT_PAGING_COUNT, 0);
   }
 
@@ -88,5 +99,45 @@ export class ProblemCommentsComponent implements OnInit {
         },
       });
     this.componentSubscriptions.push(subscription);
+  }
+
+  public onSubmitComment() {
+    if (this.commentForm.invalid || !this.problemId || !this.userClaims?.Id) {
+      return;
+    }
+
+    this.isLoading = true;
+    const comment: IComment = {
+      Id: 0,
+      Message: this.commentForm.value.Message,
+      OwnerId: this.userClaims.Id,
+      CreatedDate: new Date(),
+      ProblemId: this.problemId,
+    };
+    
+    const subscription: Subscription = this.commentsService
+      .create(comment)
+      .subscribe({
+        next: (comment: IComment) => {
+          this.comments.unshift(comment);
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+          this.snackBar.open(
+            'Ошибка добавлении комментария',
+            'Закрыть',
+            { duration: 3000 },
+          );
+        },
+      });
+
+    this.componentSubscriptions.push(subscription);
+  }
+
+  private createCommentForm(): FormGroup {
+    return new FormGroup({
+      Message: new FormControl(undefined, Validators.required),
+    });
   }
 }
