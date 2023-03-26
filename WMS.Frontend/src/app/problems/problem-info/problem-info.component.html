@@ -70,7 +70,10 @@
         <mat-tab-group dynamicHeight>
           <mat-tab>
             <ng-template mat-tab-label>Комментарии</ng-template>
-            <app-problem-comments [(isCommentFormVisible)]="isCommentFormVisible"></app-problem-comments>
+            <app-problem-comments 
+              [(isCommentFormVisible)]="isCommentFormVisible"
+              [(problemId)]="problemId"
+            ></app-problem-comments>
           </mat-tab>
         </mat-tab-group>
       </mat-expansion-panel>

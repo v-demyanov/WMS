@@ -5,6 +5,7 @@ import { AuthenticationService, PermissionsService } from 'src/app/core/authenti
 import { IUserClaims } from 'src/app/core/authentication/models/user-claims';
 import { ProblemDialogData } from 'src/app/problems/models/problem-dialog-data';
 import { ProblemDialogComponent } from 'src/app/problems/problem-dialog/problem-dialog.component';
+import * as commonConstants from 'src/app/core/constants/common.constants';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +15,8 @@ import { ProblemDialogComponent } from 'src/app/problems/problem-dialog/problem-
 export class HeaderComponent implements OnInit {
 
   public currentUser: IUserClaims | null = null;
+
+  public commonConstants = commonConstants;
 
   constructor(
     private readonly authenticationService: AuthenticationService,

@@ -7,6 +7,7 @@ using Microsoft.OData.ModelBuilder;
 using WMS.Database.Entities;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Tenants;
+using WMS.Database.Constants;
 
 public static class WmsODataMvcBuilderExtensions
 {
@@ -17,6 +18,7 @@ public static class WmsODataMvcBuilderExtensions
             .OrderBy()
             .Count()
             .Expand()
+            .SetMaxTop(ODataSettings.MaxTopValue)
             .AddRouteComponents("api", GetEdmModel()));
 
     private static IEdmModel GetEdmModel()

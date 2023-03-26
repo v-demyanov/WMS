@@ -214,6 +214,7 @@ namespace WMS.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset?>("LastUpdateDate")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<int?>("ParentProblemId")
@@ -337,6 +338,9 @@ namespace WMS.Database.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -502,7 +506,7 @@ namespace WMS.Database.Migrations
                     b.HasOne("WMS.Database.Entities.User", "Author")
                         .WithMany("AuthorProblems")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("WMS.Database.Entities.Problem", "ParentProblem")

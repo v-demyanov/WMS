@@ -7,4 +7,5 @@ export interface IUserClaims {
   Role: UserRole;
   Email: string;
   Exp: number;
+  AvatarUrl?: string;
 }

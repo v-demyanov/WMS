@@ -18,6 +18,8 @@ public class User : BaseEntity
 
     public string? RefreshTokenSalt { get; set; }
 
+    public string? AvatarUrl { get; set; }
+
     public Role Role { get; set; }
 
     public ICollection<Problem> PerformerProblems { get; } = new HashSet<Problem>();

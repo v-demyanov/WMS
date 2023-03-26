@@ -1,5 +1,5 @@
 import { KeyValue, ViewportScroller } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,8 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
 
   public problem?: IProblem;
 
+  public problemId?: number;
+
   public isLoading: boolean = false;
 
   public problemStatusTitles: KeyValue<ProblemStatus, string>[] = ProblemStatusTitles;
@@ -36,7 +38,6 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     private readonly problemsService: ProblemsService,
     private readonly snackBar: MatSnackBar,
     private readonly scroller: ViewportScroller,
-    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   public ngOnInit(): void {
@@ -81,9 +82,9 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
 
   private subscribeOnRouteParamsChanges(): Subscription {
     return this.route.params.subscribe((params: Params) => {
-      const problemId: number | undefined = params['id'];
-      if (problemId) {
-        this.loadProblem(problemId);
+      this.problemId = params['id'];
+      if (this.problemId) {
+        this.loadProblem(this.problemId);
       }
     });
   }

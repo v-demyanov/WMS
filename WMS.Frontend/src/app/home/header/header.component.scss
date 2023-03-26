@@ -32,6 +32,16 @@
     font-size: 0.875rem;
     margin-right: 0.5rem;
 
+    .avatart-img {
+      background-size: cover;
+      background-position: center;
+      background-color: lightgray;
+      width: 2.3rem;
+      height: 2.3rem;
+      border-radius: 100%;
+      margin-right: 0.5rem;
+    }
+
     .profile {
       background-size: cover;
       width: 3rem;
