@@ -33,6 +33,16 @@ public static class WmsODataMvcBuilderExtensions
         _ = modelBuilder.EntitySet<Problem>("Problems");
         _ = modelBuilder.EntitySet<Comment>("Comments");
 
+        ConfigureUserEntityType(modelBuilder);
+
         return modelBuilder.GetEdmModel();
+    }
+
+    private static void ConfigureUserEntityType(ODataConventionModelBuilder modelBuilder)
+    {
+        modelBuilder.EntitySet<User>("Users").EntityType.Ignore(x => x.Password);
+        modelBuilder.EntitySet<User>("Users").EntityType.Ignore(x => x.Salt);
+        modelBuilder.EntitySet<User>("Users").EntityType.Ignore(x => x.RefreshToken);
+        modelBuilder.EntitySet<User>("Users").EntityType.Ignore(x => x.RefreshTokenSalt);
     }
 }
