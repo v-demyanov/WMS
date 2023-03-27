@@ -9,6 +9,7 @@ import { IComments } from '../models/comments';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/authentication';
 import { IUserClaims } from 'src/app/core/authentication/models/user-claims';
+import { IEmployee } from 'src/app/admin-panel/employees/models/employee';
 
 @Component({
   selector: 'app-problem-comments',
@@ -119,8 +120,24 @@ export class ProblemCommentsComponent implements OnInit {
       .create(comment)
       .subscribe({
         next: (comment: IComment) => {
+          comment.Owner = <IEmployee> {
+            Id: this.userClaims?.Id,
+            FirstName: this.userClaims?.FirstName,
+            LastName: this.userClaims?.LastName,
+            Email: this.userClaims?.Email,
+            Role: this.userClaims?.Role,
+            AvatarUrl: this.userClaims?.AvatarUrl,
+          };
           this.comments.unshift(comment);
           this.isLoading = false;
+
+          this.commentForm.reset();
+
+          this.snackBar.open(
+            'Комментарий добавлен',
+            'Закрыть',
+            { duration: 3000 },
+          );
         },
         error: () => {
           this.isLoading = false;

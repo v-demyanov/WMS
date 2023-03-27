@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using Microsoft.AspNetCore.Authorization;
-using WMS.Core.Helpers;
-using WMS.Core.Models;
-
-namespace WMS.WebApi.Controllers;
+﻿namespace WMS.WebApi.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 using WMS.Core.Services.Abstractions;
 using WMS.Database.Constants;
@@ -31,16 +27,16 @@ public class CommentsController : ODataController
     public IQueryable<Comment> Get() =>
         this._commentService.GetAll();
 
-            /// <summary>
+    /// <summary>
     /// Creates new comment.
     /// </summary>
     /// <param name="commentCreateData">Comment's create data.</param>
     /// <returns>New comment.</returns>
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<CommentRecord>> Post([FromBody] Comment commentCreateData)
+    public async Task<ActionResult> Post([FromBody] Comment commentCreateData)
     {
         var comment = await this._commentService.AddAsync(commentCreateData);
-        return this.Created(CommentHelper.ToRecord(comment));
+        return this.Created(comment);
     }
 }

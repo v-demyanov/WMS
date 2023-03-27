@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace WMS.Core.Services;
+﻿namespace WMS.Core.Services;
 
 using WMS.Core.Services.Abstractions;
 using WMS.Database;
@@ -20,15 +18,5 @@ public class CommentService : BaseService<Comment>, ICommentService
     protected override void Update(Comment entity, Comment entityUpdateData)
     {
         throw new NotImplementedException();
-    }
-
-    public async override Task<Comment> AddAsync(Comment entityCreateData)
-    {
-        var comment = await base.AddAsync(entityCreateData);
-
-        User currentUser = this._authService.GetCurrentUser();
-        comment.Owner = currentUser;
-        
-        return comment;
     }
 }
