@@ -69,7 +69,7 @@ export class ProblemCommentsComponent implements OnInit {
   }
 
   public onLoadMoreBtnClick(): void {
-    const top: number = this.comments.length + this.commonConstants.DEFAULT_PAGING_COUNT - 1;
+    const top: number = this.commonConstants.DEFAULT_PAGING_COUNT;
     const skip: number = this.comments.length;
 
     this.loadComments(top, skip);
