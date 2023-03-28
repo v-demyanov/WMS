@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
     /// </summary>
     /// <returns>Collection of users.</returns>
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public IEnumerable<UserRecord> GetAll() => this._userService.GetAll();
 
     /// <summary>

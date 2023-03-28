@@ -62,17 +62,6 @@ builder.Services
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
 
-var corsPolicyName = "Cors";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(corsPolicyName, policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
 string connectionString = builder.Configuration.GetConnectionString("WMSDatabase");
 builder.Services.AddDbContext<WmsDbContext>(options => options.UseSqlServer(connectionString, options =>
 {
@@ -117,6 +106,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -150,8 +145,6 @@ app.UseExceptionHandler(app => app.Run(async context =>
         ErrorMessage = exception?.Message ?? string.Empty,
     });
 }));
-
-app.UseCors(corsPolicyName);
 
 app.MapControllers();
 

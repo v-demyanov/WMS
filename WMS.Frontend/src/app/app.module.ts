@@ -8,6 +8,7 @@ import { AccessModule } from './access/access.module';
 import { CoreModule } from './core/core.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './core/http/jwt.interceptor';
+import { AuthErrorInterceptor } from './core/http/auth-error.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,9 @@ import { JwtInterceptor } from './core/http/jwt.interceptor';
     BrowserAnimationsModule,
   ],
   bootstrap: [AppComponent],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }]
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthErrorInterceptor, multi: true },
+  ],
 })
 export class AppModule {}
