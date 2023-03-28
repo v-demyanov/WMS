@@ -4,7 +4,6 @@ import { ProblemsComponent } from './problems.component';
 import { ProblemsRoutingModule } from './problems-routing.module';
 import { ProblemDialogComponent } from './problem-dialog/problem-dialog.component';
 import { SharedModule } from '../shared/shared.module';
-import { ProblemDialogCommentsComponent } from './problem-dialog/problem-dialog-comments/problem-dialog-comments.component';
 import { ProblemInfoComponent } from './problem-info/problem-info.component';
 import { ProblemCardComponent } from './problem-card/problem-card.component';
 import { ProblemCommentsComponent } from './problem-comments/problem-comments.component';
@@ -13,7 +12,6 @@ import { ProblemCommentsComponent } from './problem-comments/problem-comments.co
   declarations: [
     ProblemsComponent,
     ProblemDialogComponent,
-    ProblemDialogCommentsComponent,
     ProblemInfoComponent,
     ProblemCardComponent,
     ProblemCommentsComponent,

@@ -201,13 +201,4 @@
       </button>
     </div>
   </mat-dialog-actions>
-
-  <div 
-    style="padding: 0 2rem 2rem 2rem;"
-    *ngIf="isReadonly && isCommentsDisplayed"
-  >
-    <app-problem-dialog-comments
-      [problemId]="problem?.Id"
-    ></app-problem-dialog-comments>
-  </div>
 </div>
