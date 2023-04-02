@@ -1,181 +1,197 @@
 <div class="wrapper" style="max-height: 100vh">
   <h1 mat-dialog-title>{{ dialogTitle }}</h1>
-  <div mat-dialog-content>
-    <form [formGroup]="problemForm" class="dialog-content">
-      <div class="dialog-content-column-1">
-        <mat-form-field appearance="fill">
-          <mat-label>Заголовок</mat-label>
-          <input [readonly]="isReadonly" matInput formControlName="Title" />
-          <mat-error *ngIf="problemForm.controls['Title'].hasError('required')">
-            Поле обязательное
-          </mat-error>
-        </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Статус</mat-label>
-          <mat-select formControlName="Status">
-            <mat-option
-              [disabled]="isReadonly"
-              *ngFor="let title of problemStatusTitles"
-              [value]="title.key"
-            >
-              {{ title.value }}
-            </mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="problemForm.controls['Status'].hasError('required')"
-          >
-            Поле обязательное
-          </mat-error>
-        </mat-form-field>
+  <form 
+    [formGroup]="problemForm"
+    mat-dialog-content
+    class="dialog-content"
+  >
+    <mat-form-field 
+      class="full-width-field" 
+      appearance="fill"
+    >
+      <mat-label>Заголовок</mat-label>
+      <input [readonly]="isReadonly" matInput formControlName="Title" />
+      <mat-error *ngIf="problemForm.controls['Title'].hasError('required')">
+        Поле обязательное
+      </mat-error>
+    </mat-form-field>
 
-        <div class="dates">
-          <mat-form-field appearance="fill" class="field-column-margin">
-            <mat-label>Дата создания</mat-label>
-            <input
-              [readonly]="isReadonly"
-              formControlName="CreatedDate"
-              matInput
-              [matDatepicker]="createdDatePicker"
-            />
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="createdDatePicker"
-            ></mat-datepicker-toggle>
-            <mat-datepicker
-              [disabled]="isReadonly"
-              #createdDatePicker
-            ></mat-datepicker>
-            <mat-error
-              *ngIf="problemForm.controls['CreatedDate'].hasError('required')"
-            >
-              Поле обязательное
-            </mat-error>
-          </mat-form-field>
+    <mat-form-field
+      class="full-width-field"
+      appearance="fill"
+    >
+      <mat-label>Статус</mat-label>
+      <mat-select formControlName="Status">
+        <mat-option
+          [disabled]="isReadonly"
+          *ngFor="let title of problemStatusTitles"
+          [value]="title.key"
+        >
+          {{ title.value }}
+        </mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="problemForm.controls['Status'].hasError('required')"
+      >
+        Поле обязательное
+      </mat-error>
+    </mat-form-field>
 
-          <mat-form-field appearance="fill">
-            <mat-label>Дата обновления</mat-label>
-            <input
-              [readonly]="isReadonly"
-              formControlName="LastUpdateDate"
-              matInput
-              [matDatepicker]="lastUpdateDatePicker"
-            />
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="lastUpdateDatePicker"
-            ></mat-datepicker-toggle>
-            <mat-datepicker
-              [disabled]="isReadonly"
-              #lastUpdateDatePicker
-            ></mat-datepicker>
-          </mat-form-field>
-        </div>
+    <div class="dates">
+      <mat-form-field appearance="fill" class="field-column-margin">
+        <mat-label>Дата создания</mat-label>
+        <input
+          [readonly]="isReadonly"
+          formControlName="CreatedDate"
+          matInput
+          [matDatepicker]="createdDatePicker"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="createdDatePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          [disabled]="isReadonly"
+          #createdDatePicker
+        ></mat-datepicker>
+        <mat-error
+          *ngIf="problemForm.controls['CreatedDate'].hasError('required')"
+        >
+          Поле обязательное
+        </mat-error>
+      </mat-form-field>
 
-        <div class="full-width-field">
-          <app-address-picker
-            formControlName="TargetAddress"
-            [readonly]="isReadonly"
-          >
-          </app-address-picker>
-        </div>
-      </div>
+      <mat-form-field appearance="fill">
+        <mat-label>Дата обновления</mat-label>
+        <input
+          [readonly]="isReadonly"
+          formControlName="LastUpdateDate"
+          matInput
+          [matDatepicker]="lastUpdateDatePicker"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="lastUpdateDatePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          [disabled]="isReadonly"
+          #lastUpdateDatePicker
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
 
-      <div class="dialog-content-column-2">
-        <mat-form-field appearance="fill">
-          <mat-label>Автор</mat-label>
-          <mat-select formControlName="AuthorId" #authorsList>
-            <mat-option
-              [disabled]="true"
-              *ngFor="let employee of employees"
-              [value]="employee.Id"
-            >
-              {{ employee.FirstName + " " + employee.LastName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <app-address-picker
+      formControlName="TargetAddress"
+      [readonly]="isReadonly"
+      class="full-width-field"
+    >
+    </app-address-picker>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Исполнитель</mat-label>
-          <mat-select formControlName="PerformerId" #performersList>
-            <mat-option
-              [disabled]="isReadonly"
-              *ngFor="let performer of employees"
-              [value]="performer.Id"
-            >
-              {{ performer.FirstName + " " + performer.LastName }}
-            </mat-option>
-          </mat-select>
-          <button
-            *ngIf="performersList.selected && !isReadonly"
-            matSuffix
-            mat-icon-button
-            aria-label="Clear"
-            (click)="performersList.value = null"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
+    <mat-form-field 
+      appearance="fill"
+      class="full-width-field"
+    >
+      <mat-label>Автор</mat-label>
+      <mat-select formControlName="AuthorId" #authorsList>
+        <mat-option
+          [disabled]="true"
+          *ngFor="let employee of employees"
+          [value]="employee.Id"
+        >
+          {{ employee.FirstName + " " + employee.LastName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Аудитор</mat-label>
-          <mat-select formControlName="AuditorId" #auditorsList>
-            <mat-option
-              [disabled]="isReadonly"
-              *ngFor="let auditor of auditors"
-              [value]="auditor.Id"
-            >
-              {{ auditor.FirstName + " " + auditor.LastName }}
-            </mat-option>
-          </mat-select>
-          <button
-            *ngIf="auditorsList.selected && !isReadonly"
-            matSuffix
-            mat-icon-button
-            aria-label="Clear"
-            (click)="auditorsList.value = null"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
+    <mat-form-field 
+      appearance="fill"
+      class="full-width-field"
+    >
+      <mat-label>Исполнитель</mat-label>
+      <mat-select formControlName="PerformerId" #performersList>
+        <mat-option
+          [disabled]="isReadonly"
+          *ngFor="let performer of employees"
+          [value]="performer.Id"
+        >
+          {{ performer.FirstName + " " + performer.LastName }}
+        </mat-option>
+      </mat-select>
+      <button
+        *ngIf="performersList.selected && !isReadonly"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="performersList.value = null"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Товар</mat-label>
-          <mat-select formControlName="WareId" #waresList>
-            <mat-option
-              [disabled]="isReadonly"
-              *ngFor="let ware of wares"
-              [value]="ware.Id"
-            >
-              {{ ware.Name }}
-            </mat-option>
-          </mat-select>
-          <button
-            *ngIf="waresList.selected && !isReadonly"
-            matSuffix
-            mat-icon-button
-            aria-label="Clear"
-            (click)="waresList.value = null"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
+    <mat-form-field 
+      appearance="fill"
+      class="full-width-field"
+    >
+      <mat-label>Аудитор</mat-label>
+      <mat-select formControlName="AuditorId" #auditorsList>
+        <mat-option
+          [disabled]="isReadonly"
+          *ngFor="let auditor of auditors"
+          [value]="auditor.Id"
+        >
+          {{ auditor.FirstName + " " + auditor.LastName }}
+        </mat-option>
+      </mat-select>
+      <button
+        *ngIf="auditorsList.selected && !isReadonly"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="auditorsList.value = null"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
 
-      <div class="description-section">
-        <mat-form-field class="description-field" appearance="fill">
-          <mat-label>Описание</mat-label>
-          <textarea
-            [readonly]="isReadonly"
-            formControlName="Description"
-            matInput
-          ></textarea>
-        </mat-form-field>
-      </div>
-    </form>
-  </div>
+    <mat-form-field 
+      appearance="fill"
+      class="full-width-field"
+    >
+      <mat-label>Товар</mat-label>
+      <mat-select formControlName="WareId" #waresList>
+        <mat-option
+          [disabled]="isReadonly"
+          *ngFor="let ware of wares"
+          [value]="ware.Id"
+        >
+          {{ ware.Name }}
+        </mat-option>
+      </mat-select>
+      <button
+        *ngIf="waresList.selected && !isReadonly"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="waresList.value = null"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="description-section">
+      <mat-form-field class="description-field" appearance="fill">
+        <mat-label>Описание</mat-label>
+        <textarea
+          [readonly]="isReadonly"
+          formControlName="Description"
+          matInput
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </form>
 
   <mat-dialog-actions class="dialog-actions">
     <div>
@@ -189,7 +205,7 @@
       </button>
     </div>
     <div>
-      <button (click)="closeDialog()" mat-button>Закрыть</button>
+      <button (click)="closeDialog()" mat-button>Отменить</button>
       <button
         [disabled]="problemForm.invalid"
         *ngIf="!isReadonly"

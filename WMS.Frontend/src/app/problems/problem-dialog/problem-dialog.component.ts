@@ -136,7 +136,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
             {relativeTo: this.route},
           );
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open(
             'Ошибка при создании задачи',

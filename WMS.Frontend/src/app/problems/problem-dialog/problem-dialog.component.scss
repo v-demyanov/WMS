@@ -1,15 +1,8 @@
 .wrapper {
   .dialog-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-
-    grid-template-areas:
-      "a b"
-      "c c";
-
-    grid-template-rows: 1fr auto;
-    grid-template-columns: 1fr 1fr;
+    border-top: solid 0.125rem #ebecf1;
+    border-bottom: solid 0.125rem #ebecf1;
+    padding-top: 1rem;
 
     .dialog-content-column-1 {
       display: flex;
@@ -25,18 +18,16 @@
     }
 
     .dates {
-      display: flex;
-    }
-
-    .field-column-margin {
-      margin-right: 1rem;
-    }
-
-    .description-section {
-      grid-area: c;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
     }
 
     .description-field {
+      width: 100%;
+    }
+
+    .full-width-field {
       width: 100%;
     }
   }

@@ -152,7 +152,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open('Ошибка при добавлении товара', 'Закрыть', {
             duration: 3000,
@@ -182,7 +182,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
             duration: 3000,
           });
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open('Ошибка при обновлении товара', 'Закрыть', {
             duration: 3000,
