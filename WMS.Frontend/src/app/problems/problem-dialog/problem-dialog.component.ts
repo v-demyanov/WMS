@@ -39,8 +39,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
 
   public isReadonly: boolean = false;
 
-  public isCommentsDisplayed: boolean = false;
-
   public auditors: IEmployee[] = [];
 
   public employees: IEmployee[] = [];
@@ -50,6 +48,8 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
   public problemForm: FormGroup = new FormGroup({});
 
   public problem?: IProblem;
+
+  public problemsDropDownValues: KeyValue<number, string>[] = [];
 
   private componentSubscriptions: Subscription[] = [];
 
@@ -75,6 +75,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
     this.isReadonly = !this.isCreating && ! this.isEditing;
 
     this.problemForm = this.createProblemForm();
+    this.loadProblemsDropDownValues();
 
     if (this.isReadonly || this.isEditing) {
       this.loadProblem();
@@ -112,10 +113,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
     else if (this.isEditing) {
       this.updateProblem();
     }
-  }
-
-  public onCommentBtnClick(): void {
-    this.isCommentsDisplayed = this.isCommentsDisplayed ? false : true;
   }
 
   private createProblem(): void {
@@ -166,7 +163,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
           this.initializeProblemForm();
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open(
             'Ошибка при загрузке задачи',
@@ -196,7 +193,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
           this.auditors = employees.filter(x => x.Role === UserRole.Auditor)
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open(
             'Ошибка при загрузке пользователей',
@@ -229,6 +226,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
   private createProblemForm(): FormGroup {
     return new FormGroup({
       Title: new FormControl(undefined, [Validators.required]),
+      ParentProblemId: new FormControl(undefined),
       Description: new FormControl(undefined),
       Status: new FormControl(undefined, [Validators.required]),
       CreatedDate: new FormControl(undefined, [Validators.required]),
@@ -244,6 +242,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
   private initializeProblemForm(): void {
     this.problemForm.setValue({
       Title: this.problem?.Title ?? null,
+      ParentProblemId: this.problem?.ParentProblemId ?? null,
       Description: this.problem?.Description ?? null,
       Status: this.problem?.Status ?? null,
       CreatedDate: this.problem?.CreatedDate ?? null,
@@ -266,5 +265,27 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       ...this.problemForm.value,
       Status: ProblemStatus[this.problemForm.value.Status],
     };
+  }
+
+  private loadProblemsDropDownValues(): void {
+    this.isLoading = true;
+    const subscription: Subscription = this.problemsService
+      .getForDropDown()
+      .subscribe({
+        next: (values: KeyValue<number, string>[]) => {
+          this.problemsDropDownValues = values;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+          this.snackBar.open(
+            'Ошибка при загрузке задач',
+            'Закрыть',
+            { duration: 3000 },
+          );
+        },
+      });
+
+    this.componentSubscriptions.push(subscription);
   }
 }

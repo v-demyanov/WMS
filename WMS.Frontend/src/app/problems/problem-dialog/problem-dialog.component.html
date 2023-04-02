@@ -21,6 +21,31 @@
       class="full-width-field"
       appearance="fill"
     >
+      <mat-label>Родительская задача</mat-label>
+      <mat-select formControlName="ParentProblemId" #parentTasksList>
+        <mat-option
+          [disabled]="isReadonly"
+          *ngFor="let problemsDropDownValue of problemsDropDownValues"
+          [value]="problemsDropDownValue.key"
+        >
+          {{ problemsDropDownValue.value + ' (' + problemsDropDownValue.key + ')' }}
+        </mat-option>
+      </mat-select>
+      <button
+        *ngIf="parentTasksList.selected && !isReadonly"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="parentTasksList.value = null"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field
+      class="full-width-field"
+      appearance="fill"
+    >
       <mat-label>Статус</mat-label>
       <mat-select formControlName="Status">
         <mat-option
@@ -194,27 +219,15 @@
   </form>
 
   <mat-dialog-actions class="dialog-actions">
-    <div>
-      <button
-        *ngIf="isReadonly"
-        mat-icon-button
-        matTooltip="Комментарии"
-        (click)="onCommentBtnClick()"
-      >
-        <mat-icon color="primary">comment</mat-icon>
-      </button>
-    </div>
-    <div>
-      <button (click)="closeDialog()" mat-button>Отменить</button>
-      <button
-        [disabled]="problemForm.invalid"
-        *ngIf="!isReadonly"
-        mat-raised-button
-        color="primary"
-        (click)="onSaveBtnClick()"
-      >
-        Сохранить
-      </button>
-    </div>
+    <button (click)="closeDialog()" mat-button>Отменить</button>
+    <button
+      [disabled]="problemForm.invalid"
+      *ngIf="!isReadonly"
+      mat-raised-button
+      color="primary"
+      (click)="onSaveBtnClick()"
+    >
+      Сохранить
+    </button>
   </mat-dialog-actions>
 </div>

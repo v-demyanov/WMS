@@ -1,4 +1,6 @@
 .wrapper {
+  max-width: 50rem;
+
   .dialog-content {
     border-top: solid 0.125rem #ebecf1;
     border-bottom: solid 0.125rem #ebecf1;
@@ -34,6 +36,6 @@
 
   .dialog-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
 }

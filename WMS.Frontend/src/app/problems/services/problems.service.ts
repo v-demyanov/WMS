@@ -1,3 +1,4 @@
+import { KeyValue } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
@@ -24,12 +25,18 @@ export class ProblemsService {
   }
 
   public get(problemId: number): Observable<IProblem> {
-    const expandQuery: string = '$expand=TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const expandQuery: string = '$expand=ChildrenProblems,TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
     const filterQuery: string = `$filter=Id eq ${problemId}`;
     const odataQuery: string = `${filterQuery}&${expandQuery}`;
 
     return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${odataQuery}`)
       .pipe(map((odataValue: ODataValue<IRawProblem>) => this.parseProblem(odataValue.value[0])));
+  }
+
+  public getForDropDown(): Observable<KeyValue<number, string>[]> {
+    const selectQuery: string = '$select=Id,Title';
+    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${selectQuery}`)
+      .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map(x => this.parseProblemInDropDown(x))));
   }
 
   public updateStatus = (status: ProblemStatus, problemId: number): Observable<void> =>
@@ -45,6 +52,14 @@ export class ProblemsService {
       Status: parseEnum(ProblemStatus, rawProblem.Status),
       CreatedDate: new Date(rawProblem.CreatedDate),
       LastUpdateDate: rawProblem.CreatedDate ? new Date(rawProblem.CreatedDate) : null,
+      ChildrenProblems: rawProblem.ChildrenProblems?.map(x => this.parseProblem(x)),
+    };
+  }
+
+  private parseProblemInDropDown(rawProblem: IRawProblem): KeyValue<number, string> {
+    return {
+      key: rawProblem.Id,
+      value: rawProblem.Title,
     };
   }
 }
