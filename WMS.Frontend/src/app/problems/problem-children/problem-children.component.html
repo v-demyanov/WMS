@@ -1,0 +1,21 @@
+<div *ngIf="problems.length == 0" class="warning-message">
+  Пока что подзадачи отсутствуют
+</div>
+
+<div
+  class="problem-wrapper"
+  *ngFor="let problem of problems"
+>
+  {{ problem.Id }}
+</div>
+
+<div
+  class="create-child-problem-btn-wrapper"
+>
+  <button 
+    mat-flat-button
+    class="create-child-problem-btn"
+  >
+    Добавить
+  </button>
+</div>

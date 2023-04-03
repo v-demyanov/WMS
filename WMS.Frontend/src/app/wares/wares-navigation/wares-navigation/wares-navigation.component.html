@@ -13,7 +13,7 @@
         *ngFor="let ware of wares" [value]="ware"
       >
         <mat-icon>category</mat-icon>
-        <span style="padding: 0 0.5rem;">#{{ ware.Id }}</span>
+        <span style="padding: 0 0.5rem;">({{ ware.Id }})</span>
         <span>{{ ware.Name }}</span>
       </mat-list-option>
     </mat-selection-list>

@@ -1,3 +1,7 @@
+<div *ngIf="comments.length == 0" class="warning-message">
+  Оставьте первый комментарий
+</div>
+
 <div *ngFor="let comment of comments" class="comment">
   <div
     class="comment-img"

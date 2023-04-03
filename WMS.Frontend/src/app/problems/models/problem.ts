@@ -16,4 +16,5 @@ export interface IProblem {
   TargetAddressId?: number;
 
   TargetAddress?: IAddress;
+  ChildrenProblems?: IProblem[];
 }

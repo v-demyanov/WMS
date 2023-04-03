@@ -54,7 +54,6 @@
             }
 
             .status {
-              //background-color: green;
               color: white;
               border-radius: 3px;
               font-size: 11px;
@@ -67,6 +66,10 @@
       }
     
       .description {
+        .warning-message {
+          text-align: center;
+          padding: 1rem;
+        }
       }
 
       .sub-tasks {

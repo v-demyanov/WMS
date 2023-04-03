@@ -7,6 +7,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ProblemInfoComponent } from './problem-info/problem-info.component';
 import { ProblemCardComponent } from './problem-card/problem-card.component';
 import { ProblemCommentsComponent } from './problem-comments/problem-comments.component';
+import { ProblemChildrenComponent } from './problem-children/problem-children.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { ProblemCommentsComponent } from './problem-comments/problem-comments.co
     ProblemInfoComponent,
     ProblemCardComponent,
     ProblemCommentsComponent,
+    ProblemChildrenComponent,
   ],
   imports: [
     CommonModule,

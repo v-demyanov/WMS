@@ -1,0 +1,22 @@
+.warning-message {
+  text-align: center;
+  padding: 1rem;
+}
+
+.problem-wrapper {
+  border: 1px solid #c1c7d0;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.create-child-problem-btn-wrapper {
+  display: flex;
+  justify-content: center;
+
+  .create-child-problem-btn {
+    width: 99%;
+    background: rgba(9,30,66,0.08);
+    color: black;
+  }
+}

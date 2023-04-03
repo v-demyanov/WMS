@@ -15,4 +15,5 @@ export interface IRawProblem {
   TargetAddressId?: number;
 
   TargetAddress?: IAddress;
+  ChildrenProblems?: IRawProblem[];
 }

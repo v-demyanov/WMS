@@ -24,8 +24,15 @@ export class ProblemsService {
       .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map((x) => this.parseProblem(x))));
   }
 
+  public getChildren(problemId: number): Observable<IProblem[]> {
+    const filterQuery: string = `$filter=ParentProblemId eq ${problemId}`;
+
+    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${filterQuery}`)
+      .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map((x) => this.parseProblem(x))));
+  }
+
   public get(problemId: number): Observable<IProblem> {
-    const expandQuery: string = '$expand=ChildrenProblems,TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const expandQuery: string = '$expand=TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
     const filterQuery: string = `$filter=Id eq ${problemId}`;
     const odataQuery: string = `${filterQuery}&${expandQuery}`;
 
