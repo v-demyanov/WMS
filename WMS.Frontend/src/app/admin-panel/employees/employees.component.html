@@ -18,126 +18,139 @@
       formArrayName="employees"
       class="mat-elevation-z8"
     >
-      <ng-container matColumnDef="firstName">
+      <ng-container matColumnDef="FirstName">
         <th mat-header-cell *matHeaderCellDef>Имя</th>
         <td
           mat-cell
           *matCellDef="let employee; let index = index"
           [formGroupName]="index"
-          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          [class.input-td]="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
         >
-          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
-            {{ employee.value.firstName }}
+          <span *ngIf="!(isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0))">
+            {{ employee.value.FirstName }}
           </span>
           <mat-form-field
             appearance="outline"
-            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+            *ngIf="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
           >
-            <input matInput formControlName="firstName" />
-            <mat-error *ngIf="employee.controls['firstName'].hasError('required')">
+            <input 
+              matInput
+              formControlName="FirstName"
+              [readonly]="isLoading"
+            />
+            <mat-error *ngIf="employee.controls['FirstName'].hasError('required')">
               Поле обязательное
             </mat-error>
           </mat-form-field>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="lastName">
+      <ng-container matColumnDef="LastName">
         <th mat-header-cell *matHeaderCellDef>Фамилия</th>
         <td
           mat-cell
           *matCellDef="let employee; let index = index"
           [formGroupName]="index"
-          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          [class.input-td]="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
         >
-          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
-            {{ employee.value.lastName }}
+          <span *ngIf="!(isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0))">
+            {{ employee.value.LastName }}
           </span>
           <mat-form-field
             appearance="outline"
-            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+            *ngIf="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
           >
-            <input matInput formControlName="lastName" />
-            <mat-error *ngIf="employee.controls['lastName'].hasError('required')">
+            <input 
+              matInput
+              formControlName="LastName"
+              [readonly]="isLoading"
+            />
+            <mat-error *ngIf="employee.controls['LastName'].hasError('required')">
               Поле обязательное
             </mat-error>
           </mat-form-field>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="email">
+      <ng-container matColumnDef="Email">
         <th mat-header-cell *matHeaderCellDef>Почтовый адрес</th>
         <td
           mat-cell
           *matCellDef="let employee; let index = index"
           [formGroupName]="index"
-          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          [class.input-td]="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
         >
-          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
-            {{ employee.value.email }}
+          <span *ngIf="!(isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0))">
+            {{ employee.value.Email }}
           </span>
           <mat-form-field
             appearance="outline"
-            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+            *ngIf="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
           >
-            <input matInput formControlName="email" />
-            <mat-error *ngIf="employee.controls['email'].hasError('required')">
+            <input 
+              matInput
+              formControlName="Email"
+              [readonly]="isLoading"
+            />
+            <mat-error *ngIf="employee.controls['Email'].hasError('required')">
               Поле обязательное
             </mat-error>
-            <mat-error *ngIf="employee.controls['email'].hasError('email')">
+            <mat-error *ngIf="employee.controls['Email'].hasError('email')">
               Не верный формат
             </mat-error>
           </mat-form-field>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="role">
+      <ng-container matColumnDef="Role">
         <th mat-header-cell *matHeaderCellDef>Роль</th>
         <td
           mat-cell
           *matCellDef="let employee; let index = index"
           [formGroupName]="index"
-          [class.input-td]="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+          [class.input-td]="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
         >
-          <span *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))">
-            {{ getUserRoleDisplayName(employee.value.role) }}
+          <span *ngIf="!(isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0))">
+            {{ getUserRoleDisplayName(employee.value.Role) }}
           </span>
           <mat-form-field
             appearance="outline"
-            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+            *ngIf="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
           >
-            <mat-select formControlName="role">
+            <mat-select [disabled]="isLoading" formControlName="Role">
               <mat-option
                 *ngFor="let userRole of userRoleTitles"
                 [value]="userRole.key"
-                [disabled]="employee.value.id == currentUser?.Id"
+                [disabled]="employee.value.Id == currentUser?.Id"
               >
                 {{ userRole.value }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="employee.controls['role'].hasError('required')">
+            <mat-error *ngIf="employee.controls['Role'].hasError('required')">
               Поле обязательное
             </mat-error>
           </mat-form-field>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="actions">
+      <ng-container matColumnDef="Actions">
         <th mat-header-cell *matHeaderCellDef>Действия</th>
         <td mat-cell *matCellDef="let employee" class="actions">
           <button
             mat-raised-button
             color="warn"
             class="remove-btn"
-            (click)="onRemoveBtnClick(employee.value.id)"
-            [disabled]="currentUser?.Id == employee.value.id || isLoading || (isAdding && employee.value.id !== 0)"
+            (click)="onRemoveBtnClick(employee.value.Id)"
+            *ngIf="!(isAdding && !employee.value.Id)"
+            [disabled]="currentUser?.Id == employee.value.Id || isLoading"
           >
             Удалить
           </button>
           <button
             mat-raised-button
             (click)="onEditBtnClick(employee.value)"
-            *ngIf="!(isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0))"
-            [disabled]="isEditing && employee.value.id !== editingItemId || (isAdding && employee.value.id !== 0)"
+            *ngIf="!(isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0))"
+            [disabled]="isEditing && employee.value.Id !== editingItemId || (isAdding && employee.value.Id !== 0)"
           >
             Редактировать
           </button>
@@ -145,15 +158,19 @@
             mat-raised-button
             class="save-btn"
             (click)="onSaveBtnClick(employee.value)"
-            *ngIf="isEditing && employee.value.id === editingItemId || (isAdding && employee.value.id === 0)"
+            *ngIf="isEditing && employee.value.Id === editingItemId || (isAdding && employee.value.Id === 0)"
             [disabled]="isLoading || employee.invalid || employee.pristine"
           >
-            Сохранить
+            <div class="save-btn-wrapper">
+              <mat-spinner *ngIf="isSaving" class="progress-spinner" [diameter]="20"></mat-spinner>
+              <span>Сохранить</span>
+            </div>
           </button>
           <button
             mat-raised-button
             (click)="onResetBtnClick(employee.value)"
-            *ngIf="isEditing && employee.value.id === editingItemId"
+            *ngIf="(isEditing && employee.value.Id === editingItemId) || (isAdding && !employee.value.Id)"
+            [disabled]="isLoading"
           >
             Отменить
           </button>

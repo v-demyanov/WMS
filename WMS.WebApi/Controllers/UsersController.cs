@@ -39,7 +39,7 @@ public class UsersController : ControllerBase
     /// <returns>Created user.</returns>
     [HttpPost]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<ActionResult<UserRecord>> Post([FromBody] UserRecord userCreateData)
+    public async Task<ActionResult<UserRecord>> Create([FromBody] UserRecord userCreateData)
     {
         this.Response.StatusCode = (int)HttpStatusCode.Created;
         return await this._userService.CreateAsync(userCreateData);
@@ -81,5 +81,4 @@ public class UsersController : ControllerBase
         await this._userService.UpdatePasswordAsync(password);
         return this.NoContent();
     }
-        
 }

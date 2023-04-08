@@ -11,7 +11,6 @@
 
   .actions {
     text-align: center;
-    
   
     .remove-btn {
       margin-right: 1rem;
@@ -19,6 +18,14 @@
   
     .save-btn {
       margin-right: 1rem;
+
+      .save-btn-wrapper {
+        display: flex;
+
+        .progress-spinner {
+          margin-right: 0.5rem;
+        }
+      }
     }
   }
 }

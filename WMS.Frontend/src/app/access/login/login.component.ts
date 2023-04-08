@@ -49,10 +49,10 @@ export class LoginComponent implements OnInit {
 
           this.loading = false;
         },
-        error: (error) => {
+        error: () => {
           this.loading = false;
           this.snackBar.open(
-            error.error.errorMessage,
+            'Пароль или логин неверный!',
             'Закрыть',
             { duration: 3000 },
           );

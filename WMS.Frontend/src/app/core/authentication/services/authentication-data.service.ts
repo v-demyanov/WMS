@@ -99,7 +99,7 @@ export class AuthenticationDataService {
   public login = (userCredentials: IUserCredentials): Observable<ITokenResponse> =>
     this.http.post<ITokenResponse>(
       ApiEndpoints.AuthLogin,
-      userCredentials
+      userCredentials,
     );
 
   public logout = (): void => this.clearUserInfo();

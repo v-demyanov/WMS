@@ -26,7 +26,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 })
 export class EmployeesComponent implements OnInit, OnDestroy {
 
-  public displayedColumns: string[] = ['firstName', 'lastName', 'email', 'role', 'actions'];
+  public displayedColumns: string[] = ['FirstName', 'LastName', 'Email', 'Role', 'Actions'];
   
   public dataSource: BehaviorSubject<AbstractControl[]> = new BehaviorSubject<AbstractControl[]>([]);
   
@@ -35,6 +35,8 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   public isEditing: boolean = false;
 
   public isAdding: boolean = false;
+
+  public isSaving: boolean = false;
 
   public editingItemId: number | null = null;
   
@@ -87,21 +89,12 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     if (!isConfirmed) {
       return;
     }
-    
-    const isNewUser: boolean = id === 0;
-    if (isNewUser) {
-      const employeeIndex: number = 0;
-      this.employeeFormRows.removeAt(employeeIndex);
-      this.updateView();
-      this.isAdding = false;
-      return;
-    }
 
     this.isLoading = true;
     const subscription: Subscription = this.employeesService.delete(id)
       .subscribe({
         next: () => {
-          const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.id === id);
+          const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.Id === id);
           this.employeeFormRows.removeAt(employeeIndex);
           this.updateView();
 
@@ -112,7 +105,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
           );
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open(
             'Ошибка удаления пользователя',
@@ -141,7 +134,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   public onResetBtnClick(employee: IEmployee): void {
     if (this.employeeTemp !== null) {
-      const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.id === employee.Id);
+      const employeeIndex: number = this.employeeFormRows.controls.findIndex(x => x.value.Id === employee.Id);
       this.employeeFormRows.controls.splice(employeeIndex, 1, this.createFormGroup(this.employeeTemp));
       this.updateView();
     }
@@ -149,6 +142,13 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.employeeTemp = null;
     this.isEditing = false;
     this.editingItemId = null;
+
+    if (this.isAdding) {
+      const employeeIndex: number = 0;
+      this.employeeFormRows.removeAt(employeeIndex);
+      this.updateView();
+      this.isAdding = false;
+    }
   }
 
   public onAddBtnClick(): void {
@@ -165,7 +165,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
           this.isLoading = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open(
             'Ошибка загрузки пользователей',
@@ -184,11 +184,11 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   private createFormGroup(employee: IEmployee): FormGroup {
     return this.formBuilder.group({
-      'id': [employee.Id, []],
-      'firstName': [employee.FirstName, [Validators.required]],
-      'lastName': [employee.LastName, [Validators.required]],
-      'email': [employee.Email, [Validators.required, Validators.email]],
-      'role': [employee.Role, [Validators.required]],
+      'Id': [employee.Id, []],
+      'FirstName': [employee.FirstName, [Validators.required]],
+      'LastName': [employee.LastName, [Validators.required]],
+      'Email': [employee.Email, [Validators.required, Validators.email]],
+      'Role': [employee.Role, [Validators.required]],
     });
   }
   
@@ -196,6 +196,9 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.dataSource.next(this.employeeFormRows.controls);
 
   private updateEmployee(employeeUpdateData: IEmployee): void {
+    this.isLoading = true;
+    this.isSaving = true;
+
     const subscription: Subscription = this.employeesService.update(employeeUpdateData.Id, employeeUpdateData)
       .subscribe({
         next: () => {
@@ -204,17 +207,20 @@ export class EmployeesComponent implements OnInit, OnDestroy {
             'Закрыть',
             { duration: 3000 },
           );
+
           this.isLoading = false;
           this.isEditing = false;
+          this.isSaving = false;
           this.editingItemId = null;
         },
-        error: (error) => {
+        error: () => {
           this.snackBar.open(
             'Ошибка обновления пользователя',
             'Закрыть',
             { duration: 3000 },
           );
           this.isLoading = false;
+          this.isSaving = false;
         },
       });
     this.componentSubscriptions.push(subscription);
@@ -222,6 +228,8 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   private createEmployee(employeeCreateData: IEmployee): void {
     this.isLoading = true;
+    this.isSaving = true;
+
     const subscription: Subscription = this.employeesService.create(employeeCreateData)
       .subscribe({
         next: (employee: IEmployee) => {
@@ -238,9 +246,11 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
           this.isAdding = false;
           this.isLoading = false;
+          this.isSaving = false;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
+          this.isSaving = false;
 
           this.snackBar.open(
             'Ошибка при добавлении пользователя',
