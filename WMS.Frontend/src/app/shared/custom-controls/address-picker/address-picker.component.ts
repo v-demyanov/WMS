@@ -62,6 +62,8 @@ export class AddressPickerComponent implements ControlValueAccessor {
   public async openAddressPickerDialog(): Promise<void> {
     const dialogRef = this.dialog.open(
       AddressPickerDialogComponent, {
+        ariaModal: true,
+        disableClose: true,
         width: '33.5rem',
         data: <AddressPickerDialogData> {
           address: this.address,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { AuthenticationService, PermissionsService } from 'src/app/core/authentication';
 import { IUserClaims } from 'src/app/core/authentication/models/user-claims';
@@ -36,7 +36,9 @@ export class HeaderComponent implements OnInit {
 
   public openTaskDialog(): void {
     this.dialog.open(
-      ProblemDialogComponent, {
+      ProblemDialogComponent, <MatDialogConfig> {
+        ariaModal: true,
+        disableClose: true,
         width: 'auto',
         data: <ProblemDialogData> {
           isCreating: true,

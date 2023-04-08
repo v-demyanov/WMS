@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IComment } from '../models/comment';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
 import { formatDate } from 'src/app/core/helpers/date.helper';
 import * as commonConstants from 'src/app/core/constants/common.constants';
 import { CommentsService } from '../services/comments.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { IComments } from '../models/comments';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/authentication';
 import { IUserClaims } from 'src/app/core/authentication/models/user-claims';
 import { IEmployee } from 'src/app/admin-panel/employees/models/employee';
+import { IComment } from '../models/comment';
 
 @Component({
   selector: 'app-problem-comments',
@@ -54,8 +55,13 @@ export class ProblemCommentsComponent implements OnInit {
   public ngOnInit(): void {
     this.commentForm = this.createCommentForm();
     this.userClaims = this.authenticationService.getUserClaims();
+  }
 
-    this.loadComments(this.commonConstants.DEFAULT_PAGING_COUNT, 0);
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['problemId']) {
+      this.comments = [];
+      this.loadComments(this.commonConstants.DEFAULT_PAGING_COUNT, 0);
+    }
   }
 
   public ngOnDestroy = (): void =>
@@ -115,7 +121,7 @@ export class ProblemCommentsComponent implements OnInit {
       CreatedDate: new Date(),
       ProblemId: this.problemId,
     };
-    
+
     const subscription: Subscription = this.commentsService
       .create(comment)
       .subscribe({

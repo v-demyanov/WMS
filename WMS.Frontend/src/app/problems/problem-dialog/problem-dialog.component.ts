@@ -4,6 +4,7 @@ import { firstValueFrom, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProblemStatusTitles } from '../enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from '../enums/problem-status.enum';
@@ -17,7 +18,6 @@ import { WaresService } from 'src/app/wares/services/wares.service';
 import { IWare } from 'src/app/wares/models/ware';
 import { ProblemsService } from '../services/problems.service';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
-import { ActivatedRoute, Router } from '@angular/router';
 import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
 import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
 
@@ -129,7 +129,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
 
           this.dialogRef.close();
           await this.router.navigate(
-            [NavigationUrls.Tasks],
+            [`${NavigationUrls.Tasks}/${problem.Id}`],
             {relativeTo: this.route},
           );
         },
@@ -175,7 +175,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
     this.componentSubscriptions.push(subscription);
   }
 
-  // TODO: Remove this method after MaxExpansionDepth will be set up right
+  // TODO: Remove this method after MaxExpansionDepth will be set up correct
   private async setVerticalSections(problem: IProblem): Promise<void> {
     const verticalSectionId: number | undefined = problem?.TargetAddress?.Shelf?.VerticalSectionId;
     if (verticalSectionId) {
@@ -244,7 +244,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       Title: this.problem?.Title ?? null,
       ParentProblemId: this.problem?.ParentProblemId ?? null,
       Description: this.problem?.Description ?? null,
-      Status: this.problem?.Status ?? null,
+      Status: this.problem?.Status ?? ProblemStatus.ToDo,
       CreatedDate: this.problem?.CreatedDate ?? null,
       LastUpdateDate: this.problem?.LastUpdateDate ?? null,
       PerformerId: this.problem?.PerformerId ?? null,
@@ -253,6 +253,10 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       WareId: this.problem?.WareId ?? null,
       TargetAddress: this.problem?.TargetAddress ?? null,
     });
+
+    if (this.isCreating) {
+      this.problemForm.controls['ParentProblemId'].setValue(this.dialogData?.parentProblemId);
+    }
   }
 
   private getAuthorId = (): number | null =>

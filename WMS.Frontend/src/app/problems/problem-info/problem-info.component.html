@@ -1,7 +1,12 @@
 <div class="wrapper">
-  <button class="parent-btn" mat-stroked-button *ngIf="problem?.ParentProblemId">
+  <button 
+    class="parent-btn"
+    mat-stroked-button 
+    *ngIf="problem?.ParentProblemId"
+    (click)="openParentProblem()"
+  >
     <mat-icon>keyboard_backspace</mat-icon>
-    <span>Parent problem</span>
+    <span>Родительская задача</span>
   </button>
   <h1 class="problem-title">{{ problem?.Title }}</h1>
   <div class="toolbar">
@@ -13,7 +18,7 @@
       <mat-icon>comment</mat-icon>
       Добавить комментарий
     </button>
-    <button mat-flat-button>
+    <button mat-flat-button (click)="openProblemDialog()">
       <mat-icon>task</mat-icon>
       Добавить подзадачу
     </button>

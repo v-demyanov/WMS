@@ -5,8 +5,20 @@
 <div
   class="problem-wrapper"
   *ngFor="let problem of problems"
+  (click)="openSubProblem(problem.Id)"
 >
-  {{ problem.Id }}
+  <div>
+    <div>
+      {{ problem.Title }}
+    </div>
+    <div>
+      <span class="status" [style.background-color]="getProblemStatusColor(problem.Status)">{{ getProblemStatusTitle(problem.Status) }}</span>
+    </div>
+  </div>
+  <div
+    class="performer-avatar-img"
+    [style.background-image]="'url(' + (problem?.Performer?.AvatarUrl ?? commonConstants.DEFAULT_USER_AVATAR) + ')'"
+  ></div>
 </div>
 
 <div
@@ -15,6 +27,7 @@
   <button 
     mat-flat-button
     class="create-child-problem-btn"
+    (click)="openProblemDialog()"
   >
     Добавить
   </button>

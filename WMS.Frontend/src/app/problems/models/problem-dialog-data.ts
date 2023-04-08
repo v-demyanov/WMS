@@ -5,4 +5,5 @@ export interface ProblemDialogData {
   isEditing: boolean;
   problem?: IProblem,
   initialProblemId?: number;
+  parentProblemId?: number;
 }

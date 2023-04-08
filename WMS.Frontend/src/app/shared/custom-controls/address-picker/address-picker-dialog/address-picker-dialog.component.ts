@@ -144,7 +144,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.verticalSections = verticalSections;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open('Ошибка при загрузке секций', 'Закрыть', {
             duration: 3000,
@@ -161,7 +161,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.shelfs = shelfs;
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
           this.snackBar.open('Ошибка при загрузке полок', 'Закрыть', {
             duration: 3000,

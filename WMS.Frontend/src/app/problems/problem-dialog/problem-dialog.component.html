@@ -49,7 +49,7 @@
       <mat-label>Статус</mat-label>
       <mat-select formControlName="Status">
         <mat-option
-          [disabled]="isReadonly"
+          [disabled]="isReadonly || isCreating"
           *ngFor="let title of problemStatusTitles"
           [value]="title.key"
         >

@@ -26,8 +26,9 @@ export class ProblemsService {
 
   public getChildren(problemId: number): Observable<IProblem[]> {
     const filterQuery: string = `$filter=ParentProblemId eq ${problemId}`;
+    const expandQuery: string = '$expand=Performer';
 
-    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${filterQuery}`)
+    return this.http.get<ODataValue<IRawProblem>>(`${ApiEndpoints.Problems}?${filterQuery}&${expandQuery}`)
       .pipe(map((odataValue: ODataValue<IRawProblem>) => odataValue.value.map((x) => this.parseProblem(x))));
   }
 

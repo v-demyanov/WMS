@@ -8,6 +8,28 @@
   border-radius: 0.25rem;
   padding: 1rem;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+
+  .status {
+    color: white;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 5px 3px;
+    cursor: pointer;
+  }
+
+  .performer-avatar-img {
+    background-size: cover;
+    background-position: center;
+    background-color: lightgray;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 100%;
+    margin-right: 0.5rem;
+  }
 }
 
 .create-child-problem-btn-wrapper {

@@ -1,14 +1,19 @@
 import { KeyValue, ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Params } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subject, Subscription } from 'rxjs';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+
 import { UI_ERROR_LABEL } from 'src/app/core/constants/common.constants';
 import { formatDate } from 'src/app/core/helpers/date.helper';
 import { ProblemStatusColors, ProblemStatusTitles } from '../enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from '../enums/problem-status.enum';
 import { IProblem } from '../models/problem';
 import { ProblemsService } from '../services/problems.service';
+import { ProblemDialogComponent } from '../problem-dialog/problem-dialog.component';
+import { ProblemDialogData } from '../models/problem-dialog-data';
+import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 
 @Component({
   selector: 'app-problem-info',
@@ -35,9 +40,11 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly problemsService: ProblemsService,
     private readonly snackBar: MatSnackBar,
     private readonly scroller: ViewportScroller,
+    private readonly dialog: MatDialog,
   ) {}
 
   public ngOnInit(): void {
@@ -55,7 +62,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     if (this.problem?.Status === undefined) {
       return UI_ERROR_LABEL;
     }
-    
+
     return this.problemStatusTitles[this.problem.Status].value;
   }
 
@@ -63,7 +70,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     if (this.problem?.Status === undefined) {
       return UI_ERROR_LABEL;
     }
-    
+
     return this.problemStatusColors[this.problem.Status].value;
   }
 
@@ -80,9 +87,28 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     return undefinedLabel;
   }
 
+  public openProblemDialog(): void {
+    this.dialog.open(ProblemDialogComponent, <MatDialogConfig>{
+      ariaModal: true,
+      disableClose: true,
+      width: 'auto',
+      data: <ProblemDialogData>{
+        isCreating: true,
+        parentProblemId: this.problemId,
+      },
+    });
+  }
+
+  public async openParentProblem(): Promise<void> {
+    await this.router.navigate(
+      [`${NavigationUrls.Tasks}/${this.problem?.ParentProblemId}`],
+      {relativeTo: this.route},
+    );
+  }
+
   private subscribeOnRouteParamsChanges(): Subscription {
     return this.route.params.subscribe((params: Params) => {
-      this.problemId = params['id'];
+      this.problemId = Number(params['id']);
       if (this.problemId) {
         this.loadProblem(this.problemId);
       }
