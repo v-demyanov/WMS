@@ -33,7 +33,7 @@ export class ProblemsService {
   }
 
   public get(problemId: number): Observable<IProblem> {
-    const expandQuery: string = '$expand=TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const expandQuery: string = '$expand=Author,Auditor,Performer,TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
     const filterQuery: string = `$filter=Id eq ${problemId}`;
     const odataQuery: string = `${filterQuery}&${expandQuery}`;
 
@@ -53,6 +53,12 @@ export class ProblemsService {
   public create = (problem: IProblem): Observable<IProblem> => 
     this.http.post<IRawProblem>(ApiEndpoints.Problems, problem)
       .pipe(map((problem: IRawProblem) => this.parseProblem(problem)));
+
+  public delete = (id: number): Observable<void> => 
+    this.http.delete<void>(`${ApiEndpoints.Problems}${id}`);
+
+  public assign = (problemId: number, performerId: number | null): Observable<void> =>
+    this.http.put<void>(`${ApiEndpoints.Problems}${problemId}/Assign?userId=${performerId}`, {});
 
   private parseProblem(rawProblem: IRawProblem): IProblem {
     return {

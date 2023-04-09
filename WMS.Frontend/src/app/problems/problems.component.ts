@@ -52,7 +52,7 @@ export class ProblemsComponent implements OnInit, OnDestroy {
   }
 
   public get canUserChangeStatusToDone(): boolean {
-    return (this.permissionsService.isAdmin() || this.permissionsService.isAuditor());
+    return this.permissionsService.isAuditor();
   }
 
   public get canUserEditProblem(): boolean {

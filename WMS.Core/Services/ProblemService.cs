@@ -1,6 +1,5 @@
 ﻿namespace WMS.Core.Services;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -13,22 +12,22 @@ using WMS.Database.Enums;
 
 public class ProblemService : BaseService<Problem>, IProblemService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IUserService _userService;
     private readonly IMailService _mailService;
     private readonly ITemplateService _templateService;
+    private readonly IAuthService _authService;
+    private readonly IUserService _userService;
 
     public ProblemService(
         WmsDbContext dbContext,
-        IHttpContextAccessor httpContextAccessor,
         IMailService mailService,
         ITemplateService templateService,
-        IUserService userService) : base(dbContext)
+        IUserService userService,
+        IAuthService authService) : base(dbContext)
     {
-        this._httpContextAccessor = httpContextAccessor;
         this._mailService = mailService;
         this._templateService = templateService;
         this._userService = userService;
+        this._authService = authService;
     }
 
     public async Task UpdateStatusAsync(ProblemStatus status, int problemId)
@@ -40,9 +39,8 @@ public class ProblemService : BaseService<Problem>, IProblemService
                 "because it doesn't exist.");
         }
 
-        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
-        var currentUser = this._userService.GetByEmail(identity.Name);
-        if (currentUser is null || (status == ProblemStatus.Done && CanUserSetDoneStatus(currentUser)))
+        var currentUser = this._authService.GetCurrentUser();
+        if (currentUser is null || (status == ProblemStatus.Done && !CanUserSetDoneStatus(currentUser)))
         {
             throw new AuthorizationFailedException($"Can't set status {status}, " +
                 "because user doesn't have permissions.");
@@ -71,13 +69,73 @@ public class ProblemService : BaseService<Problem>, IProblemService
         this._mailService.SendMail(body, subject, GetReceivers(problem));
     }
 
+    public override async Task DeleteAsync(int id)
+    {
+        var currentUser = this._authService.GetCurrentUser();
+        var problemToDelete = this.DbSet
+            .FirstOrDefault(x => x.Id == id);
+
+        if (problemToDelete == null)
+        {
+            throw new EntityNotFoundException($"Can't delete problem with Id = {id}, because it doesn't exist.");
+        }
+
+        if (problemToDelete.AuthorId != currentUser.Id)
+        {
+            throw new AuthorizationFailedException($"Can't delete problem with Id = {id}, because it belongs to another user.");
+        }
+
+        var problemsToDelete = await this.GetChildProblemsAsync(problemToDelete.Id);
+        problemsToDelete.Add(problemToDelete);
+        
+        this.DbSet.RemoveRange(problemsToDelete);
+        _ = await this.DbContext.SaveChangesAsync();
+    }
+
+    public async Task AssignAsync(int problemId, int? userId)
+    {
+        User? user = default;
+        if (userId.HasValue)
+        {
+            user = this._userService.GetById(userId.Value);
+        }
+        
+        if (user is null && userId is not null)
+        {
+            throw new EntityNotFoundException($"Can't assign problem, because user with Id = {userId} doesn't exist.");
+        }
+        
+        var problem = this.GetById(problemId);
+        problem.PerformerId = userId;
+
+        _ = await this.DbContext.SaveChangesAsync();
+    }
+
     protected override void Update(Problem entity, Problem entityUpdateData)
     {
         throw new NotImplementedException();
     }
 
+    private async Task<List<Problem>> GetChildProblemsAsync(int problemId)
+    {
+        var childProblems = await this.DbSet
+            .Where(x => x.ParentProblemId == problemId)
+            .ToListAsync();
+
+        var allChildProblems = new List<Problem>();
+        foreach (var childProblem in childProblems)
+        {
+            allChildProblems.Add(childProblem);
+
+            var problems = await GetChildProblemsAsync(childProblem.Id);
+            allChildProblems.AddRange(problems);
+        }
+
+        return allChildProblems;
+    }
+
     private static bool CanUserSetDoneStatus(User user) =>
-        user.Role != Role.Auditor && user.Role != Role.Administrator;
+        user.Role == Role.Auditor;
 
     private void UpdateWareAddress(Problem problem)
     {
@@ -116,6 +174,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
     private Problem? GetWithLinkedEntities(int problemId) => this.DbContext.Problems
         .Include(x => x.TargetAddress)
         .Include(x => x.Auditor)
+        .Include(x => x.Author)
         .Include(x => x.Performer)
         .Include(x => x.Ware)
             .ThenInclude(ware => ware.Address)

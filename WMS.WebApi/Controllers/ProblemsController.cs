@@ -1,4 +1,6 @@
-﻿namespace WMS.WebApi.Controllers;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace WMS.WebApi.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -32,6 +34,7 @@ public class ProblemsController : ODataController
     /// <param name="problemCreateData">Problem's create data.</param>
     /// <returns>New problem.</returns>
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Problem>> Post([FromBody] Problem problemCreateData)
     {
         var problem = await this._problemService.AddAsync(problemCreateData);
@@ -45,9 +48,35 @@ public class ProblemsController : ODataController
     /// <param name="problemId">Problem's Id.</param>
     /// <returns></returns>
     [HttpPut("api/[controller]/{problemId:int}/UpdateStatus")]
+    [Authorize]
     public async Task<ActionResult> UpdateStatus([FromBody] ProblemStatus status, int problemId)
     {
         await this._problemService.UpdateStatusAsync(status, problemId);
+        return this.NoContent();
+    }
+
+    /// <summary>
+    /// Deletes the problem.
+    /// </summary>
+    /// <param name="key">Problem's Id.</param>
+    [HttpDelete]
+    [Authorize]
+    public async Task<ActionResult> Delete(int key)
+    {
+        await this._problemService.DeleteAsync(key);
+        return this.NoContent();
+    }
+    
+    /// <summary>
+    /// Assigns the problem.
+    /// </summary>
+    /// <param name="problemId">Problem's Id.</param>
+    /// <param name="userId">User's Id.</param>
+    [HttpPut("api/[controller]/{problemId:int}/Assign")]
+    [Authorize]
+    public async Task<ActionResult> Assign(int problemId, int? userId)
+    {
+        await this._problemService.AssignAsync(problemId, userId);
         return this.NoContent();
     }
 }

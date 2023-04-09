@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>Назначить: {{dialogData.Problem.Title}}</h1>
+
+<form [formGroup]="performerForm" class="dialog-content">
+  <mat-form-field 
+    appearance="fill"
+    class="full-width-field"
+  >
+    <mat-label>Исполнитель</mat-label>
+    <mat-select formControlName="PerformerId" #performersList>
+      <mat-option
+        *ngFor="let performer of employees"
+        [value]="performer.Id"
+      >
+        {{ performer.FirstName + " " + performer.LastName }}
+      </mat-option>
+    </mat-select>
+    <button
+      *ngIf="performersList.selected"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="performersList.value = null"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</form>
+
+<mat-dialog-actions align="end">
+  <button (click)="closeDialog()" mat-button>Отменить</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="assign()"
+  >
+    <span *ngIf="performersList.value === null">Без исполнителя</span>
+    <span *ngIf="performersList.value !== null">Назначить</span>
+  </button>
+</mat-dialog-actions>

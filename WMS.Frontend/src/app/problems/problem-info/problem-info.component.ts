@@ -2,7 +2,7 @@ import { KeyValue, ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { UI_ERROR_LABEL } from 'src/app/core/constants/common.constants';
@@ -14,6 +14,10 @@ import { ProblemsService } from '../services/problems.service';
 import { ProblemDialogComponent } from '../problem-dialog/problem-dialog.component';
 import { ProblemDialogData } from '../models/problem-dialog-data';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { AuthenticationService } from '../../core/authentication';
+import { ProblemAssignDialogComponent } from '../problem-assign-dialog/problem-assign-dialog.component';
+import { ProblemAssignDialogData } from '../models/problem-assign-dialog-data';
 
 @Component({
   selector: 'app-problem-info',
@@ -45,6 +49,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly scroller: ViewportScroller,
     private readonly dialog: MatDialog,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   public ngOnInit(): void {
@@ -104,6 +109,61 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
       [`${NavigationUrls.Tasks}/${this.problem?.ParentProblemId}`],
       {relativeTo: this.route},
     );
+  }
+
+  public async onDeleteBtnClick(): Promise<void> {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '25rem',
+      data: {
+        dialogName: 'Удаление задачи',
+        message: 'Вы действительно хотите удалить задачу? Также будут удалены все связанные подзадачи.',
+      },
+    });
+
+    const isConfirmed: boolean = await firstValueFrom(dialogRef.afterClosed());
+    if (!isConfirmed || !this.problemId) {
+      return;
+    }
+
+    this.isLoading = true;
+    const subscription: Subscription = this.problemsService.delete(this.problemId)
+      .subscribe({
+        next: async () => {
+          this.isLoading = false;
+
+          await this.router.navigate(
+            [`${NavigationUrls.Tasks}`],
+            {relativeTo: this.route},
+          );
+        },
+        error: () => {
+          this.isLoading = false;
+          this.snackBar.open('Ошибка при удалении задачи', 'Закрыть', {
+            duration: 3000,
+          });
+        },
+      });
+    this.componentSubscriptions.push(subscription);
+  }
+
+  public get canUserDeleteTask(): boolean {
+    return this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId;
+  }
+
+  public async onAssignBtnClick(): Promise<void> {
+    const dialogRef = this.dialog.open(ProblemAssignDialogComponent, {
+      ariaModal: true,
+      disableClose: true,
+      width: '20rem',
+      data: <ProblemAssignDialogData> {
+        Problem: this.problem,
+      },
+    });
+
+    const problem: IProblem | undefined = await firstValueFrom(dialogRef.afterClosed());
+    if (problem) {
+      this.problem = problem;
+    }
   }
 
   private subscribeOnRouteParamsChanges(): Subscription {

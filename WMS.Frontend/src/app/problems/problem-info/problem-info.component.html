@@ -10,18 +10,35 @@
   </button>
   <h1 class="problem-title">{{ problem?.Title }}</h1>
   <div class="toolbar">
-    <button mat-flat-button>
+    <button class="spec-button" mat-flat-button>
       <mat-icon>edit</mat-icon>
       Редактировать
     </button>
-    <button mat-flat-button (click)="scrollToCommentForm()">
+    <button class="spec-button" mat-flat-button (click)="scrollToCommentForm()">
       <mat-icon>comment</mat-icon>
       Добавить комментарий
     </button>
-    <button mat-flat-button (click)="openProblemDialog()">
-      <mat-icon>task</mat-icon>
-      Добавить подзадачу
+
+    <button class="spec-button" mat-flat-button [matMenuTriggerFor]="more">
+      <mat-icon>arrow_drop_down</mat-icon>
+      Больше
     </button>
+
+    <mat-menu #more="matMenu">
+      <button mat-menu-item (click)="openProblemDialog()">
+        Добавить подзадачу
+      </button>
+      <button (click)="onAssignBtnClick()" mat-menu-item>
+        Назначить
+      </button>
+      <button 
+        (click)="onDeleteBtnClick()"
+        mat-menu-item
+        [disabled]="!canUserDeleteTask"
+      >
+        Удалить
+      </button>
+    </mat-menu>
   </div>
   <div class="general-section">
     <div class="column-1">
@@ -104,15 +121,15 @@
         <div class="content">
           <div class="item">
             <span class="header">Исполнитель:</span>
-            <span class="value">Исполнитель ASD</span>
+            <span class="value">{{ problem?.Performer?.FirstName === null ? 'Не назначен' : (problem?.Performer?.FirstName ?? '') + ' ' + (problem?.Performer?.LastName ?? '') }}</span>
           </div>
           <div class="item">
             <span class="header">Автор:</span>
-            <span class="value">Автор ASD</span>
+            <span class="value">{{ (problem?.Author?.FirstName ?? '') + ' ' + (problem?.Author?.LastName ?? '') }}</span>
           </div>
           <div class="item">
             <span class="header">Аудитор:</span>
-            <span class="value">Аудитор ASD</span>
+            <span class="value">{{ problem?.Auditor?.FirstName === null ? 'Не назначен' : problem?.Auditor?.FirstName ?? '' + ' ' + (problem?.Auditor?.LastName ?? '') }}</span>
           </div>
         </div>
       </mat-expansion-panel>

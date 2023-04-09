@@ -9,7 +9,7 @@ export interface IProblem {
   Status: ProblemStatus;
   CreatedDate: Date;
   LastUpdateDate?: Date | null;
-  PerformerId?: number;
+  PerformerId?: number | null;
   ParentProblemId?: number;
   AuthorId: number;
   AuditorId?: number;
@@ -18,5 +18,7 @@ export interface IProblem {
 
   TargetAddress?: IAddress;
   Performer?: IEmployee;
+  Author?: IEmployee;
+  Auditor?: IEmployee;
   ChildrenProblems?: IProblem[];
 }

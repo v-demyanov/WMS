@@ -8,6 +8,7 @@ import { ProblemInfoComponent } from './problem-info/problem-info.component';
 import { ProblemCardComponent } from './problem-card/problem-card.component';
 import { ProblemCommentsComponent } from './problem-comments/problem-comments.component';
 import { ProblemChildrenComponent } from './problem-children/problem-children.component';
+import { ProblemAssignDialogComponent } from './problem-assign-dialog/problem-assign-dialog.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ProblemChildrenComponent } from './problem-children/problem-children.co
     ProblemCardComponent,
     ProblemCommentsComponent,
     ProblemChildrenComponent,
+    ProblemAssignDialogComponent,
   ],
   imports: [
     CommonModule,
