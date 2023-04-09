@@ -22,6 +22,14 @@
       background: rgba(9,30,66,0.08);
       color: black;
     }
+
+    .status-btn-wrapper {
+      display: flex;
+
+      .progress-spinner {
+        margin-left: 0.5rem;
+      }
+    }
   }
 
   .general-section {

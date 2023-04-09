@@ -10,16 +10,30 @@
   </button>
   <h1 class="problem-title">{{ problem?.Title }}</h1>
   <div class="toolbar">
-    <button class="spec-button" mat-flat-button>
+    <button 
+      [disabled]="isLoading"
+      class="spec-button"
+      mat-flat-button
+    >
       <mat-icon>edit</mat-icon>
       Редактировать
     </button>
-    <button class="spec-button" mat-flat-button (click)="scrollToCommentForm()">
+    <button
+      [disabled]="isLoading"
+      class="spec-button"
+      mat-flat-button
+      (click)="scrollToCommentForm()"
+    >
       <mat-icon>comment</mat-icon>
       Добавить комментарий
     </button>
 
-    <button class="spec-button" mat-flat-button [matMenuTriggerFor]="more">
+    <button 
+      class="spec-button"
+      mat-flat-button
+      [matMenuTriggerFor]="more"
+      [disabled]="isLoading"
+    >
       <mat-icon>arrow_drop_down</mat-icon>
       Больше
     </button>
@@ -37,6 +51,30 @@
         [disabled]="!canUserDeleteTask"
       >
         Удалить
+      </button>
+    </mat-menu>
+
+    <button 
+      mat-flat-button
+      [matMenuTriggerFor]="status"
+      [style]="'color: white;background-color:' + problemStatusColors[problem!.Status].value"
+      [disabled]="isSettingStatus || isLoading"
+    >
+      <mat-icon>arrow_drop_down</mat-icon>
+      <div class="status-btn-wrapper">
+        <span>{{problemStatusTitles[problem!.Status].value}}</span>
+        <mat-spinner *ngIf="isSettingStatus" class="progress-spinner" [diameter]="20"></mat-spinner>
+      </div>
+    </button>
+
+    <mat-menu #status="matMenu">
+      <button 
+        *ngFor="let statusItem of problemStatusTitles"
+        mat-menu-item
+        (click)="onStatusChange(statusItem.key)"
+        [disabled]="!permissionsService.isAuditor() && statusItem.key === problemStatus.Done"
+      >
+        {{statusItem.value}}
       </button>
     </mat-menu>
   </div>

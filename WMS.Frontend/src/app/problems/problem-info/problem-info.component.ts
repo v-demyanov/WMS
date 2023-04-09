@@ -15,7 +15,7 @@ import { ProblemDialogComponent } from '../problem-dialog/problem-dialog.compone
 import { ProblemDialogData } from '../models/problem-dialog-data';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
-import { AuthenticationService } from '../../core/authentication';
+import { AuthenticationService, PermissionsService } from '../../core/authentication';
 import { ProblemAssignDialogComponent } from '../problem-assign-dialog/problem-assign-dialog.component';
 import { ProblemAssignDialogData } from '../models/problem-assign-dialog-data';
 
@@ -38,9 +38,13 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
 
   public problemStatusColors: KeyValue<ProblemStatus, string>[] = ProblemStatusColors;
 
+  public problemStatus = ProblemStatus;
+
   public isCommentFormVisible: boolean = false;
 
   public isActivitiesPanelExpanded: boolean = false;
+
+  public isSettingStatus: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -50,6 +54,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     private readonly scroller: ViewportScroller,
     private readonly dialog: MatDialog,
     private readonly authenticationService: AuthenticationService,
+    public readonly permissionsService: PermissionsService,
   ) {}
 
   public ngOnInit(): void {
@@ -164,6 +169,38 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     if (problem) {
       this.problem = problem;
     }
+  }
+
+  public onStatusChange(status: ProblemStatus): void {
+    if (!this.problemId || !this.problem) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.isSettingStatus = true;
+
+    const subscription: Subscription = this.problemsService.updateStatus(status, this.problemId)
+      .subscribe({
+        next: () => {
+          if (this.problem) {
+            this.problem.Status = status;
+          }
+          
+          this.snackBar.open('Статус задачи обновлён', 'Закрыть', {
+            duration: 3000,
+          });
+          this.isLoading = false;
+          this.isSettingStatus = false;
+        },
+        error: () => {
+          this.snackBar.open('Ошибка при обновлении статуса задачи', 'Закрыть', {
+            duration: 3000,
+          });
+          this.isLoading = false;
+          this.isSettingStatus = false;
+        },
+      });
+    this.componentSubscriptions.push(subscription);
   }
 
   private subscribeOnRouteParamsChanges(): Subscription {
