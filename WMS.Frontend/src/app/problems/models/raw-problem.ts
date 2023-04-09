@@ -9,6 +9,7 @@ export interface IRawProblem {
   Status: keyof typeof ProblemStatus;
   CreatedDate: string;
   LastUpdateDate?: string | null;
+  DeadlineDate?: string | null;
   PerformerId?: number;
   ParentProblemId?: number;
   AuthorId: number;

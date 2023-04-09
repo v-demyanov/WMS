@@ -108,6 +108,25 @@
       </mat-form-field>
     </div>
 
+    <mat-form-field class="full-width-field" appearance="fill">
+      <mat-label>Дата окончания срока выполнения</mat-label>
+      <input
+        [readonly]="isReadonly"
+        formControlName="DeadlineDate"
+        matInput
+        [matDatepicker]="deadlineDatePicker"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="deadlineDatePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker
+        [disabled]="isReadonly"
+        #deadlineDatePicker
+      ></mat-datepicker>
+    </mat-form-field>
+
     <app-address-picker
       formControlName="TargetAddress"
       [readonly]="isReadonly"

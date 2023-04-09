@@ -9,6 +9,7 @@ export interface IProblem {
   Status: ProblemStatus;
   CreatedDate: Date;
   LastUpdateDate?: Date | null;
+  DeadlineDate?: Date | null;
   PerformerId?: number | null;
   ParentProblemId?: number;
   AuthorId: number;

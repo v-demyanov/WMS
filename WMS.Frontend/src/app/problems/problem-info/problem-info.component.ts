@@ -78,7 +78,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
 
   public getProblemStatusColor(): string {
     if (this.problem?.Status === undefined) {
-      return UI_ERROR_LABEL;
+      return 'rgba(9,30,66,0.08)';
     }
 
     return this.problemStatusColors[this.problem.Status].value;

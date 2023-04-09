@@ -1,0 +1,38 @@
+﻿@using System.Globalization
+
+<style>
+    table {
+        border: solid 1px black;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background-color: lightgray;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Название задачи</th>
+            <th>Дата прекращения</th>
+            <th>Дней до прекращения</th>
+        </tr>
+    </thead>
+    @if (@Model != null)
+    {
+        @foreach (var problemExpirationObject in Model.ProblemExpirationObjects)
+        {
+            <tr>
+                <td>@problemExpirationObject.Title</td>
+                <td>@problemExpirationObject.DeadlineDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
+                <td>@problemExpirationObject.DaysBeforeExpiration</td>
+            </tr>
+        }
+    }
+</table>

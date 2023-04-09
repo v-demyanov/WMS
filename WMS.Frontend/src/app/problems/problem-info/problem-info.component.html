@@ -57,12 +57,12 @@
     <button 
       mat-flat-button
       [matMenuTriggerFor]="status"
-      [style]="'color: white;background-color:' + problemStatusColors[problem!.Status].value"
+      [style]="'color: white;background-color:' + getProblemStatusColor()"
       [disabled]="isSettingStatus || isLoading"
     >
       <mat-icon>arrow_drop_down</mat-icon>
       <div class="status-btn-wrapper">
-        <span>{{problemStatusTitles[problem!.Status].value}}</span>
+        <span>{{getProblemStatusTitle()}}</span>
         <mat-spinner *ngIf="isSettingStatus" class="progress-spinner" [diameter]="20"></mat-spinner>
       </div>
     </button>
@@ -188,8 +188,8 @@
             <span class="value">{{ formatDate('', problem?.LastUpdateDate) }}</span>
           </div>
           <div class="item">
-            <span class="header">Deadline:</span>
-            <span class="value">{{ formatDate('Will be implemented soon', null) }}</span>
+            <span class="header">Срок выполнения:</span>
+            <span class="value">{{ formatDate('Не имеет', problem?.DeadlineDate)}}</span>
           </div>
         </div>
       </mat-expansion-panel>

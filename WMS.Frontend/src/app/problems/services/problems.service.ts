@@ -66,6 +66,7 @@ export class ProblemsService {
       Status: parseEnum(ProblemStatus, rawProblem.Status),
       CreatedDate: new Date(rawProblem.CreatedDate),
       LastUpdateDate: rawProblem.CreatedDate ? new Date(rawProblem.CreatedDate) : null,
+      DeadlineDate: rawProblem.DeadlineDate ? new Date(rawProblem.DeadlineDate) : null,
       ChildrenProblems: rawProblem.ChildrenProblems?.map(x => this.parseProblem(x)),
     };
   }

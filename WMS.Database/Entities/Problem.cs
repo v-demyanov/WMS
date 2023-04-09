@@ -15,6 +15,8 @@ public class Problem : BaseEntity
 
     public DateTimeOffset? LastUpdateDate { get; set; }
 
+    public DateTimeOffset? DeadlineDate { get; set; }
+
     public int? PerformerId { get; set; }
 
     public int? ParentProblemId { get; set; }

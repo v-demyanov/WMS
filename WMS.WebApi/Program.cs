@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.SqlServer;
 
 using WMS.Database;
 using WMS.Database.Constants;
@@ -57,10 +59,12 @@ builder.Services
     .AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>()
     .AddScoped<IWareService, WareService>()
     .AddScoped<IProblemService, ProblemService>()
-    .AddScoped<ICommentService, CommentService>();
+    .AddScoped<ICommentService, CommentService>()
+    .AddScoped<INotificationService, NotificationService>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
-                .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
+                .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)))
+                .Configure<NotificationSettings>(builder.Configuration.GetSection(nameof(NotificationSettings)));
 
 string connectionString = builder.Configuration.GetConnectionString("WMSDatabase");
 builder.Services.AddDbContext<WmsDbContext>(options => options.UseSqlServer(connectionString, options =>
@@ -87,6 +91,25 @@ builder.Services.AddSwaggerGen(options =>
     }
 });
 
+// Configure Hangfire
+var hangfireConfigured = false;
+
+_ = builder.Services.AddHangfire(configuration => _ = configuration.UseSqlServerStorage(connectionString));
+_ = builder.Services.AddHangfireServer();
+
+JobStorage.Current = new SqlServerStorage(connectionString);
+
+hangfireConfigured = true;
+
+string? cronScheduleExpression = builder.Configuration["HangFire:CronScheduleExpression"];
+
+// Configure jobs for notifications.
+RecurringJob.AddOrUpdate<NotificationService>(
+    "ProblemExpirationJob", 
+    notificationService => notificationService.NotifyAboutProblemExpirationAsync(), 
+    cronScheduleExpression);
+
+// Configure Authentication
 var key = Encoding.UTF8.GetBytes(builder.Configuration["AuthOptions:Key"]);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -145,6 +168,12 @@ app.UseExceptionHandler(app => app.Run(async context =>
         ErrorMessage = exception?.Message ?? string.Empty,
     });
 }));
+
+if (hangfireConfigured)
+{
+    _ = app.UseHangfireDashboard();
+    _ = app.MapHangfireDashboard();
+}
 
 app.MapControllers();
 
