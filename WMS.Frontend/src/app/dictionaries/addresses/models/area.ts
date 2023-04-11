@@ -1,5 +1,5 @@
 export interface IArea {
-  Id: string;
+  Id: number;
   Name: string;
   MaxVerticalSections: number;
   MaxShelfs: number;

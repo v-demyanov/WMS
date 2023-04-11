@@ -7,39 +7,16 @@
     Выберите товар или создайте новый
   </h3>
 
-  <mat-card *ngIf="selectedWareId || isCreating">
-    <mat-card-header class="header-padding" *ngIf="areActionsVisible">
-      <button 
-        mat-raised-button
-        color="primary"
-        class="field-column-margin"
-        [disabled]="!isEditing && !isCreating || wareForm.invalid"
-        (click)="onSaveBtnClick()"
-      >
-        Сохранить
-      </button>
-      <button
-        *ngIf="!isEditing && !isCreating"
-        mat-raised-button
-        class="field-column-margin"
-        (click)="onEditBtnClick()"
-      >
-        Редактировать
-      </button>
-      <button
-        *ngIf="isEditing || isCreating"
-        mat-raised-button
-        (click)="onResetBtnClick()"
-      >
-        Отменить
-      </button>
+  <mat-card class="math-card" *ngIf="selectedWareId || isCreating">
+    <mat-card-header>
+      <h1>{{ getFormTitle() }}</h1>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="ware-card-content">
       <form
         [formGroup]="wareForm"
       >
-        <div>
-          <mat-form-field appearance="fill" class="field-column-margin">
+        <div class="field-row">
+          <mat-form-field appearance="fill">
             <mat-label>Название</mat-label>
             <input [readonly]="isReadonly" formControlName="Name" matInput />
           </mat-form-field>
@@ -50,16 +27,16 @@
           </mat-form-field>
         </div>
 
-        <div>
-          <mat-form-field appearance="fill" class="field-column-margin">
+        <div class="field-row">
+          <mat-form-field appearance="fill">
             <mat-label>Единица измерения</mat-label>
             <mat-select formControlName="UnitOfMeasurementId">
               <mat-option
                 [disabled]="isReadonly"
                 *ngFor="let unitOfMeasurements of unitsOfMeasurements"
-                [value]="unitOfMeasurements.id"
+                [value]="unitOfMeasurements.Id"
               >
-                {{ unitOfMeasurements.value }}
+                {{ unitOfMeasurements.Value }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -78,19 +55,43 @@
           </mat-form-field>
         </div>
 
-        <div class="full-width-field">
-          <app-address-picker 
-            formControlName="Address"
-            [readonly]="isReadonly"
-          >
-          </app-address-picker>
-        </div>
+        <app-address-picker 
+          class="address-picker-field full-width-field"
+          formControlName="Address"
+          [readonly]="isReadonly"
+        >
+        </app-address-picker>
 
-        <mat-form-field appearance="fill" class="full-width-field">
+        <mat-form-field appearance="fill" class="description-field full-width-field">
           <mat-label>Описание</mat-label>
           <textarea [readonly]="isReadonly" formControlName="Description" matInput></textarea>
         </mat-form-field>
       </form>
     </mat-card-content>
+    <mat-card-actions align="end" *ngIf="areActionsVisible">
+      <button 
+        mat-raised-button
+        color="primary"
+        class="field-column-margin"
+        [disabled]="!isEditing && !isCreating || wareForm.invalid"
+        (click)="onSaveBtnClick()"
+      >
+        Сохранить
+      </button>
+      <button
+        *ngIf="!isEditing && !isCreating"
+        mat-raised-button
+        (click)="onEditBtnClick()"
+      >
+        Редактировать
+      </button>
+      <button
+        *ngIf="isEditing || isCreating"
+        mat-raised-button
+        (click)="onResetBtnClick()"
+      >
+        Отменить
+      </button>
+    </mat-card-actions>
   </mat-card>
 </div>

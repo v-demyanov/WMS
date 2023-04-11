@@ -1,6 +1,6 @@
 .wrapper {
-  display: grid;
-  grid-template-columns: 7fr 1fr;
+  display: flex;
+  justify-content: space-between;
 
   .edit-btn {
     margin-top: 5px;

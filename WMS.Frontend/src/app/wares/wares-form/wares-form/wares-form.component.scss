@@ -8,6 +8,15 @@
   justify-content: center;
   align-items: center;
 
+  .math-card {
+    max-width: 33rem;
+   
+    .ware-card-content {
+      max-height: 25rem;
+      overflow-y: auto;
+    }
+  }
+
   .warning {
     color: white;
   }
@@ -22,5 +31,15 @@
 
   .full-width-field {
     width: 100%;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .description-field {
+    margin-top: 0.5rem;
   }
 }

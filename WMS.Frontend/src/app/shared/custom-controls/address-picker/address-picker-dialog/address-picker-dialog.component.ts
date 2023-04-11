@@ -36,6 +36,14 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
 
   public addressForm: FormGroup = new FormGroup({});
 
+  private selectedArea?: IArea;
+
+  private selectedRack?: IRack;
+
+  private selectedVerticalSection?: IVerticalSection;
+
+  private selectedShelf?: IShelf;
+
   private componentSubscriptions: Subscription[] = [];
 
   constructor(
@@ -51,7 +59,12 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.addressForm = this.createAddressForm();
-    this.address = this.dialogData.address;
+    this.address = this.dialogData.Address;
+    this.selectedArea = this.dialogData.Area;
+    this.selectedRack = this.dialogData.Rack;
+    this.selectedVerticalSection = this.dialogData.VerticalSection;
+    this.selectedShelf = this.dialogData.Shelf;
+
     if (this.address) {
       this.initializeAddressForm();
     }
@@ -67,39 +80,62 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     );
 
   public closeDialog(isSaving: boolean): void {
-    if (isSaving) {
-      this.dialogRef.close(<IAddress> {
-        AreaId: this.addressForm.value.AreaId,
-        ShelfId: this.addressForm.value.ShelfId,
-      });
+    if (!isSaving) {
+      this.dialogRef.close();
       return;
     }
 
-    this.dialogRef.close();
+    const address = <IAddress> {
+      AreaId: this.addressForm.value.AreaId,
+      ShelfId: this.addressForm.value.ShelfId,
+    };
+
+    const dialogData: AddressPickerDialogData = {
+      Address: address,
+      Area: this.selectedArea,
+      Rack: this.selectedRack,
+      VerticalSection: this.selectedVerticalSection,
+      Shelf: this.selectedShelf,
+    };
+
+    this.dialogRef.close(dialogData);
   }
 
   public onAreaSelected(areaId: number): void {
+    this.selectedArea = this.areas.find(x => x.Id === areaId);
+    this.selectedRack = undefined;
+    this.selectedVerticalSection = undefined;
+    this.selectedShelf = undefined;
     this.racks = [];
     this.verticalSections = [];
     this.shelfs = [];
+
     const subscription: Subscription = this.loadRacks(areaId);
     this.componentSubscriptions.push(subscription);
   }
 
   public onRackSelected(rackId: number): void {
+    this.selectedRack = this.racks.find(x => x.Id === rackId);
+    this.selectedVerticalSection = undefined;
+    this.selectedShelf = undefined;
     this.verticalSections = [];
     this.shelfs = [];
+
     const subscription: Subscription = this.loadVerticalSections(rackId);
     this.componentSubscriptions.push(subscription);
   }
 
   public onSectionSelected(sectionId: number): void {
+    this.selectedVerticalSection = this.verticalSections.find(x => x.Id === sectionId);
+    this.selectedShelf = undefined;
     this.shelfs = [];
+
     const subscription: Subscription = this.loadShelfs(sectionId);
     this.componentSubscriptions.push(subscription);
   }
 
-  public onShelfSelected(): void {
+  public onShelfSelected(shelfId: number): void {
+    this.selectedShelf = this.shelfs.find(x => x.Id === shelfId);
   }
 
   private loadAreas(): Subscription {
@@ -180,11 +216,10 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
   }
 
   private initializeAddressForm(): void {
-    const areaId: number | undefined = this.address?.AreaId;
-    const rackId: number | undefined = this.address?.Shelf?.VerticalSection?.RackId;
-    const verticalSectionId: number | undefined = this.address?.Shelf?.VerticalSectionId;
-    const shelfId: number | undefined | null = this.address?.ShelfId;
-
+    const areaId: number | undefined = this.selectedArea?.Id;
+    const rackId: number | undefined = this.selectedRack?.Id;
+    const verticalSectionId: number | undefined = this.selectedVerticalSection?.Id;
+    const shelfId: number | undefined = this.selectedShelf?.Id;
 
     this.addressForm.setValue({
       AreaId: areaId ?? null,
@@ -193,17 +228,17 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
       ShelfId: shelfId ?? null,
     });
 
-    if (areaId && rackId) {
+    if (areaId) {
       const subscription: Subscription = this.loadRacks(areaId);
       this.componentSubscriptions.push(subscription);
     }
 
-    if (areaId && rackId && verticalSectionId) {
+    if (areaId && rackId) {
       const subscription: Subscription = this.loadVerticalSections(rackId);
       this.componentSubscriptions.push(subscription);
     }
 
-    if (areaId && rackId && verticalSectionId && shelfId) {
+    if (areaId && rackId && verticalSectionId) {
       const subscription: Subscription = this.loadShelfs(verticalSectionId);
       this.componentSubscriptions.push(subscription);
     }

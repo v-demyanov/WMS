@@ -141,6 +141,18 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getFormTitle(): string {
+    if (this.isCreating) {
+      return 'Создание товара';
+    }
+
+    if (this.isEditing) {
+      return 'Редактирование товара';
+    }
+
+    return 'Просмотр товара';
+  }
+
   private createWare(): void {
     const wareCreateData: IWare = this.wareForm.value;
     const subscription: Subscription = this.waresService.create(wareCreateData)

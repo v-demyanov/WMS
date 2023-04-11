@@ -4,23 +4,30 @@
   height: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   .info {
     padding-left: 1rem;
   }
 
-  .add-btn {
-    display: block;
-    margin-left: 1rem;
+  .wares-toolbar-actions {
     display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    justify-content: end;
 
-  .remove-btn {
-    display: block;
-    margin-left: 1rem;
-    justify-content: center;
-    align-items: center;
+    .add-btn {
+      display: block;
+      margin-left: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .remove-btn {
+      display: block;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }

@@ -1,23 +1,26 @@
 <div class="wrapper">
-  <span class="info">Всего на складе: <b>{{ wareCount }}</b></span>
-  <button
-    *ngIf="areActionsVisible"
-    mat-mini-fab
-    color="primary"
-    class="add-btn"
-    (click)="onAddBtnClick()"
-    [disabled]="isCreating"
-  >
-    <mat-icon>add</mat-icon>
-  </button>
-  <button
-    *ngIf="areActionsVisible"
-    mat-mini-fab
-    color="warn"
-    class="remove-btn"
-    [disabled]="wareCount < 1 || !selectedWareId"
-    (click)="onDeleteBtnClick()"
-  >
-    <mat-icon>delete</mat-icon>
-  </button>
+  <span class="info">Товары</span>
+  <div class="wares-toolbar-actions">
+    <button
+      *ngIf="areActionsVisible"
+      mat-mini-fab
+      color="primary"
+      class="add-btn"
+      (click)="onAddBtnClick()"
+      [disabled]="isCreating"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      *ngIf="areActionsVisible"
+      mat-mini-fab
+      color="warn"
+      class="remove-btn"
+      [disabled]="wareCount < 1 || !selectedWareId"
+      (click)="onDeleteBtnClick()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  
 </div>

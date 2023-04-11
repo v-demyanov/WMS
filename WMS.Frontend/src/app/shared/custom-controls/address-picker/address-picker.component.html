@@ -1,8 +1,12 @@
 <div class="wrapper">
-  <mat-form-field>
-    <mat-label>Адрес</mat-label>
-    <input matInput [disabled]="true" [value]="displayValue">
-  </mat-form-field>
+  <div>
+    <mat-label style="padding-left: 0.5rem; color: gray">Адрес</mat-label>
+    <mat-chip-listbox>
+      <mat-chip-row *ngFor="let displayValue of getDisplayValues()">
+        {{ displayValue }}
+      </mat-chip-row>
+    </mat-chip-listbox>
+  </div>
   <button 
     mat-icon-button
     class="edit-btn"

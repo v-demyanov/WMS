@@ -1,22 +1,13 @@
 .wrapper {
-  max-width: 50rem;
+  max-width: 45rem;
 
   .dialog-content {
     border-top: solid 0.125rem #ebecf1;
     border-bottom: solid 0.125rem #ebecf1;
     padding-top: 1rem;
 
-    .dialog-content-column-1 {
-      display: flex;
-      flex-direction: column;
-      margin-right: 1rem;
-      grid-area: a;
-    }
-
-    .dialog-content-column-2 {
-      display: flex;
-      flex-direction: column;
-      grid-area: b;
+    .author-field {
+      margin-top: 0.5rem;
     }
 
     .dates {

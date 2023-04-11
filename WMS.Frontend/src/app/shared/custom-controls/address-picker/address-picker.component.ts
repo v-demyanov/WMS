@@ -6,6 +6,10 @@ import { firstValueFrom } from 'rxjs';
 import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 import { AddressPickerDialogComponent } from './address-picker-dialog/address-picker-dialog.component';
 import { AddressPickerDialogData } from './models/address-picker-dialog-data';
+import { IArea } from 'src/app/dictionaries/addresses/models/area';
+import { IRack } from 'src/app/dictionaries/addresses/models/rack';
+import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
+import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
 
 @Component({
   selector: 'app-address-picker',
@@ -19,17 +23,31 @@ import { AddressPickerDialogData } from './models/address-picker-dialog-data';
 })
 export class AddressPickerComponent implements ControlValueAccessor {
 
-  public address: IAddress | undefined;
+  @Input()
+  public readonly: boolean = true;
+  
+  public address?: IAddress | null;
 
   public touched: boolean = false;
 
-  @Input()
-  public readonly: boolean = true;
+  private selectedArea?: IArea;
+
+  private selectedRack?: IRack;
+
+  private selectedVerticalSection?: IVerticalSection;
+
+  private selectedShelf?: IShelf;
 
   constructor(private readonly dialog: MatDialog) {}
 
   public writeValue(address: IAddress): void {
     this.address = address;
+    if (address !== null) {
+      this.selectedArea = this.address?.Area;
+      this.selectedRack = this.address.Shelf?.VerticalSection?.Rack;
+      this.selectedVerticalSection = this.address.Shelf?.VerticalSection;
+      this.selectedShelf = this.address.Shelf;
+    }
   }
 
   public registerOnChange(onChange: (address?: IAddress) => {}): void {
@@ -40,23 +58,18 @@ export class AddressPickerComponent implements ControlValueAccessor {
     this.onTouched = onTouched;
   }
 
-  public get displayValue(): string {
-    if (!this.address) {
-      return '';
-    }
+  public getDisplayValues(): string[] {
+    const name: string | undefined = this.selectedArea?.Name;
+    const rackIndex: number | undefined = this.selectedRack?.Index;
+    const sectionIndex: number | undefined = this.selectedVerticalSection?.Index;
+    const shelfIndex: number | undefined = this.selectedShelf?.Index;
 
-    const name: string | undefined = this.address?.Area?.Name;
-    const rackIndex: number | undefined = this.address?.Shelf?.VerticalSection?.Rack?.Index;
-    const sectionIndex: number | undefined = this.address?.Shelf?.VerticalSection?.Index;
-    const shelfIndex: number | undefined = this.address?.Shelf?.Index;
+    const areaDisplayName: string = name ? `Зона: ${name}` : '';
+    const rackDisplayName: string = rackIndex ? `Стелаж: №${rackIndex}` : '';
+    const sectionDisplayName: string = sectionIndex ? `Секция: №${sectionIndex}` : '';
+    const shelfDisplayName: string = shelfIndex ? `Полка: №${shelfIndex}` : '';
 
-    const areaDisplayName: string | undefined = name !== undefined ? `Зона '${name}'` : undefined;
-    const rackDisplayName: string | undefined = rackIndex !== undefined ? `стелаж №${rackIndex}` : undefined;
-    const sectionDisplayName: string | undefined = sectionIndex !== undefined ? `секция №${sectionIndex}` : undefined;
-    const shelfDisplayName: string | undefined = shelfIndex !== undefined ? `полка №${shelfIndex}` : undefined;
-
-    const displayName: (string | undefined | number)[] = [areaDisplayName, rackDisplayName, sectionDisplayName, shelfDisplayName];
-    return displayName.filter(x => x !== undefined).map(x => x?.toString()).join(', ');
+    return [areaDisplayName, rackDisplayName, sectionDisplayName, shelfDisplayName].filter(x => x);
   }
 
   public async openAddressPickerDialog(): Promise<void> {
@@ -66,16 +79,25 @@ export class AddressPickerComponent implements ControlValueAccessor {
         disableClose: true,
         width: '33.5rem',
         data: <AddressPickerDialogData> {
-          address: this.address,
+          Address: this.address,
+          Area: this.selectedArea,
+          Rack: this.selectedRack,
+          VerticalSection: this.selectedVerticalSection,
+          Shelf: this.selectedShelf,
         },
       },
     );
 
     // TODO: Fix setting Address field after updating or creating
-    const result = await firstValueFrom(dialogRef.afterClosed());
+    const result: AddressPickerDialogData = await firstValueFrom(dialogRef.afterClosed());
 
     if (result) {
-      this.address = result;
+      this.address = result.Address;
+      this.selectedArea = result.Area;
+      this.selectedRack = result.Rack;
+      this.selectedVerticalSection = result.VerticalSection;
+      this.selectedShelf = result.Shelf;
+
       this.markAsTouched();
       this.onChange(this.address);
     }
