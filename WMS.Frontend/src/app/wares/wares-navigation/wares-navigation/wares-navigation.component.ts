@@ -1,7 +1,8 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { first, Subscription, take } from 'rxjs';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { MatSelectionList } from '@angular/material/list';
 
 import { WaresService } from '../../services/wares.service';
 import { IWare } from '../../models/ware';
@@ -15,9 +16,14 @@ import { WaresEventBusService } from '../../services/wares-event-bus.service';
 })
 export class WaresNavigationComponent implements OnInit, OnDestroy {
 
+  @ViewChild('waresSelectionsList')
+  waresSelectionsList?: MatSelectionList;
+
   public isLoading: boolean = false;
 
   public wares: IWare[] = [];
+
+  private selectedWareId?: number;
 
   private componentSubscriptions: Subscription[] = [];
 
@@ -34,7 +40,6 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
     this.componentSubscriptions = [
       this.loadWares(),
       this.waresEventBusService.itemWasCreated$
-        .pipe(take(1))
         .subscribe(async (ware: IWare) => {
           this.wares.push(ware);
           await this.router.navigate(
@@ -47,6 +52,13 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
           const wareIndex: number = this.wares.findIndex(x => x.Id === wareId);
           this.wares.splice(wareIndex, 1);
         }),
+      this.waresEventBusService.itemWasUpdated$
+        .subscribe((ware: IWare) => {
+          const wareIndex: number = this.wares.findIndex(x => x.Id === ware.Id);
+          this.wares.splice(wareIndex, 1, ware);
+          this.setSelectedWare();
+        }),
+      this.subscribeOnRouteParamsChanges(),
     ];
   }
 
@@ -62,6 +74,12 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
     );
   }
 
+  private subscribeOnRouteParamsChanges(): Subscription {
+    return this.route.params.subscribe((params: Params) => {
+      this.selectedWareId = Number(params['id']);
+    })
+  }
+
   private loadWares(): Subscription {
     this.isLoading = true;
     return this.waresService.getAllForNavigation()
@@ -69,6 +87,8 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
         next: (wares: IWare[]) => {
           this.wares = wares;
           this.isLoading = false;
+          
+          this.setSelectedWare();
         },
         error: () => {
           this.isLoading = false;
@@ -79,5 +99,13 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
           );
         },
       });
+  }
+
+  private setSelectedWare(): void {
+    if (this.selectedWareId) {
+      const selectedWareIndex = this.wares.findIndex(x => x?.Id === this.selectedWareId)
+      const selectedItem: any = [this.wares[selectedWareIndex]];
+      this.waresSelectionsList?.writeValue(selectedItem);
+    }
   }
 }

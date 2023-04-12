@@ -20,7 +20,6 @@ public class UsersController : ControllerBase
 
     public UsersController(IUserService userService)
     {
-        // TODO: Replace user entity class on record
         _userService = userService;
     }
 

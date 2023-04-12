@@ -17,5 +17,9 @@ public class WareEntityConfiguration : IEntityTypeConfiguration<Ware>
 
         _ = builder.HasIndex(x => x.AddressId)
                    .IsUnique();
+
+        _ = builder.HasOne(x => x.Address)
+                   .WithOne(x => x.Ware)
+                   .OnDelete(DeleteBehavior.NoAction);
     }
 }

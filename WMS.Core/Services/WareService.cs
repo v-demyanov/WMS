@@ -9,6 +9,7 @@ using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
 using WMS.Database.Entities;
+using WMS.Database.Entities.Addresses;
 
 public class WareService : BaseService<Ware>, IWareService
 {
@@ -29,9 +30,43 @@ public class WareService : BaseService<Ware>, IWareService
             throw new EntityNotFoundException($"Can't delete the ware with Id = {id}, because it doesn't exist.");
         }
 
-        this.DbContext.Addresses.Remove(ware.Address);
         this.DbSet.Remove(ware);
+        this.DbContext.Addresses.Remove(ware.Address);
 
+        _ = await this.DbContext.SaveChangesAsync();
+    }
+
+    public override async Task UpdateAsync(int id, Ware entityUpdateData)
+    {
+        entityUpdateData.Id = id;
+        await this.ValidateAsync(entityUpdateData);
+        
+        var ware = this.DbSet
+            .Include(x => x.Address)
+            .FirstOrDefault(x => x.Id == id);
+        if (ware == null)
+        {
+            throw new EntityNotFoundException($"Can't update ware with Id = {id}, because it doesn't exist.");
+        }
+
+        if (entityUpdateData.AddressId != ware.AddressId)
+        {
+            if (DoesNewAddressEqualOrigin(entityUpdateData.Address, ware.Address))
+            {
+                entityUpdateData.AddressId = ware.AddressId;
+            }
+            else
+            {
+                _ = await this.DbContext.Addresses.AddAsync(entityUpdateData.Address);
+
+                var addressToDelete = ware.Address;
+                ware.Address = entityUpdateData.Address;
+            
+                this.DbContext.Addresses.Remove(addressToDelete);
+            }
+        }
+
+        WareHelper.Populate(ware, entityUpdateData);
         _ = await this.DbContext.SaveChangesAsync();
     }
 
@@ -39,4 +74,10 @@ public class WareService : BaseService<Ware>, IWareService
          WareHelper.Populate(entity, entityUpdateData);
 
     protected override AbstractValidator<Ware>? GetValidator() => this._wareValidator;
+
+    private static bool DoesNewAddressEqualOrigin(Address newAddress, Address originAddress)
+    {
+        return newAddress.ShelfId == originAddress.ShelfId &&
+               newAddress.AreaId == originAddress.AreaId;
+    }
 }

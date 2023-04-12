@@ -58,6 +58,7 @@
         <app-address-picker 
           class="address-picker-field full-width-field"
           formControlName="Address"
+          controlLabel="Адрес*"
           [readonly]="isReadonly"
         >
         </app-address-picker>
@@ -69,28 +70,31 @@
       </form>
     </mat-card-content>
     <mat-card-actions align="end" *ngIf="areActionsVisible">
-      <button 
-        mat-raised-button
-        color="primary"
+      <button
+        *ngIf="isEditing || isCreating"
+        mat-button
         class="field-column-margin"
-        [disabled]="!isEditing && !isCreating || wareForm.invalid"
-        (click)="onSaveBtnClick()"
+        [disabled]="isLoading"
+        (click)="onResetBtnClick()"
       >
-        Сохранить
+        Отменить
       </button>
       <button
         *ngIf="!isEditing && !isCreating"
         mat-raised-button
+        class="field-column-margin"
+        [disabled]="isLoading"
         (click)="onEditBtnClick()"
       >
         Редактировать
       </button>
-      <button
-        *ngIf="isEditing || isCreating"
+      <button 
         mat-raised-button
-        (click)="onResetBtnClick()"
+        color="primary"
+        [disabled]="!isEditing && !isCreating || wareForm.invalid || isLoading"
+        (click)="onSaveBtnClick()"
       >
-        Отменить
+        Сохранить
       </button>
     </mat-card-actions>
   </mat-card>

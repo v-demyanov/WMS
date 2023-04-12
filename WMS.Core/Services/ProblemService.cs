@@ -88,6 +88,8 @@ public class ProblemService : BaseService<Problem>, IProblemService
         var problemsToDelete = await this.GetChildProblemsAsync(problemToDelete.Id);
         problemsToDelete.Add(problemToDelete);
         
+        // TODO: Remove Addresses
+        
         this.DbSet.RemoveRange(problemsToDelete);
         _ = await this.DbContext.SaveChangesAsync();
     }

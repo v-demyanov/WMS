@@ -1,6 +1,8 @@
 <div class="wrapper">
   <div>
-    <mat-label style="padding-left: 0.5rem; color: gray">Адрес</mat-label>
+    <mat-label style="padding-left: 0.5rem; color: gray">
+      {{ controlLabel }}
+    </mat-label>
     <mat-chip-listbox>
       <mat-chip-row *ngFor="let displayValue of getDisplayValues()">
         {{ displayValue }}

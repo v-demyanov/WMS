@@ -26,9 +26,9 @@ public class AddressValidator : AbstractValidator<Address>
             .Must((address, shelfId) => shelfId is null || this.DoesAreaIncludeShelf(address.AreaId, shelfId))
             .WithMessage("The area doesn't contain the shelf.");
 
-        this.RuleFor(address => address)
+        /*this.RuleFor(address => address)
             .Must(address => address.ShelfId is null || this.IsShelfNotTaken(address.AreaId, address.ShelfId))
-            .WithMessage("The shelf is already taken.");
+            .WithMessage("The shelf is already taken.");*/
     }
 
     private bool DoesAreaIncludeShelf(int areaId, int? shelfId)

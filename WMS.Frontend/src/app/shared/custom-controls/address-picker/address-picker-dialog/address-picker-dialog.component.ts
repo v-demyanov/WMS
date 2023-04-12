@@ -106,6 +106,11 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     this.selectedRack = undefined;
     this.selectedVerticalSection = undefined;
     this.selectedShelf = undefined;
+
+    this.addressForm.value.RackId = null;
+    this.addressForm.value.VerticalSectionId = null;
+    this.addressForm.value.ShelfId = null;
+
     this.racks = [];
     this.verticalSections = [];
     this.shelfs = [];
@@ -118,6 +123,10 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     this.selectedRack = this.racks.find(x => x.Id === rackId);
     this.selectedVerticalSection = undefined;
     this.selectedShelf = undefined;
+
+    this.addressForm.value.VerticalSectionId = null;
+    this.addressForm.value.ShelfId = null;
+
     this.verticalSections = [];
     this.shelfs = [];
 
@@ -128,6 +137,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
   public onSectionSelected(sectionId: number): void {
     this.selectedVerticalSection = this.verticalSections.find(x => x.Id === sectionId);
     this.selectedShelf = undefined;
+    this.addressForm.value.ShelfId = null;
     this.shelfs = [];
 
     const subscription: Subscription = this.loadShelfs(sectionId);

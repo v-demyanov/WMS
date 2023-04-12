@@ -14,10 +14,5 @@ public static class WareHelper
         destination.ImagePath = source.ImagePath;
         destination.UnitOfMeasurementId = source.UnitOfMeasurementId;
         destination.TechnicalParameterValue = source.TechnicalParameterValue;
-
-        if (source.Address != null)
-        {
-            destination.Address = source.Address;
-        }
     }
 }

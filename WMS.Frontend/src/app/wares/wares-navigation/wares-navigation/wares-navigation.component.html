@@ -6,11 +6,13 @@
     class="wares-scroll-wrapper"
   >
     <mat-selection-list
+      #waresSelectionsList
       [multiple]="false"
       (selectionChange)="onSelectWare($event.options[0].value)"
     >
       <mat-list-option
-        *ngFor="let ware of wares" [value]="ware"
+        *ngFor="let ware of wares"
+        [value]="ware"
       >
         <mat-icon>category</mat-icon>
         <span style="padding: 0 0.5rem;">({{ ware.Id }})</span>

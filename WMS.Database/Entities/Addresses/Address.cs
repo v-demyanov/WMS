@@ -8,6 +8,8 @@ public class Address : BaseEntity
 
     public Area Area { get; set; } = default!;
     
+    public Ware Ware { get; set; } = default!;
+    
     public Shelf? Shelf { get; set; }
 
     public ICollection<Problem> Problems { get; } = new HashSet<Problem>();

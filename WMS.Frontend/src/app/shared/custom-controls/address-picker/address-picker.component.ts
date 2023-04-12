@@ -25,6 +25,9 @@ export class AddressPickerComponent implements ControlValueAccessor {
 
   @Input()
   public readonly: boolean = true;
+
+  @Input()
+  public controlLabel: string = 'Адрес';
   
   public address?: IAddress | null;
 

@@ -154,7 +154,9 @@ export class WaresFormComponent implements OnInit, OnDestroy {
   }
 
   private createWare(): void {
+    this.isLoading = true;
     const wareCreateData: IWare = this.wareForm.value;
+
     const subscription: Subscription = this.waresService.create(wareCreateData)
       .subscribe({
         next: (ware: IWare) => {
@@ -179,20 +181,30 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const wareUpdateData: IWare = this.wareForm.value;
+    const wareUpdateData: IWare = {
+      AddressId: this.wareForm.value.Address.Id,
+      ...this.wareForm.value
+    };
     this.isLoading = true;
-    const subscription: Subscription = this.waresService.update(this.selectedWareId ?? 1, wareUpdateData)
+    const subscription: Subscription = this.waresService.update(this.selectedWareId, wareUpdateData)
       .subscribe({
         next: () => {
           this.isLoading = false;
           this.isEditing = false;
-          this.selectedWare = {
+
+          this.waresEventBusService.update({
             Id: this.selectedWareId,
-            ...wareUpdateData
-          };
+            ...wareUpdateData,
+          });
+
           this.snackBar.open('Товар обновлён', 'Закрыть', {
             duration: 3000,
           });
+
+          if (this.selectedWareId) {
+            const subscription: Subscription = this.loadWare(this.selectedWareId);
+            this.componentSubscriptions.push(subscription);
+          }
         },
         error: () => {
           this.isLoading = false;
@@ -206,7 +218,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
   private subscribeOnRouteParamsChanges(): Subscription {
     return this.route.params.subscribe((params: Params) => {
-      this.selectedWareId = params['id'];
+      this.selectedWareId = Number(params['id']);
       if (this.selectedWareId) {
         this.isEditing = false;
         this.loadWare(this.selectedWareId);

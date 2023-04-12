@@ -60,7 +60,8 @@ builder.Services
     .AddScoped<IWareService, WareService>()
     .AddScoped<IProblemService, ProblemService>()
     .AddScoped<ICommentService, CommentService>()
-    .AddScoped<INotificationService, NotificationService>();
+    .AddScoped<INotificationService, NotificationService>()
+    .AddScoped<IAddressService, AddressService>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)))
