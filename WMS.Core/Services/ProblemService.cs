@@ -2,12 +2,16 @@
 
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using FluentValidation;
 
 using WMS.Core.Exceptions;
+using WMS.Core.Helpers;
 using WMS.Core.Models.Templates;
 using WMS.Core.Services.Abstractions;
+using WMS.Core.Validators;
 using WMS.Database;
 using WMS.Database.Entities;
+using WMS.Database.Entities.Addresses;
 using WMS.Database.Enums;
 
 public class ProblemService : BaseService<Problem>, IProblemService
@@ -16,18 +20,21 @@ public class ProblemService : BaseService<Problem>, IProblemService
     private readonly ITemplateService _templateService;
     private readonly IAuthService _authService;
     private readonly IUserService _userService;
+    private readonly ProblemValidator _problemValidator;
 
     public ProblemService(
         WmsDbContext dbContext,
         IMailService mailService,
         ITemplateService templateService,
         IUserService userService,
-        IAuthService authService) : base(dbContext)
+        IAuthService authService,
+        ProblemValidator problemValidator) : base(dbContext)
     {
         this._mailService = mailService;
         this._templateService = templateService;
         this._userService = userService;
         this._authService = authService;
+        this._problemValidator = problemValidator;
     }
 
     public async Task UpdateStatusAsync(ProblemStatus status, int problemId)
@@ -40,7 +47,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
         }
 
         var currentUser = this._authService.GetCurrentUser();
-        if (currentUser is null || (status == ProblemStatus.Done && !CanUserSetDoneStatus(currentUser)))
+        if (status == ProblemStatus.Done && !CanUserSetDoneStatus(currentUser))
         {
             throw new AuthorizationFailedException($"Can't set status {status}, " +
                 "because user doesn't have permissions.");
@@ -73,6 +80,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
     {
         var currentUser = this._authService.GetCurrentUser();
         var problemToDelete = this.DbSet
+            .Include(x => x.TargetAddress)
             .FirstOrDefault(x => x.Id == id);
 
         if (problemToDelete == null)
@@ -85,12 +93,17 @@ public class ProblemService : BaseService<Problem>, IProblemService
             throw new AuthorizationFailedException($"Can't delete problem with Id = {id}, because it belongs to another user.");
         }
 
-        var problemsToDelete = await this.GetChildProblemsAsync(problemToDelete.Id);
+        var (problemsToDelete, addressesToDelete) = await this.GetChildProblemsAndAddressesToDeleteAsync(problemToDelete.Id);
         problemsToDelete.Add(problemToDelete);
-        
-        // TODO: Remove Addresses
+
+        if (problemToDelete.TargetAddress is not null)
+        {
+            addressesToDelete.Add(problemToDelete.TargetAddress);
+        }
         
         this.DbSet.RemoveRange(problemsToDelete);
+        this.DbContext.Addresses.RemoveRange(addressesToDelete);
+
         _ = await this.DbContext.SaveChangesAsync();
     }
 
@@ -113,27 +126,78 @@ public class ProblemService : BaseService<Problem>, IProblemService
         _ = await this.DbContext.SaveChangesAsync();
     }
 
+    public override async Task UpdateAsync(int id, Problem entityUpdateData)
+    {
+        await this.ValidateAsync(entityUpdateData);
+        
+        var problem = this.DbSet
+            .Include(x => x.TargetAddress)
+            .FirstOrDefault(x => x.Id == id);
+        if (problem == null)
+        {
+            throw new EntityNotFoundException($"Can't update problem with Id = {id}, because it doesn't exist.");
+        }
+
+        var currentUser = this._authService.GetCurrentUser();
+        if (currentUser.Id != problem.AuthorId)
+        {
+            throw new AuthorizationFailedException($"Can't update problem with Id = {id}, because it belongs to another user.");
+        }
+
+        if (AddressHelper.DoesNewAddressEqualOrigin(entityUpdateData.TargetAddress, problem.TargetAddress))
+        {
+            entityUpdateData.TargetAddressId = problem.TargetAddressId;
+        }
+        else
+        {
+            if (entityUpdateData.TargetAddress is not null)
+            {
+                _ = await this.DbContext.Addresses.AddAsync(entityUpdateData.TargetAddress);
+            }
+            
+            var addressToDelete = problem.TargetAddress;
+            problem.TargetAddress = entityUpdateData.TargetAddress;
+
+            if (addressToDelete is not null)
+            {
+                this.DbContext.Addresses.Remove(addressToDelete);
+            }
+        }
+
+        ProblemHelper.Populate(problem, entityUpdateData);
+        _ = await this.DbContext.SaveChangesAsync();
+    }
+
+    protected override AbstractValidator<Problem>? GetValidator() => this._problemValidator;
+
     protected override void Update(Problem entity, Problem entityUpdateData)
     {
         throw new NotImplementedException();
     }
 
-    private async Task<List<Problem>> GetChildProblemsAsync(int problemId)
+    private async Task<(List<Problem>, List<Address>)> GetChildProblemsAndAddressesToDeleteAsync(int problemId)
     {
         var childProblems = await this.DbSet
+            .Include(x => x.TargetAddress)
             .Where(x => x.ParentProblemId == problemId)
             .ToListAsync();
 
         var allChildProblems = new List<Problem>();
+        var allAddresses = new List<Address>();
         foreach (var childProblem in childProblems)
         {
             allChildProblems.Add(childProblem);
+            if (childProblem.TargetAddress is not null)
+            {
+                allAddresses.Add(childProblem.TargetAddress);
+            }
 
-            var problems = await GetChildProblemsAsync(childProblem.Id);
+            var (problems, addresses) = await GetChildProblemsAndAddressesToDeleteAsync(childProblem.Id);
             allChildProblems.AddRange(problems);
+            allAddresses.AddRange(addresses);
         }
 
-        return allChildProblems;
+        return (allChildProblems, allAddresses);
     }
 
     private static bool CanUserSetDoneStatus(User user) =>

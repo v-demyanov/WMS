@@ -9,7 +9,6 @@ using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
 using WMS.Database.Entities;
-using WMS.Database.Entities.Addresses;
 
 public class WareService : BaseService<Ware>, IWareService
 {
@@ -51,7 +50,7 @@ public class WareService : BaseService<Ware>, IWareService
 
         if (entityUpdateData.AddressId != ware.AddressId)
         {
-            if (DoesNewAddressEqualOrigin(entityUpdateData.Address, ware.Address))
+            if (AddressHelper.DoesNewAddressEqualOrigin(entityUpdateData.Address, ware.Address))
             {
                 entityUpdateData.AddressId = ware.AddressId;
             }
@@ -74,10 +73,4 @@ public class WareService : BaseService<Ware>, IWareService
          WareHelper.Populate(entity, entityUpdateData);
 
     protected override AbstractValidator<Ware>? GetValidator() => this._wareValidator;
-
-    private static bool DoesNewAddressEqualOrigin(Address newAddress, Address originAddress)
-    {
-        return newAddress.ShelfId == originAddress.ShelfId &&
-               newAddress.AreaId == originAddress.AreaId;
-    }
 }

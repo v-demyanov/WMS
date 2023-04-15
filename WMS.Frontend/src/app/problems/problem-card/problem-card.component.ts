@@ -23,19 +23,6 @@ export class ProblemCardComponent {
     private readonly permissionsService: PermissionsService,
   ) {}
 
-  public openTaskDialog(problem: IProblem, isEditing: boolean = false): void {
-    const dialogRef = this.dialog.open(ProblemDialogComponent, {
-      width: 'auto',
-      data: <ProblemDialogData>{
-        initialProblemId: problem.Id,
-        isCreating: false,
-        isEditing: isEditing,
-      },
-    });
-
-    // TODO: Replace data after updating
-  }
-
   public get canUserEditProblem(): boolean {
     return this.permissionsService.isAdmin();
   }

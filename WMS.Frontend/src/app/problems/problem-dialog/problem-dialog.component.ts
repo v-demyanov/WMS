@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
-import { firstValueFrom, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -11,15 +11,13 @@ import { ProblemStatus } from '../enums/problem-status.enum';
 import { EmployeesService } from 'src/app/admin-panel/employees/services/employees.service';
 import { EmployeesDataService } from 'src/app/admin-panel/employees/services/employees-data.service';
 import { IEmployee } from 'src/app/admin-panel/employees/models/employee';
-import { AuthenticationService, UserRole } from 'src/app/core/authentication';
+import { AuthenticationService, PermissionsService, UserRole } from 'src/app/core/authentication';
 import { IProblem } from '../models/problem';
 import { ProblemDialogData } from '../models/problem-dialog-data';
 import { WaresService } from 'src/app/wares/services/wares.service';
 import { IWare } from 'src/app/wares/models/ware';
 import { ProblemsService } from '../services/problems.service';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
-import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
-import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
 
 @Component({
   selector: 'app-problem-dialog',
@@ -49,12 +47,15 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
 
   public problem?: IProblem;
 
+  public problemStatus = ProblemStatus;
+
   public problemsDropDownValues: KeyValue<number, string>[] = [];
 
   private componentSubscriptions: Subscription[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: ProblemDialogData,
+    public readonly permissionsService: PermissionsService,
     private dialogRef: MatDialogRef<ProblemDialogComponent>,
     private readonly userService: EmployeesService,
     private readonly snackBar: MatSnackBar,
@@ -63,7 +64,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
     private readonly problemsService: ProblemsService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly verticalSectionsService: VerticalSectionsService,
   ) {}
 
   public ngOnDestroy = (): void =>
@@ -116,7 +116,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
   }
 
   private createProblem(): void {
-    const problem: IProblem = this.prepareProblemToCreate();
+    const problem: IProblem = this.prepareProblemToSave();
     const subscription: Subscription = this.problemsService.create(problem)
       .subscribe({
         next: async (problem: IProblem) => {
@@ -146,7 +146,33 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
   }
 
   private updateProblem(): void {
+    if (!this.problem?.Id) {
+      return;
+    }
 
+    const problemUpdateData: IProblem = this.prepareProblemToSave();
+    const subscription: Subscription = this.problemsService.update(this.problem.Id, problemUpdateData)
+      .subscribe({
+        next: async () => {
+          this.snackBar.open(
+            'Задача обновлена',
+            'Закрыть',
+            { duration: 3000 },
+          );
+          this.isLoading = false;
+
+          this.dialogRef.close(problemUpdateData);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.snackBar.open(
+            'Ошибка при обновлении задачи',
+            'Закрыть',
+            { duration: 3000 },
+          );
+        },
+      });
+    this.componentSubscriptions.push(subscription);
   }
 
   private loadProblem(): void {
@@ -157,8 +183,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     const subscription = this.problemsService.get(this.dialogData.initialProblemId)
       .subscribe({
-        next: async (problem: IProblem) => {
-          await this.setVerticalSections(problem);
+        next: (problem: IProblem) => {
           this.problem = problem;
           this.initializeProblemForm();
           this.isLoading = false;
@@ -173,15 +198,6 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
         },
       });
     this.componentSubscriptions.push(subscription);
-  }
-
-  // TODO: Remove this method after MaxExpansionDepth will be set up correct
-  private async setVerticalSections(problem: IProblem): Promise<void> {
-    const verticalSectionId: number | undefined = problem?.TargetAddress?.Shelf?.VerticalSectionId;
-    if (verticalSectionId) {
-      const verticalSection: IVerticalSection = await firstValueFrom(this.verticalSectionsService.get(verticalSectionId));
-      problem!.TargetAddress!.Shelf!.VerticalSection = verticalSection;
-    }
   }
 
   private loadEmployees(): Subscription {
@@ -258,6 +274,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
 
     if (this.isCreating) {
       this.problemForm.controls['ParentProblemId'].setValue(this.dialogData?.parentProblemId);
+      this.problemForm.controls['CreatedDate'].setValue(new Date());
     }
   }
 
@@ -266,7 +283,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       ? (this.authenticationService.getUserClaims()?.Id ?? null)
       : this.problem?.AuthorId ?? null;
 
-  private prepareProblemToCreate(): IProblem {
+  private prepareProblemToSave(): IProblem {
     return {
       ...this.problemForm.value,
       Status: ProblemStatus[this.problemForm.value.Status],

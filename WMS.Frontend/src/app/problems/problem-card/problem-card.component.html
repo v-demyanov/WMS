@@ -8,11 +8,8 @@
     </div>
   </div>
   <div>
-    <button mat-icon-button color="primary" [routerLink]="item.Id.toString()">
-      <mat-icon>open_in_new</mat-icon>
-    </button>
-    <button *ngIf="canUserEditProblem" mat-icon-button color="warn" (click)="(openTaskDialog(item, true))">
-      <mat-icon>edit</mat-icon>
+    <button mat-stroked-button [routerLink]="item.Id.toString()">
+      Открыть
     </button>
   </div>
 </div>

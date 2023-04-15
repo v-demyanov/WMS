@@ -47,6 +47,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
   public isSettingStatus: boolean = false;
 
   constructor(
+    public readonly permissionsService: PermissionsService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly problemsService: ProblemsService,
@@ -54,7 +55,6 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     private readonly scroller: ViewportScroller,
     private readonly dialog: MatDialog,
     private readonly authenticationService: AuthenticationService,
-    public readonly permissionsService: PermissionsService,
   ) {}
 
   public ngOnInit(): void {
@@ -70,7 +70,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
 
   public getProblemStatusTitle(): string {
     if (this.problem?.Status === undefined) {
-      return UI_ERROR_LABEL;
+      return '';
     }
 
     return this.problemStatusTitles[this.problem.Status].value;
@@ -97,7 +97,7 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     return undefinedLabel;
   }
 
-  public openProblemDialog(): void {
+  public onAddSubProblemBtnClick(): void {
     this.dialog.open(ProblemDialogComponent, <MatDialogConfig>{
       ariaModal: true,
       disableClose: true,
@@ -107,6 +107,23 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
         parentProblemId: this.problemId,
       },
     });
+  }
+
+  public async onEditBtnClick(): Promise<void> {
+    const dialogRef = this.dialog.open(ProblemDialogComponent, <MatDialogConfig>{
+      ariaModal: true,
+      disableClose: true,
+      width: 'auto',
+      data: <ProblemDialogData>{
+        initialProblemId: this.problem?.Id,
+        isEditing: true,
+      },
+    });
+
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (result && this.problemId) {
+      this.loadProblem(this.problemId);
+    }
   }
 
   public async openParentProblem(): Promise<void> {
@@ -151,7 +168,11 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     this.componentSubscriptions.push(subscription);
   }
 
-  public get canUserDeleteTask(): boolean {
+  public get canUserDeleteProblem(): boolean {
+    return this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId;
+  }
+
+  public get canUserUpdateProblem(): boolean {
     return this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId;
   }
 
@@ -201,6 +222,28 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
         },
       });
     this.componentSubscriptions.push(subscription);
+  }
+
+  public getWareDisplayName(): string {
+    if (this.problem?.Ware) {
+      return `(${this.problem.Ware.Id}) ${this.problem.Ware.Name}`;
+    }
+
+    return '';
+  }
+
+  public getAddressDisplayValues(): string[] {
+    const name: string | undefined = this.problem?.TargetAddress?.Area?.Name;
+    const rackIndex: number | undefined = this.problem?.TargetAddress?.Shelf?.VerticalSection?.Rack?.Index;
+    const sectionIndex: number | undefined = this.problem?.TargetAddress?.Shelf?.VerticalSection?.Index;
+    const shelfIndex: number | undefined = this.problem?.TargetAddress?.Shelf?.Index;
+
+    const areaDisplayName: string = name ? `Зона: ${name}` : '';
+    const rackDisplayName: string = rackIndex ? `Стелаж: №${rackIndex}` : '';
+    const sectionDisplayName: string = sectionIndex ? `Секция: №${sectionIndex}` : '';
+    const shelfDisplayName: string = shelfIndex ? `Полка: №${shelfIndex}` : '';
+
+    return [areaDisplayName, rackDisplayName, sectionDisplayName, shelfDisplayName].filter(x => x);
   }
 
   private subscribeOnRouteParamsChanges(): Subscription {

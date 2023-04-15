@@ -42,7 +42,8 @@ builder.Services
     .AddScoped<LegalEntityValidator, LegalEntityValidator>()
     .AddScoped<RackCreateDataValidator, RackCreateDataValidator>()
     .AddScoped<AddressValidator, AddressValidator>()
-    .AddScoped<WareValidator, WareValidator>();
+    .AddScoped<WareValidator, WareValidator>()
+    .AddScoped<ProblemValidator, ProblemValidator>();
 
 builder.Services
     .AddHttpContextAccessor()

@@ -49,7 +49,7 @@
       <mat-label>Статус</mat-label>
       <mat-select formControlName="Status">
         <mat-option
-          [disabled]="isReadonly || isCreating"
+          [disabled]="isReadonly || isCreating || (!permissionsService.isAuditor() && title.key === problemStatus.Done)"
           *ngFor="let title of problemStatusTitles"
           [value]="title.key"
         >
@@ -89,54 +89,28 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Дата обновления</mat-label>
+        <mat-label>Срок выполнения</mat-label>
         <input
           [readonly]="isReadonly"
-          formControlName="LastUpdateDate"
+          formControlName="DeadlineDate"
           matInput
-          [matDatepicker]="lastUpdateDatePicker"
+          [matDatepicker]="deadlineDatePicker"
         />
         <mat-hint>MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
-          [for]="lastUpdateDatePicker"
+          [for]="deadlineDatePicker"
         ></mat-datepicker-toggle>
         <mat-datepicker
           [disabled]="isReadonly"
-          #lastUpdateDatePicker
+          #deadlineDatePicker
         ></mat-datepicker>
       </mat-form-field>
     </div>
 
-    <mat-form-field class="full-width-field" appearance="fill">
-      <mat-label>Дата окончания срока выполнения</mat-label>
-      <input
-        [readonly]="isReadonly"
-        formControlName="DeadlineDate"
-        matInput
-        [matDatepicker]="deadlineDatePicker"
-      />
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="deadlineDatePicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker
-        [disabled]="isReadonly"
-        #deadlineDatePicker
-      ></mat-datepicker>
-    </mat-form-field>
-
-    <app-address-picker
-      formControlName="TargetAddress"
-      [readonly]="isReadonly"
-      class="address-field full-width-field"
-    >
-    </app-address-picker>
-
     <mat-form-field 
       appearance="fill"
-      class="author-field full-width-field"
+      class="full-width-field"
     >
       <mat-label>Автор</mat-label>
       <mat-select formControlName="AuthorId" #authorsList>
@@ -200,9 +174,17 @@
       </button>
     </mat-form-field>
 
+    <app-address-picker
+      formControlName="TargetAddress"
+      [readonly]="isReadonly"
+      controlLabel="Адрес назначения"
+      class="address-field full-width-field"
+    >
+    </app-address-picker>
+
     <mat-form-field 
       appearance="fill"
-      class="full-width-field"
+      class="ware-field full-width-field"
     >
       <mat-label>Товар</mat-label>
       <mat-select formControlName="WareId" #waresList>

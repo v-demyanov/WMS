@@ -61,6 +61,12 @@ export class ProblemAssignDialogComponent implements OnInit, OnDestroy {
           this.dialogData.Problem.Performer = this.employees.find(x => x.Id === performerId);
           this.isLoading = false;
 
+          this.snackBar.open(
+            'Исполнитель назначен',
+            'Закрыть',
+            { duration: 3000 },
+          );
+
           this.dialogRef.close(this.dialogData.Problem);
         },
         error: () => {

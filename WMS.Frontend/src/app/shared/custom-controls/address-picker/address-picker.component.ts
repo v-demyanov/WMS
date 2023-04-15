@@ -53,7 +53,7 @@ export class AddressPickerComponent implements ControlValueAccessor {
     }
   }
 
-  public registerOnChange(onChange: (address?: IAddress) => {}): void {
+  public registerOnChange(onChange: (address?: IAddress | null) => {}): void {
     this.onChange = onChange;
   }
 
@@ -91,7 +91,6 @@ export class AddressPickerComponent implements ControlValueAccessor {
       },
     );
 
-    // TODO: Fix setting Address field after updating or creating
     const result: AddressPickerDialogData = await firstValueFrom(dialogRef.afterClosed());
 
     if (result) {
@@ -106,7 +105,18 @@ export class AddressPickerComponent implements ControlValueAccessor {
     }
   }
 
-  private onChange = (address?: IAddress): void => {};
+  public resetControl(): void {
+    this.address = undefined;
+    this.selectedArea = undefined;
+    this.selectedRack = undefined;
+    this.selectedVerticalSection = undefined;
+    this.selectedShelf = undefined;
+
+    this.markAsTouched();
+    this.onChange(null);
+  }
+
+  private onChange = (address?: IAddress | null): void => {};
 
   private onTouched = (): void => {};
 

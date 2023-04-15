@@ -33,7 +33,7 @@ export class ProblemsService {
   }
 
   public get(problemId: number): Observable<IProblem> {
-    const expandQuery: string = '$expand=Author,Auditor,Performer,TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const expandQuery: string = '$expand=Author,Auditor,Performer,Ware,TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
     const filterQuery: string = `$filter=Id eq ${problemId}`;
     const odataQuery: string = `${filterQuery}&${expandQuery}`;
 
@@ -54,6 +54,9 @@ export class ProblemsService {
     this.http.post<IRawProblem>(ApiEndpoints.Problems, problem)
       .pipe(map((problem: IRawProblem) => this.parseProblem(problem)));
 
+  public update = (id: number, problemUpdateData: IProblem): Observable<void> => 
+    this.http.put<void>(`${ApiEndpoints.Problems}${id}`, problemUpdateData);
+
   public delete = (id: number): Observable<void> => 
     this.http.delete<void>(`${ApiEndpoints.Problems}${id}`);
 
@@ -65,7 +68,7 @@ export class ProblemsService {
       ...rawProblem,
       Status: parseEnum(ProblemStatus, rawProblem.Status),
       CreatedDate: new Date(rawProblem.CreatedDate),
-      LastUpdateDate: rawProblem.CreatedDate ? new Date(rawProblem.CreatedDate) : null,
+      LastUpdateDate: rawProblem.LastUpdateDate ? new Date(rawProblem.LastUpdateDate) : null,
       DeadlineDate: rawProblem.DeadlineDate ? new Date(rawProblem.DeadlineDate) : null,
       ChildrenProblems: rawProblem.ChildrenProblems?.map(x => this.parseProblem(x)),
     };

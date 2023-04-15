@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';
-import { Subscription, take, firstValueFrom } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { IUnitOfMeasurements } from 'src/app/dictionaries/unit-of-measurements/models/unit-of-measurements';
@@ -12,8 +12,6 @@ import { WaresService } from '../../services/wares.service';
 import { WaresRoute } from '../../wares-routing.constants';
 import { LegalEntitiesService } from 'src/app/admin-panel/tenants/legal-entities/services/legal-entities.service';
 import { ILegalEntity } from 'src/app/admin-panel/tenants/legal-entities/models/legal-entity';
-import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
-import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
 import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 
@@ -49,7 +47,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly unitOfMeasurementsService: UnitOfMeasurementsService,
     private readonly legalEntitiesService: LegalEntitiesService,
-    private readonly verticalSectionsService: VerticalSectionsService,
     private readonly waresEventBusService: WaresEventBusService,
     private readonly authenticationService: AuthenticationService,
   ) {}
@@ -91,12 +88,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     return this.waresService.get(id).subscribe({
       next: async (ware: IWare | undefined) => {
-        const verticalSectionId: number | undefined = ware?.Address?.Shelf?.VerticalSectionId;
-        if (verticalSectionId) {
-          const verticalSection: IVerticalSection = await firstValueFrom(this.verticalSectionsService.get(verticalSectionId));
-          ware!.Address!.Shelf!.VerticalSection = verticalSection;
-        }
-        
         this.selectedWare = ware;
         this.initializeWareForm();
         this.isLoading = false;

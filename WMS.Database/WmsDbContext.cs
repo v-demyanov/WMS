@@ -2,15 +2,18 @@
 
 using Microsoft.EntityFrameworkCore;
 
+using WMS.Database.Abstractions;
 using WMS.Database.Entities;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Dictionaries;
 using WMS.Database.Entities.Tenants;
 
-public class WmsDbContext : DbContext
+public sealed class WmsDbContext : DbContext
 {
     public WmsDbContext(DbContextOptions<WmsDbContext> options)
-        : base(options) { }
+        : base(options)
+    {
+    }
 
     public DbSet<User> Users => this.Set<User>();
 
@@ -35,6 +38,20 @@ public class WmsDbContext : DbContext
     public DbSet<Individual> Individuals => this.Set<Individual>();
 
     public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())
+        {
+            var entity = entry.Entity;
+            if (entry.State == EntityState.Modified)
+            {
+                entity.LastUpdateDate = DateTimeOffset.Now;
+            }
+        }
+        
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,6 +1,7 @@
 import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 import { ProblemStatus } from '../enums/problem-status.enum';
 import { IEmployee } from 'src/app/admin-panel/employees/models/employee';
+import { IWare } from 'src/app/wares/models/ware';
 
 export interface IRawProblem {
   Id: number;
@@ -18,5 +19,6 @@ export interface IRawProblem {
 
   TargetAddress?: IAddress;
   Performer?: IEmployee;
+  Ware?: IWare;
   ChildrenProblems?: IRawProblem[];
 }

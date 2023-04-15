@@ -78,4 +78,17 @@ public class ProblemsController : ODataController
         await this._problemService.AssignAsync(problemId, userId);
         return this.NoContent();
     }
+
+    /// <summary>
+    /// Updates the problem.
+    /// </summary>
+    /// <param name="problemUpdateData">Problem's update data.</param>
+    /// <param name="key">Problem's Id.</param>
+    [HttpPut]
+    [Authorize]
+    public async Task<ActionResult> Put([FromBody] Problem problemUpdateData, int key)
+    {
+        await this._problemService.UpdateAsync(key, problemUpdateData);
+        return this.NoContent();
+    }
 }

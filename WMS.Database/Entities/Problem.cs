@@ -1,9 +1,10 @@
 ﻿namespace WMS.Database.Entities;
 
+using WMS.Database.Abstractions;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Enums;
 
-public class Problem : BaseEntity
+public class Problem : BaseEntity, IAuditableEntity
 {
     public string Title { get; set; } = default!;
 

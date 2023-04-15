@@ -9,14 +9,26 @@
       </mat-chip-row>
     </mat-chip-listbox>
   </div>
-  <button 
-    mat-icon-button
-    class="edit-btn"
-    (click)="openAddressPickerDialog()"
-    [disabled]="readonly"
-  >
-    <mat-icon>
-      edit
-    </mat-icon>
-  </button>
+  <div>
+    <button 
+      mat-icon-button
+      class="edit-btn"
+      (click)="openAddressPickerDialog()"
+      [disabled]="readonly"
+    >
+      <mat-icon>
+        edit
+      </mat-icon>
+    </button>
+    <button
+      *ngIf="address && !readonly"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="resetControl()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
 </div>

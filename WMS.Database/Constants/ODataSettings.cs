@@ -2,7 +2,7 @@
 
 public static class ODataSettings
 {
-    public const int MaxExpansionDepth = 4;
+    public const int MaxExpansionDepth = 5;
 
     public const int MaxTopValue = 100;
 }
