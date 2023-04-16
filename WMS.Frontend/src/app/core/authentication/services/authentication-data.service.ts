@@ -44,10 +44,10 @@ export class AuthenticationDataService {
     localStorage.removeItem(TokenStorageKeys.UserClaims);
   }
 
-  public isExistAccessToken = (): boolean =>
+  public doesAccessTokenExist = (): boolean =>
     !!localStorage.getItem(TokenStorageKeys.AccessToken);
 
-  public isExistRefreshToken = (): boolean =>
+  public doesRefreshTokenExist = (): boolean =>
     !!localStorage.getItem(TokenStorageKeys.RefreshToken);
 
   public setUserClaims(userClaims: IUserClaims): void {
@@ -76,12 +76,12 @@ export class AuthenticationDataService {
   }
 
   public refreshToken(): Observable<ITokenResponse> {
-    const refreshToken: string | null = localStorage.getItem(
-      TokenStorageKeys.RefreshToken
-    );
+    const refreshToken: string | null = localStorage.getItem(TokenStorageKeys.RefreshToken);
+    const accessToken: string | null = localStorage.getItem(TokenStorageKeys.AccessToken);
 
     return this.http
       .post<ITokenResponse>(ApiEndpoints.AuthRefresh, <RefreshRequest>{
+        AccessToken: accessToken,
         RefreshToken: refreshToken,
       })
       .pipe(

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
+import * as _moment from 'moment';
 
 import { IUserClaims } from '../models/user-claims';
 import { AuthenticationDataService } from './authentication-data.service';
@@ -12,6 +13,8 @@ import { parseEnum } from '../../helpers/enum.helper';
 import { IUserCredentials } from '../models/user-credentials';
 import { AppRoute } from 'src/app/app-routing.constants';
 import { HttpStatusCodes } from '../../constants/http-status-codes';
+
+const moment = _moment;
 
 @Injectable()
 export class AuthenticationService {
@@ -72,7 +75,24 @@ export class AuthenticationService {
 
   public refreshShouldHappen = (response: HttpErrorResponse): boolean =>
     response.status === HttpStatusCodes.Unauthorized
-    && this.authenticationDataService.isExistRefreshToken();
+    && this.authenticationDataService.doesRefreshTokenExist();
+
+  public doesRefreshTokenExist = (): boolean => 
+    this.authenticationDataService.doesRefreshTokenExist();
+
+  public isAccessTokenExpired(): boolean {
+    const accessTokenExpiration = this.getAccessTokenExpirationUtc();
+
+    return moment().utc().isSameOrAfter(accessTokenExpiration);
+  }
+
+  private getAccessTokenExpirationUtc(): _moment.Moment {
+    const accessToken: string = this.authenticationDataService.getAccessToken() ?? '';
+    const tokenObject: IUserClaims = this.decodeJwtToken(accessToken);
+    const expirationTimestamp: number = tokenObject.Exp;
+
+    return moment.unix(expirationTimestamp).utc();
+  }
 
   public login = (userCredentials: IUserCredentials): Observable<ITokenResponse> =>
     this.authenticationDataService.login(userCredentials);  
