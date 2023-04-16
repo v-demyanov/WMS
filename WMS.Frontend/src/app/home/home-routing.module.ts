@@ -26,7 +26,7 @@ const routes: Routes = [
     component: HomePageComponent,
     children: [
       {
-        path: HomeRoute.Dictionaries,
+        path: `${HomeRoute.Dictionaries}`,
         loadChildren: () => import('../dictionaries/dictionaries.module')
           .then(m => m.DictionariesModule),
       },

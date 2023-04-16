@@ -3,5 +3,5 @@ export class DictionariesRoute {
 
   public static readonly Racks = 'addresses/racks';
 
-  public static readonly UnitOfMeasurements = 'unit-of-measurements';
+  public static readonly UnitOfMeasurements = 'unitOfMeasurements';
 }

@@ -5,8 +5,6 @@ import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
-import { IUnitOfMeasurements } from 'src/app/dictionaries/unit-of-measurements/models/unit-of-measurements';
-import { UnitOfMeasurementsService } from 'src/app/dictionaries/unit-of-measurements/services/unit-of-measurements.service';
 import { IWare } from '../../models/ware';
 import { WaresService } from '../../services/wares.service';
 import { WaresRoute } from '../../wares-routing.constants';
@@ -14,6 +12,9 @@ import { LegalEntitiesService } from 'src/app/admin-panel/tenants/legal-entities
 import { ILegalEntity } from 'src/app/admin-panel/tenants/legal-entities/models/legal-entity';
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
 import { AuthenticationService, UserRole } from 'src/app/core/authentication';
+import { DictionariesService } from 'src/app/dictionaries/services/dictionaries.service';
+import { DictinaryItem } from 'src/app/dictionaries/models/dictionary-item';
+import { unitOfMeasurements } from 'src/app/dictionaries/constants/dictionaries.constants';
 
 @Component({
   selector: 'app-wares-form',
@@ -34,7 +35,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
   public wareForm: FormGroup = new FormGroup({});
 
-  public unitsOfMeasurements: IUnitOfMeasurements[] = [];
+  public unitsOfMeasurements: DictinaryItem[] = [];
 
   public legalEntities: ILegalEntity[] = [];
 
@@ -45,7 +46,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly waresService: WaresService,
     private readonly snackBar: MatSnackBar,
-    private readonly unitOfMeasurementsService: UnitOfMeasurementsService,
+    private readonly dictionariesService: DictionariesService,
     private readonly legalEntitiesService: LegalEntitiesService,
     private readonly waresEventBusService: WaresEventBusService,
     private readonly authenticationService: AuthenticationService,
@@ -241,9 +242,9 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
   private loadUnitsOfMeasurements(): Subscription {
     this.isLoading = true;
-    return this.unitOfMeasurementsService.getAll()
+    return this.dictionariesService.getAll(unitOfMeasurements.name)
       .subscribe({
-        next: (unitsOfMeasurements: IUnitOfMeasurements[]) => {
+        next: (unitsOfMeasurements: DictinaryItem[]) => {
           this.isLoading = false;
           this.unitsOfMeasurements = unitsOfMeasurements;
         },

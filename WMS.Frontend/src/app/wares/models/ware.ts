@@ -1,4 +1,4 @@
-import { IAddress } from "src/app/dictionaries/addresses/models/address";
+import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 
 export interface IWare {
   Id?: number;

@@ -8,6 +8,7 @@ using WMS.Database.Entities;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Tenants;
 using WMS.Database.Constants;
+using WMS.Database.Entities.Dictionaries;
 
 public static class WmsODataMvcBuilderExtensions
 {
@@ -33,6 +34,7 @@ public static class WmsODataMvcBuilderExtensions
         _ = modelBuilder.EntitySet<Problem>("Problems");
         _ = modelBuilder.EntitySet<Comment>("Comments");
         _ = modelBuilder.EntitySet<Address>("Addresses");
+        _ = modelBuilder.EntitySet<UnitOfMeasurement>("UnitOfMeasurements");
 
         ConfigureUserEntityType(modelBuilder);
 
