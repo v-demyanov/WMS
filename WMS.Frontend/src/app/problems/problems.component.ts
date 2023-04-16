@@ -11,9 +11,7 @@ import { Subscription } from 'rxjs';
 import { ProblemStatusTitles } from './enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from './enums/problem-status.enum';
 import { IProblem } from './models/problem';
-import { ProblemDialogData } from './models/problem-dialog-data';
 import { ProblemsService } from './services/problems.service';
-import { ProblemDialogComponent } from './problem-dialog/problem-dialog.component';
 import { PermissionsService } from '../core/authentication';
 
 @Component({
@@ -78,19 +76,6 @@ export class ProblemsComponent implements OnInit, OnDestroy {
 
   public getColumnTitle = (problemStatus: ProblemStatus): string =>
     ProblemStatusTitles[problemStatus].value;
-
-  public openTaskDialog(problem: IProblem, isEditing: boolean = false): void {
-    const dialogRef = this.dialog.open(ProblemDialogComponent, {
-      width: 'auto',
-      data: <ProblemDialogData>{
-        initialProblemId: problem.Id,
-        isCreating: false,
-        isEditing: isEditing,
-      },
-    });
-
-    // TODO: Replace data after updating
-  }
 
   public loadProblems(): Subscription {
     this.isLoading = true;
