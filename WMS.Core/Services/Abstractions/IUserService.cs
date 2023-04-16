@@ -20,5 +20,7 @@ public interface IUserService
 
     User? GetById(int userId);
 
-    User? GetByEmail(string userEmail);
+    User? GetByEmail(string? userEmail);
+    
+    User? GetCurrentUser();
 }

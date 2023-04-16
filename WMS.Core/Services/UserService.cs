@@ -73,8 +73,8 @@ public class UserService : IUserService
             throw new ApiOperationFailedException("Can't delete user, because it doesn't exist.");
         }
 
-        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
-        if (identity?.Name == user.Email)
+        var currentUser = this.GetCurrentUser();
+        if (currentUser?.Email == user.Email)
         {
             throw new ApiOperationFailedException("Can't delete yourself");
         }
@@ -96,8 +96,7 @@ public class UserService : IUserService
             throw new ApiOperationFailedException("Can't update user, because it doesn't exist.");
         }
 
-        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
-        var currentUser = this.GetByEmail(identity.Name);
+        var currentUser = this.GetCurrentUser();
         var doesUserTryToUpdateHisRole = currentUser?.Id == userId && currentUser.Role != userUpdateData.Role;
         if (doesUserTryToUpdateHisRole)
         {
@@ -112,8 +111,7 @@ public class UserService : IUserService
 
     public async Task UpdatePasswordAsync(string password)
     {
-        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
-        var currentUser = this.GetByEmail(identity.Name);
+        var currentUser = this.GetCurrentUser();
         if (currentUser == null)
         {
             throw new ApiOperationFailedException("Can't update user, because it doesn't exist.");
@@ -130,5 +128,11 @@ public class UserService : IUserService
 
     public User? GetById(int userId) => this._dbContext.Users.FirstOrDefault(user => user.Id == userId);
 
-    public User? GetByEmail(string userEmail) => this._dbContext.Users.FirstOrDefault(user => user.Email == userEmail);
+    public User? GetByEmail(string? userEmail) => this._dbContext.Users.FirstOrDefault(user => user.Email == userEmail);
+    
+    public User? GetCurrentUser()
+    {
+        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
+        return this.GetByEmail(identity?.Name);
+    }
 }

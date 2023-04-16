@@ -18,7 +18,6 @@ public class ProblemService : BaseService<Problem>, IProblemService
 {
     private readonly IMailService _mailService;
     private readonly ITemplateService _templateService;
-    private readonly IAuthService _authService;
     private readonly IUserService _userService;
     private readonly ProblemValidator _problemValidator;
 
@@ -27,13 +26,11 @@ public class ProblemService : BaseService<Problem>, IProblemService
         IMailService mailService,
         ITemplateService templateService,
         IUserService userService,
-        IAuthService authService,
         ProblemValidator problemValidator) : base(dbContext)
     {
         this._mailService = mailService;
         this._templateService = templateService;
         this._userService = userService;
-        this._authService = authService;
         this._problemValidator = problemValidator;
     }
 
@@ -46,8 +43,8 @@ public class ProblemService : BaseService<Problem>, IProblemService
                 "because it doesn't exist.");
         }
 
-        var currentUser = this._authService.GetCurrentUser();
-        if (status == ProblemStatus.Done && !CanUserSetDoneStatus(currentUser))
+        var currentUser = this._userService.GetCurrentUser();
+        if (currentUser is not null && status == ProblemStatus.Done && !CanUserSetDoneStatus(currentUser))
         {
             throw new AuthorizationFailedException($"Can't set status {status}, " +
                 "because user doesn't have permissions.");
@@ -78,7 +75,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
     public override async Task DeleteAsync(int id)
     {
-        var currentUser = this._authService.GetCurrentUser();
+        var currentUser = this._userService.GetCurrentUser();
         var problemToDelete = this.DbSet
             .Include(x => x.TargetAddress)
             .FirstOrDefault(x => x.Id == id);
@@ -88,7 +85,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
             throw new EntityNotFoundException($"Can't delete problem with Id = {id}, because it doesn't exist.");
         }
 
-        if (problemToDelete.AuthorId != currentUser.Id)
+        if (problemToDelete.AuthorId != currentUser?.Id)
         {
             throw new AuthorizationFailedException($"Can't delete problem with Id = {id}, because it belongs to another user.");
         }
@@ -138,8 +135,8 @@ public class ProblemService : BaseService<Problem>, IProblemService
             throw new EntityNotFoundException($"Can't update problem with Id = {id}, because it doesn't exist.");
         }
 
-        var currentUser = this._authService.GetCurrentUser();
-        if (currentUser.Id != problem.AuthorId)
+        var currentUser = this._userService.GetCurrentUser();
+        if (currentUser?.Id != problem.AuthorId)
         {
             throw new AuthorizationFailedException($"Can't update problem with Id = {id}, because it belongs to another user.");
         }

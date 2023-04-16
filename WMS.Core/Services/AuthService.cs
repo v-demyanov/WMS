@@ -1,6 +1,5 @@
 ﻿namespace WMS.Core.Services;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,18 +20,15 @@ public class AuthService : IAuthService
 {
     private readonly AuthOptions _authOptions;
     private readonly IUserService _userService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly WmsDbContext _dbContext;
 
     public AuthService(
         IOptions<AuthOptions> authOptions,
         IUserService userService,
-        IHttpContextAccessor httpContextAccessor,
         WmsDbContext dbContext)
     {
         this._authOptions = authOptions.Value;
         this._userService = userService;
-        this._httpContextAccessor = httpContextAccessor;
         this._dbContext = dbContext;
     }
 
@@ -60,37 +56,33 @@ public class AuthService : IAuthService
 
     public async Task<TokensResponse> RefreshTokensAsync(RefreshRequest refreshRequest)
     {
-        User currentUser = this.GetCurrentUser();
-        if (currentUser == null)
+        var principal = this.GetPrincipalFromExpiredToken(refreshRequest.AccessToken);
+        var userEmail = principal.Identity?.Name;
+
+        User? user = this._userService.GetByEmail(userEmail);
+        if (user == null)
         {
             throw new AuthenticationFailedException("Can't refresh tokens, because user doesn't exist");
         }
 
         bool isRefreshTokenValid = this.ValidateToken(refreshRequest.RefreshToken);
-        bool doesUserHaveSuchRT = currentUser.RefreshToken != null 
-            && currentUser.RefreshTokenSalt != null 
-            && SecretHelper.Verify(refreshRequest.RefreshToken, currentUser.RefreshToken, currentUser.RefreshTokenSalt);
-        if (!isRefreshTokenValid || !doesUserHaveSuchRT)
+        bool doesUserHaveSuchRt = user.RefreshToken != null && user.RefreshTokenSalt != null 
+            && SecretHelper.Verify(refreshRequest.RefreshToken, user.RefreshToken, user.RefreshTokenSalt);
+        if (!isRefreshTokenValid || !doesUserHaveSuchRt)
         {
             throw new AuthenticationFailedException("Can't refresh tokens, because it is not valid");
         }
 
-        var claims = this.GenerateUserClaims(currentUser);
+        var claims = this.GenerateUserClaims(user);
         var tokens = this.GenerateTokens(claims);
 
-        await this.UpdateRefreshTokenAsync(currentUser, tokens.RefreshToken);
+        await this.UpdateRefreshTokenAsync(user, tokens.RefreshToken);
 
         return tokens;
     }
 
-    public User GetCurrentUser()
-    {
-        var identity = this._httpContextAccessor.HttpContext?.User.Identity;
-        return this._userService.GetByEmail(identity.Name);
-    }
-
     private List<Claim> GenerateUserClaims(User user) =>
-        new List<Claim>
+        new()
         {
             new Claim(ClaimTypes.Name, user.Email),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
@@ -136,10 +128,10 @@ public class AuthService : IAuthService
     private bool ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var validationParameters = GetValidationParameters();
+        var tokenValidationParameters = GetValidationParameters();
         try
         {
-            var validationResult = tokenHandler.ValidateToken(token, validationParameters, out var securityToken);
+            tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
             var currentDate = new DateTimeOffset(DateTime.UtcNow);
             return securityToken.ValidTo > currentDate;
         }
@@ -150,15 +142,43 @@ public class AuthService : IAuthService
     }
 
     private TokenValidationParameters GetValidationParameters() =>
-        new TokenValidationParameters
+        new()
         {
             RequireExpirationTime = true,
             ValidateIssuer = true,
             ValidIssuer = this._authOptions.Issuer,
             ValidateAudience = true,
             ValidAudience = this._authOptions.Audience,
-            ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._authOptions.Key)),
             ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._authOptions.Key)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
         };
+
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidAudience = this._authOptions.Audience,
+            ValidateIssuer = true,
+            ValidIssuer = this._authOptions.Issuer,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._authOptions.Key)),
+            ValidateLifetime = false,
+            ClockSkew = TimeSpan.Zero,
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+        var jwtSecurityToken = securityToken as JwtSecurityToken;
+        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.CurrentCultureIgnoreCase))
+        {
+            throw new AuthenticationFailedException("Invalid client request");
+        }
+
+        return principal;
+    }
 }

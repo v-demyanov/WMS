@@ -1,6 +1,5 @@
 ﻿namespace WMS.WebApi.Controllers;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using WMS.Core.Models.Authentication;
@@ -20,11 +19,20 @@ public class AuthController : ControllerBase
         this._authService = authService;
     }
 
+    /// <summary>
+    /// Logged in system.
+    /// </summary>
+    /// <param name="loginRequest">Authentication data.</param>
+    /// <returns>Refresh and Access JWT.</returns>
     [HttpPost("Login")]
     public async Task<TokensResponse> Login([FromBody] LoginRequest loginRequest) => 
         await this._authService.LoginAsync(loginRequest);
 
-    [Authorize]
+    /// <summary>
+    /// Refreshes tokens.
+    /// </summary>
+    /// <param name="refreshRequest">Expired JWT and JWT to refresh it.</param>
+    /// <returns>Refresh and Access JWT.</returns>
     [HttpPost("Refresh")]
     public async Task<TokensResponse> Refresh([FromBody] RefreshRequest refreshRequest) => 
         await this._authService.RefreshTokensAsync(refreshRequest);

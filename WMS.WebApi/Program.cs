@@ -20,7 +20,6 @@ using WMS.Core.Services.Abstractions.Tenants;
 using WMS.Core.Services.Tenants;
 using WMS.WebApi.Extensions;
 using WMS.Core.Validators;
-using WMS.Core.Services.Abstractions.Dictionaries;
 using WMS.Core.Services.Dictionaries;
 using WMS.Core.Services.Abstractions.Addresses;
 using WMS.Core.Services.Addresses;
@@ -57,12 +56,12 @@ builder.Services
     .AddScoped<IRackService, RackService>()
     .AddScoped<IShelfService, ShelfService>()
     .AddScoped<IVerticalSectionService, VerticalSectionService>()
-    .AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>()
     .AddScoped<IWareService, WareService>()
     .AddScoped<IProblemService, ProblemService>()
     .AddScoped<ICommentService, CommentService>()
     .AddScoped<INotificationService, NotificationService>()
-    .AddScoped<IAddressService, AddressService>();
+    .AddScoped<IAddressService, AddressService>()
+    .AddScoped(typeof(TextDictionaryService<>), typeof(TextDictionaryService<>));
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
                 .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)))
@@ -85,7 +84,7 @@ builder.Services.AddSwaggerGen(options =>
         });
 
     var entryAssembly = Assembly.GetExecutingAssembly();
-    if (entryAssembly != null)
+    if (entryAssembly is not null)
     {
         var xmlFilename = $"{entryAssembly.GetName().Name}.xml";
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
@@ -118,14 +117,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            RequireExpirationTime = true,
             ValidateIssuer = true,
             ValidIssuer = builder.Configuration["AuthOptions:Issuer"],
             ValidateAudience = true,
             ValidAudience = builder.Configuration["AuthOptions:Audience"],
-            ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
             ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            RequireExpirationTime = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
         };
     });
 
