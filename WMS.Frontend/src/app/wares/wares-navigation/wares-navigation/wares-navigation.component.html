@@ -5,6 +5,7 @@
     itemSize="13"
     class="wares-scroll-wrapper"
   >
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
     <mat-selection-list
       #waresSelectionsList
       [multiple]="false"

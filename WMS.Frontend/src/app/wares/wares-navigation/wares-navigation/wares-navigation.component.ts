@@ -19,7 +19,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
   @ViewChild('waresSelectionsList')
   waresSelectionsList?: MatSelectionList;
 
-  public isLoading: boolean = false;
+  public isLoading: boolean = true;
 
   public wares: IWare[] = [];
 
