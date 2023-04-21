@@ -39,7 +39,7 @@ public sealed class WmsDbContext : DbContext
 
     public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())
         {
@@ -49,7 +49,7 @@ public sealed class WmsDbContext : DbContext
                 entity.LastUpdateDate = DateTimeOffset.Now;
             }
         }
-        
+
         return base.SaveChangesAsync(cancellationToken);
     }
 
