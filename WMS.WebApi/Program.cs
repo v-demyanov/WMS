@@ -84,12 +84,9 @@ builder.Services.AddSwaggerGen(options =>
         });
 
     var entryAssembly = Assembly.GetExecutingAssembly();
-    if (entryAssembly is not null)
-    {
-        var xmlFilename = $"{entryAssembly.GetName().Name}.xml";
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
-        options.IncludeXmlComments(xmlPath);
-    }
+    var xmlFilename = $"{entryAssembly.GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    options.IncludeXmlComments(xmlPath);
 });
 
 // Configure Hangfire
@@ -137,16 +134,12 @@ app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
 );
 
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 Log.Logger = app.Services.GetService<Serilog.ILogger>();
-
-//if (builder.Environment.IsDevelopment())
-//{
-//    _ = app.UseSwagger();
-//    _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API"));
-//}
 
 _ = app.UseSwagger();
 _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API"));
