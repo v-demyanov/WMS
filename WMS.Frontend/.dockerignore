@@ -17,12 +17,10 @@
 **/docker-compose*
 **/Dockerfile*
 **/node_modules
+**/dist
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
 README.md
-
-dist
-node_modules
