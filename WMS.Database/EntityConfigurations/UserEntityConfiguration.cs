@@ -3,7 +3,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using WMS.Database.Constants;
 using WMS.Database.Entities;
+using WMS.Database.SeedData.Readers;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
@@ -29,5 +31,9 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 
         _ = builder.HasIndex(x => x.Email)
                    .IsUnique();
+
+        var dataReader = new UsersCsvReader(SeedDataFiles.UsersDataFilePath);
+        var records = dataReader.Read();
+        _ = builder.HasData(records);
     }
 }
