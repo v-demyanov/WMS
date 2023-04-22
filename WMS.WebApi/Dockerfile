@@ -21,4 +21,5 @@ RUN dotnet publish "WMS.WebApi.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ADD ["WMS.WebApi/Templates", "./Templates/"]
 ENTRYPOINT ["dotnet", "WMS.WebApi.dll"]
