@@ -9,12 +9,12 @@ using Task = Task;
 using System.Text;
 
 using WMS.Core.Exceptions;
-using WMS.Core.Helpers;
 using WMS.Core.Models;
 using WMS.Core.Models.Authentication;
 using WMS.Core.Services.Abstractions;
 using WMS.Database;
 using WMS.Database.Entities;
+using WMS.Utils;
 
 public class AuthService : IAuthService
 {

@@ -1,19 +1,19 @@
-﻿namespace WMS.Core.Helpers;
+﻿namespace WMS.Utils;
 
 using PasswordGenerator;
 using System.Security.Cryptography;
 
 public static class SecretHelper
 {
-    private const int _saltSize = 16;
-    private const int _keySize = 32;
-    private const int _iterations = 100000;
-    private static readonly HashAlgorithmName _algorithm = HashAlgorithmName.SHA256;
+    private const int SaltSize = 16;
+    private const int KeySize = 32;
+    private const int Iterations = 100000;
+    private static readonly HashAlgorithmName Algorithm = HashAlgorithmName.SHA256;
 
-    public static (string HashHex, string SaltHex) Hash(string input)
+    public static (string hashHex, string saltHex) Hash(string input)
     {
-        var salt = RandomNumberGenerator.GetBytes(_saltSize);
-        var hash = Rfc2898DeriveBytes.Pbkdf2(input, salt, _iterations, _algorithm, _keySize);
+        var salt = RandomNumberGenerator.GetBytes(SaltSize);
+        var hash = Rfc2898DeriveBytes.Pbkdf2(input, salt, Iterations, Algorithm, KeySize);
 
         return (Convert.ToHexString(hash), Convert.ToHexString(salt));
     }
@@ -23,7 +23,7 @@ public static class SecretHelper
         byte[] hash = Convert.FromHexString(hashHex);
         byte[] salt = Convert.FromHexString(saltHex);
 
-        byte[] inputHash = Rfc2898DeriveBytes.Pbkdf2(input, salt, _iterations, _algorithm, hash.Length);
+        byte[] inputHash = Rfc2898DeriveBytes.Pbkdf2(input, salt, Iterations, Algorithm, hash.Length);
 
         return CryptographicOperations.FixedTimeEquals(inputHash, hash);
     }

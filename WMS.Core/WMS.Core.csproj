@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WMS.Database\WMS.Database.csproj" />
+    <ProjectReference Include="..\WMS.Utils\WMS.Utils.csproj" />
   </ItemGroup>
 
 </Project>
