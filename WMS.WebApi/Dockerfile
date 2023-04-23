@@ -7,6 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["WMS.WebApi/WMS.WebApi.csproj", "WMS.WebApi/"]
+COPY ["WMS.Utils/WMS.Utils.csproj", "WMS.Utils/"]
 COPY ["WMS.Database/WMS.Database.csproj", "WMS.Database/"]
 COPY ["WMS.Core/WMS.Core.csproj", "WMS.Core/"]
 COPY ["WMS.Database.Migrations/WMS.Database.Migrations.csproj", "WMS.Database.Migrations/"]
