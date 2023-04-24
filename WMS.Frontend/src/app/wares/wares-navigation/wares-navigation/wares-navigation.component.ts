@@ -41,7 +41,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
       this.loadWares(),
       this.waresEventBusService.itemWasCreated$
         .subscribe(async (ware: IWare) => {
-          this.wares.push(ware);
+          this.wares.unshift(ware);
           await this.router.navigate(
             [`${NavigationUrls.Wares}/${ware.Id}`],
             {relativeTo: this.route},

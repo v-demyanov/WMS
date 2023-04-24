@@ -9,11 +9,14 @@
   align-items: center;
 
   .math-card {
-    max-width: 33rem;
+    max-width: 40rem;
    
     .ware-card-content {
       max-height: 25rem;
       overflow-y: auto;
+      padding-top: 1rem;
+      border-top: solid 0.125rem #ebecf1;
+      border-bottom: solid 0.125rem #ebecf1;
     }
   }
 

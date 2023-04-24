@@ -214,6 +214,8 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       if (this.selectedWareId) {
         this.isEditing = false;
         this.loadWare(this.selectedWareId);
+      } else {
+        this.initializeWareForm();
       }
     })
   }
@@ -226,6 +228,8 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       UnitOfMeasurementId: new FormControl(undefined, Validators.required),
       LegalEntityId: new FormControl(undefined, []),
       Address: new FormControl(undefined, [Validators.required]),
+      ReceivingDate: new FormControl(undefined, [Validators.required]),
+      ShippingDate: new FormControl(undefined),
     });
   }
 
@@ -237,7 +241,13 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       UnitOfMeasurementId: this.selectedWare?.UnitOfMeasurementId ?? null,
       LegalEntityId: this.selectedWare?.LegalEntityId ?? null,
       Address: this.selectedWare?.Address ?? null,
+      ReceivingDate: this.selectedWare?.ReceivingDate ?? null,
+      ShippingDate: this.selectedWare?.ShippingDate ?? null,
     });
+
+    if (this.isCreating) {
+      this.wareForm.controls['ReceivingDate'].setValue(new Date());
+    }
   }
 
   private loadUnitsOfMeasurements(): Subscription {

@@ -29,6 +29,51 @@
 
         <div class="field-row">
           <mat-form-field appearance="fill">
+            <mat-label>Дата приёмки</mat-label>
+            <input
+              [readonly]="isReadonly"
+              formControlName="ReceivingDate"
+              matInput
+              [matDatepicker]="receivingDatePicker"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="receivingDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker
+              [disabled]="isReadonly"
+              #receivingDatePicker
+            ></mat-datepicker>
+            <mat-error
+              *ngIf="wareForm.controls['ReceivingDate'].hasError('required')"
+            >
+              Поле обязательное
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Дата отгрузки</mat-label>
+            <input
+              [readonly]="true"
+              formControlName="ShippingDate"
+              matInput
+              [matDatepicker]="shippingDatePicker"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="shippingDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker
+              [disabled]="isReadonly"
+              #shippingDatePicker
+            ></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="field-row">
+          <mat-form-field appearance="fill">
             <mat-label>Единица измерения</mat-label>
             <mat-select formControlName="UnitOfMeasurementId">
               <mat-option

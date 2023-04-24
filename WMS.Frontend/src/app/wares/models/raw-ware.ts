@@ -1,6 +1,6 @@
 import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 
-export interface IWare {
+export interface IRawWare {
   Id?: number;
   Name?: string;
   Description?: string;
@@ -9,8 +9,8 @@ export interface IWare {
   AddressId?: number;
   IndividualId?: number;
   LegalEntityId?: number;
-  ReceivingDate: Date;
-  ShippingDate?: Date | null;
+  ReceivingDate: string;
+  ShippingDate?: string | null;
 
   Address?: IAddress;
 }
