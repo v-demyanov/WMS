@@ -21,6 +21,10 @@ public class Ware : BaseEntity
     public int? IndividualId { get; set; }
 
     public int? LegalEntityId { get; set; }
+    
+    public DateTimeOffset ReceivingDate { get; set; }
+
+    public DateTimeOffset? ShippingDate { get; set; }
 
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 

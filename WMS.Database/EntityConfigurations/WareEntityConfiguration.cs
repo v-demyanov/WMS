@@ -14,7 +14,10 @@ public class WareEntityConfiguration : IEntityTypeConfiguration<Ware>
 
         _ = builder.Property(x => x.TechnicalParameterValue)
                    .IsRequired();
-
+        
+        _ = builder.Property(x => x.ReceivingDate)
+                   .IsRequired();
+        
         _ = builder.HasIndex(x => x.AddressId)
                    .IsUnique();
 
