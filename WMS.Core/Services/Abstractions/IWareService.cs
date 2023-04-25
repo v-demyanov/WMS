@@ -8,4 +8,6 @@ public interface IWareService : IBaseService<Ware>
     Task SoftDelete(int wareId);
     
     Task Restore(int wareId, Address address);
+
+    Task DeleteShippedAsync();
 }

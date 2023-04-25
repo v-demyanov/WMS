@@ -2,9 +2,11 @@
 
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 using WMS.Core.Exceptions;
 using WMS.Core.Helpers;
+using WMS.Core.Models;
 using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
@@ -14,6 +16,7 @@ using WMS.Database.Enums;
 
 public class WareService : BaseService<Ware>, IWareService
 {
+    private readonly NotificationSettings _notificationSettings;
     private readonly WareValidator _wareValidator;
     private readonly AddressValidator _addressValidator;
     private readonly IUserService _userService;
@@ -22,26 +25,37 @@ public class WareService : BaseService<Ware>, IWareService
         WmsDbContext dbContext, 
         WareValidator wareValidator,
         AddressValidator addressValidator,
+        IOptions<NotificationSettings> notificationSettings,
         IUserService userService) : base(dbContext)
     {
         this._wareValidator = wareValidator;
         this._addressValidator = addressValidator;
         this._userService = userService;
+        this._notificationSettings = notificationSettings.Value;
     }
 
-    public override async Task DeleteAsync(int id)
+    public async Task DeleteShippedAsync()
     {
-        var ware = this.DbSet
-            .Include(x => x.Address)
-            .FirstOrDefault(x => x.Id == id);
-        if (ware == null)
+        var today = DateTimeOffset.Now.Date;
+        var shippedWaresStorageDays = this._notificationSettings.ShippedWaresStorageDays;
+        var waresToDelete = new List<Ware>();
+
+        var wares = this.DbSet.Include(x => x.Address);
+        foreach (var ware in wares)
         {
-            throw new EntityNotFoundException($"Can't delete the ware with Id = {id}, because it doesn't exist.");
+            if (!ware.ShippingDate.HasValue)
+            {
+                continue;
+            }
+
+            var wareStorageExpirationDate = ware.ShippingDate.Value.AddDays(shippedWaresStorageDays).Date;
+            if (wareStorageExpirationDate <= today)
+            {
+                waresToDelete.Add(ware);
+            }
         }
 
-        this.DbSet.Remove(ware);
-        this.DbContext.Addresses.Remove(ware.Address);
-
+        this.DbSet.RemoveRange(waresToDelete);
         _ = await this.DbContext.SaveChangesAsync();
     }
     

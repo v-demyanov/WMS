@@ -107,6 +107,11 @@ RecurringJob.AddOrUpdate<NotificationService>(
     notificationService => notificationService.NotifyAboutProblemExpirationAsync(), 
     cronScheduleExpression);
 
+RecurringJob.AddOrUpdate<WareService>(
+    "ShippedWaresStorageExpirationJob", 
+    wareService => wareService.DeleteShippedAsync(), 
+    cronScheduleExpression);
+
 // Configure Authentication
 var key = Encoding.UTF8.GetBytes(builder.Configuration["AuthOptions:Key"]);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

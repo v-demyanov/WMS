@@ -13,7 +13,7 @@ public class WareValidator : AbstractValidator<Ware>
     public WareValidator(WmsDbContext dbContext, AddressValidator addressValidator)
     {
         this._dbContext = dbContext;
-        
+
         this.RuleFor(ware => ware.Address)
             .SetValidator(addressValidator);
 
@@ -30,7 +30,7 @@ public class WareValidator : AbstractValidator<Ware>
             .WithMessage("The unit of measurement with such id has not been found.");
         
         this.RuleFor(ware => ware)
-            .Must(ware => ware.Address.ShelfId is null || this.IsShelfNotTaken(ware.Id, ware.Address.AreaId, ware.Address.ShelfId))
+            .Must(ware => ware.Address?.ShelfId is null || this.IsShelfNotTaken(ware.Id, ware.Address.AreaId, ware.Address.ShelfId))
             .WithMessage("The shelf is already taken.");
     }
     
