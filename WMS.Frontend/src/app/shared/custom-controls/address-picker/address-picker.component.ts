@@ -50,6 +50,11 @@ export class AddressPickerComponent implements ControlValueAccessor {
       this.selectedRack = this.address.Shelf?.VerticalSection?.Rack;
       this.selectedVerticalSection = this.address.Shelf?.VerticalSection;
       this.selectedShelf = this.address.Shelf;
+    } else {
+      this.selectedArea = undefined;
+      this.selectedRack = undefined;
+      this.selectedVerticalSection = undefined;
+      this.selectedShelf = undefined;
     }
   }
 

@@ -19,6 +19,11 @@
   padding: 0;
 }
 
+::ng-deep .mat-badge-content {
+  font-family: 'Material Icons';
+  top: 0.8rem;
+}
+
 .wrapper {
   height: 100%;
   display: grid;

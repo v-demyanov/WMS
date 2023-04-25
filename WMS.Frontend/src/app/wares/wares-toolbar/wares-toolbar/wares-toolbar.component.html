@@ -19,8 +19,14 @@
       [disabled]="wareCount < 1 || !selectedWareId"
       (click)="onDeleteBtnClick()"
     >
-      <mat-icon>delete</mat-icon>
+      <mat-icon
+        matBadge="undo"
+        matBadgePosition="below"
+        matBadgeOverlap="true"
+        [matBadgeHidden]="selectedWare?.Status !== WareStatus.ToBeDeleted"
+      >
+        local_shipping
+      </mat-icon>
     </button>
   </div>
-  
 </div>

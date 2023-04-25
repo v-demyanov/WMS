@@ -18,6 +18,7 @@ import { WaresService } from 'src/app/wares/services/wares.service';
 import { IWare } from 'src/app/wares/models/ware';
 import { ProblemsService } from '../services/problems.service';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
+import { IWareNavItem } from 'src/app/wares/models/ware-nav-item';
 
 @Component({
   selector: 'app-problem-dialog',
@@ -41,7 +42,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
 
   public employees: IEmployee[] = [];
 
-  public wares: IWare[] = [];
+  public wares: IWareNavItem[] = [];
 
   public problemForm: FormGroup = new FormGroup({});
 
@@ -224,7 +225,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     return this.waresService.getAllForNavigation()
       .subscribe({
-        next: (wares: IWare[]) => {
+        next: (wares: IWareNavItem[]) => {
           this.wares = wares;
           this.isLoading = false;
         },

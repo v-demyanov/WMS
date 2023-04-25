@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 
 import { WaresDataService } from './wares-data.service';
 import { IWare } from '../models/ware';
+import { IWareNavItem } from '../models/ware-nav-item';
+import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class WaresService {
 
   constructor(private readonly waresDataService: WaresDataService) { }
 
-  public getAllForNavigation = (): Observable<IWare[]> => 
+  public getAllForNavigation = (): Observable<IWareNavItem[]> => 
     this.waresDataService.getAllForNavigation();
 
   public get = (id: number): Observable<IWare | undefined> => 
@@ -20,8 +22,11 @@ export class WaresService {
   public create = (ware: IWare): Observable<IWare> => 
     this.waresDataService.create(ware);
 
-  public delete = (id: number): Observable<void> => 
-    this.waresDataService.delete(id);
+  public softDelete = (id: number): Observable<void> => 
+    this.waresDataService.softDelete(id);
+
+  public restore = (id: number, address: IAddress): Observable<void> => 
+    this.waresDataService.restore(id, address);
 
   public update = (id: number, wareUpdateData: IWare) => 
     this.waresDataService.update(id, wareUpdateData);

@@ -6,6 +6,7 @@ import { WaresNavigationComponent } from './wares-navigation/wares-navigation/wa
 import { WaresFormComponent } from './wares-form/wares-form/wares-form.component';
 import { SharedModule } from '../shared/shared.module';
 import { WaresToolbarComponent } from './wares-toolbar/wares-toolbar/wares-toolbar.component';
+import { WareRestoreDialogComponent } from './ware-restore-dialog/ware-restore-dialog.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { WaresToolbarComponent } from './wares-toolbar/wares-toolbar/wares-toolb
     WaresNavigationComponent,
     WaresFormComponent,
     WaresToolbarComponent,
+    WareRestoreDialogComponent,
   ],
   imports: [
     CommonModule,

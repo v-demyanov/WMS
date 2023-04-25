@@ -12,17 +12,23 @@ export class WaresEventBusService {
 
   private itemWasUpdatedSource = new Subject<IWare>();
 
-  private itemWasDeletedSource = new Subject<number>();
+  private itemWasSoftDeletedSource = new Subject<number>();
+
+  private itemWasRestoredSource = new Subject<number>();
 
   public itemWasCreated$ = this.itemWasCreatedSource.asObservable();
 
-  public itemWasDeleted$ = this.itemWasDeletedSource.asObservable();
+  public itemWasSoftDeleted$ = this.itemWasSoftDeletedSource.asObservable();
+
+  public itemWasRestored$ = this.itemWasRestoredSource.asObservable();
 
   public itemWasUpdated$ = this.itemWasUpdatedSource.asObservable();
 
   public create = (ware: IWare) => this.itemWasCreatedSource.next(ware);
 
-  public delete = (wareId: number) => this.itemWasDeletedSource.next(wareId);
+  public softDelete = (wareId: number) => this.itemWasSoftDeletedSource.next(wareId);
+
+  public restore = (wareId: number) => this.itemWasRestoredSource.next(wareId);
 
   public update = (ware: IWare) => this.itemWasUpdatedSource.next(ware);
 }

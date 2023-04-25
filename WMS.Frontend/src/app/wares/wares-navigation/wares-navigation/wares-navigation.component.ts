@@ -8,6 +8,8 @@ import { WaresService } from '../../services/wares.service';
 import { IWare } from '../../models/ware';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
+import { IWareNavItem } from '../../models/ware-nav-item';
+import { WareStatus } from '../../enums/ware-status.enum';
 
 @Component({
   selector: 'app-wares-navigation',
@@ -21,7 +23,11 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
 
   public isLoading: boolean = true;
 
-  public wares: IWare[] = [];
+  public wares: IWareNavItem[] = [];
+
+  public WareStatus = WareStatus;
+
+  public selectedWare?: IWareNavItem;
 
   private selectedWareId?: number;
 
@@ -47,10 +53,13 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
             {relativeTo: this.route},
           );
         }),
-      this.waresEventBusService.itemWasDeleted$
+      this.waresEventBusService.itemWasSoftDeleted$
         .subscribe((wareId: number) => {
-          const wareIndex: number = this.wares.findIndex(x => x.Id === wareId);
-          this.wares.splice(wareIndex, 1);
+          this.setWareStatus(wareId, WareStatus.ToBeDeleted);
+        }),
+      this.waresEventBusService.itemWasRestored$
+        .subscribe((wareId: number) => {
+          this.setWareStatus(wareId, WareStatus.Active);
         }),
       this.waresEventBusService.itemWasUpdated$
         .subscribe((ware: IWare) => {
@@ -67,7 +76,8 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
     this.elementRef.nativeElement.remove();
   }
 
-  public async onSelectWare(selectedWare: IWare): Promise<void> {
+  public async onSelectWare(selectedWare: IWareNavItem): Promise<void> {
+    this.selectedWare = selectedWare;
     await this.router.navigate(
       [`${NavigationUrls.Wares}/${selectedWare.Id}`],
       {relativeTo: this.route},
@@ -84,7 +94,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     return this.waresService.getAllForNavigation()
       .subscribe({
-        next: (wares: IWare[]) => {
+        next: (wares: IWareNavItem[]) => {
           this.wares = wares;
           this.isLoading = false;
           
@@ -103,9 +113,19 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
 
   private setSelectedWare(): void {
     if (this.selectedWareId) {
-      const selectedWareIndex = this.wares.findIndex(x => x?.Id === this.selectedWareId)
-      const selectedItem: any = [this.wares[selectedWareIndex]];
+      const selectedWareIndex = this.wares.findIndex(x => x?.Id === this.selectedWareId);
+      this.selectedWare = this.wares[selectedWareIndex];
+      const selectedItem: any = [this.selectedWare];
       this.waresSelectionsList?.writeValue(selectedItem);
     }
+  }
+
+  private setWareStatus(wareId: number, wareStatus: WareStatus): void {
+    const wareIndex: number = this.wares.findIndex(x => x.Id === wareId);
+    const wareNavItem: IWareNavItem = this.wares[wareIndex];
+    wareNavItem.Status = wareStatus;
+
+    this.wares.splice(wareIndex, 1, wareNavItem);
+    this.setSelectedWare();
   }
 }

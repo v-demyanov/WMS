@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Восстановление товара</h1>
+<form 
+  mat-dialog-content
+  [formGroup]="addressForm"
+>
+  <app-address-picker
+    formControlName="Address"
+    controlLabel="Новый адрес"
+    [readonly]="false"
+  >
+  </app-address-picker>
+</form>
+<div mat-dialog-actions align="end">
+  <button 
+    mat-raised-button
+    color="primary"
+    (click)="onCancelBtnClick()"
+    cdkFocusInitial
+  >
+    Отмена
+  </button>
+  <button
+    mat-button
+    [disabled]="addressForm.invalid"
+    (click)="onRestoreBtnClick()"
+  >
+    Восстановить
+  </button>
+</div>

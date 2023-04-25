@@ -3,13 +3,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';
 import { firstValueFrom, Subscription, take } from 'rxjs';
-import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 
+import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
-import { WaresEventBusService } from '../../services/wares-event-bus.service';
 import { WaresService } from '../../services/wares.service';
 import { WaresRoute } from '../../wares-routing.constants';
+import { IWareNavItem } from '../../models/ware-nav-item';
+import { WareStatus } from '../../enums/ware-status.enum';
+import { WaresEventBusService } from '../../services/wares-event-bus.service';
+import { WareRestoreDialogComponent } from '../../ware-restore-dialog/ware-restore-dialog.component';
 
 @Component({
   selector: 'app-wares-toolbar',
@@ -21,11 +24,16 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
   @Input()
   public wareCount: number = 0;
 
+  @Input()
+  public selectedWare?: IWareNavItem;
+
   public selectedWareId?: number;
 
   public isCreating: boolean = false;
 
   public isLoading: boolean = false;
+
+  public WareStatus = WareStatus;
 
   private componentSubscriptions: Subscription[] = [];
 
@@ -34,9 +42,9 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly waresService: WaresService,
     private readonly snackBar: MatSnackBar,
-    private readonly waresEventBusService: WaresEventBusService,
     private readonly authenticationService: AuthenticationService,
     private readonly dialog: MatDialog,
+    private readonly waresEventBusService: WaresEventBusService,
   ) {}
 
   public ngOnInit(): void {
@@ -47,7 +55,7 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
           this.isCreating = routes[0]?.path === WaresRoute.Create;
         }),
       this.route.params.subscribe((params: Params) => {
-        this.selectedWareId = params['id'];
+        this.selectedWareId = Number(params['id']);
       }),
     ];
   }
@@ -70,16 +78,25 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
   }
 
   public async onDeleteBtnClick(): Promise<void> {
-    if (!this.selectedWareId) {
+    if (!this.selectedWareId || !this.selectedWare) {
       return;
     }
-    const id: number = this.selectedWareId;
 
+    if (this.selectedWare.Status === WareStatus.ToBeDeleted) {
+      await this.restore(this.selectedWareId);
+    } else {
+      await this.softDelete(this.selectedWareId);
+    }
+  }
+
+  private async softDelete(id: number): Promise<void> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '20rem',
+      ariaModal: true,
+      disableClose: true,
       data: {
-        dialogName: 'Удаление товара',
-        message: 'Вы действительно хотите удалить товар?',
+        dialogName: 'Отгрузка товара',
+        message: 'Вы действительно хотите отгрузить товар?',
       },
     });
 
@@ -89,25 +106,54 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.waresService.delete(id)
+    const subscription = this.waresService.softDelete(id)
       .subscribe({
         next: async () => {
           this.isLoading = false;
-          await this.router.navigate(
-            [`${NavigationUrls.Wares}`],
-            {relativeTo: this.route},
-          );
-          this.waresEventBusService.delete(id);
-          this.snackBar.open('Товар удалён', 'Закрыть', {
+          this.waresEventBusService.softDelete(id);
+          this.snackBar.open('Товар отгружен', 'Закрыть', {
             duration: 3000,
           });
         },
         error: () => {
           this.isLoading = false;
-          this.snackBar.open('Ошибка при удалении товара', 'Закрыть', {
+          this.snackBar.open('Ошибка при отгрузке товара', 'Закрыть', {
             duration: 3000,
           });
         },
       });
+    this.componentSubscriptions.push(subscription);
+  }
+
+  private async restore(id: number): Promise<void> {
+    const dialogRef = this.dialog.open(WareRestoreDialogComponent, {
+      width: '40rem',
+      ariaModal: true,
+      disableClose: true,
+    });
+
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (!result) {
+      return;
+    }
+
+    this.isLoading = true;
+    const subscription = this.waresService.restore(id, result)
+      .subscribe({
+        next: async () => {
+          this.isLoading = false;
+          this.waresEventBusService.restore(id);
+          this.snackBar.open('Товар восстановлен', 'Закрыть', {
+            duration: 3000,
+          });
+        },
+        error: () => {
+          this.isLoading = false;
+          this.snackBar.open('Ошибка восстановлении товара', 'Закрыть', {
+            duration: 3000,
+          });
+        },
+      });
+    this.componentSubscriptions.push(subscription);
   }
 }

@@ -15,6 +15,7 @@ import { AuthenticationService, UserRole } from 'src/app/core/authentication';
 import { DictionariesService } from 'src/app/dictionaries/services/dictionaries.service';
 import { DictinaryItem } from 'src/app/dictionaries/models/dictionary-item';
 import { unitOfMeasurements } from 'src/app/dictionaries/constants/dictionaries.constants';
+import { WareStatus } from '../../enums/ware-status.enum';
 
 @Component({
   selector: 'app-wares-form',
@@ -61,6 +62,18 @@ export class WaresFormComponent implements OnInit, OnDestroy {
         .subscribe((routes: UrlSegment[]) => {
           this.isCreating = routes[0]?.path === WaresRoute.Create;
         }),
+      this.waresEventBusService.itemWasSoftDeleted$
+        .subscribe((wareId: number) => {
+          if (this.selectedWareId === wareId) {
+            this.loadWare(this.selectedWareId);
+          }
+        }),
+      this.waresEventBusService.itemWasRestored$
+        .subscribe((wareId: number) => {
+          if (this.selectedWareId === wareId) {
+            this.loadWare(this.selectedWareId);
+          }
+        }),
       this.subscribeOnRouteParamsChanges(),
       this.loadUnitsOfMeasurements(),
       this.loadLegalEntities(),
@@ -74,7 +87,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
   public get areActionsVisible(): boolean {
     const currentUserRole = this.authenticationService.getUserClaims()?.Role;
-    return currentUserRole === UserRole.Administrator;
+    return currentUserRole === UserRole.Administrator && this.selectedWare?.Status !== WareStatus.ToBeDeleted;
   }
   
   public get isReadonly(): boolean {
@@ -174,8 +187,9 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     }
 
     const wareUpdateData: IWare = {
+      ...this.wareForm.value,
       AddressId: this.wareForm.value.Address.Id,
-      ...this.wareForm.value
+      Status: String(this.wareForm.value.Status),
     };
     this.isLoading = true;
     const subscription: Subscription = this.waresService.update(this.selectedWareId, wareUpdateData)
@@ -184,10 +198,13 @@ export class WaresFormComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.isEditing = false;
 
-          this.waresEventBusService.update({
-            Id: this.selectedWareId,
-            ...wareUpdateData,
-          });
+          if (this.selectedWareId) {
+            this.waresEventBusService.update({
+              ...wareUpdateData,
+              Id: this.selectedWareId,
+              Status: Number(wareUpdateData.Status),
+            });
+          }
 
           this.snackBar.open('Товар обновлён', 'Закрыть', {
             duration: 3000,
@@ -223,13 +240,14 @@ export class WaresFormComponent implements OnInit, OnDestroy {
   private createWareForm(): FormGroup {
     return new FormGroup({
       Name: new FormControl(undefined, Validators.required),
-      Description: new FormControl(undefined, []),
+      Description: new FormControl(undefined),
       TechnicalParameterValue: new FormControl(undefined, Validators.required),
       UnitOfMeasurementId: new FormControl(undefined, Validators.required),
-      LegalEntityId: new FormControl(undefined, []),
-      Address: new FormControl(undefined, [Validators.required]),
+      LegalEntityId: new FormControl(undefined),
+      Address: new FormControl(undefined),
       ReceivingDate: new FormControl(undefined, [Validators.required]),
       ShippingDate: new FormControl(undefined),
+      Status: new FormControl(undefined),
     });
   }
 
@@ -243,6 +261,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       Address: this.selectedWare?.Address ?? null,
       ReceivingDate: this.selectedWare?.ReceivingDate ?? null,
       ShippingDate: this.selectedWare?.ShippingDate ?? null,
+      Status: this.selectedWare?.Status ?? null,
     });
 
     if (this.isCreating) {

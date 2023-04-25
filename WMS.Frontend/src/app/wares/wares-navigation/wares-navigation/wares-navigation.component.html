@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <app-wares-toolbar [wareCount]="wares.length"></app-wares-toolbar>
+  <app-wares-toolbar [wareCount]="wares.length" [selectedWare]="selectedWare"></app-wares-toolbar>
   <cdk-virtual-scroll-viewport
     appendOnly
     itemSize="13"
@@ -15,7 +15,15 @@
         *ngFor="let ware of wares"
         [value]="ware"
       >
-        <mat-icon>category</mat-icon>
+        <mat-icon 
+          matBadge="close"
+          matBadgePosition="below"
+          matBadgeColor="warn"
+          matBadgeSize="small"
+          [matBadgeHidden]="ware.Status !== WareStatus.ToBeDeleted"
+        >
+          category
+        </mat-icon>
         <span style="padding: 0 0.5rem;">({{ ware.Id }})</span>
         <span>{{ ware.Name }}</span>
       </mat-list-option>
