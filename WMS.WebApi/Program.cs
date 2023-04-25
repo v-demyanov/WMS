@@ -101,7 +101,7 @@ hangfireConfigured = true;
 
 string? cronScheduleExpression = builder.Configuration["HangFire:CronScheduleExpression"];
 
-// Configure jobs for notifications.
+// Configure Hangfire jobs
 RecurringJob.AddOrUpdate<NotificationService>(
     "ProblemExpirationJob", 
     notificationService => notificationService.NotifyAboutProblemExpirationAsync(), 
