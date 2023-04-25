@@ -79,6 +79,8 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   public async onRemoveBtnClick(id: number): Promise<void> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '20rem',
+      ariaModal: true,
+      disableClose: true,
       data: {
         dialogName: 'Удаление сотрудника',
         message: 'Вы действительно хотите удалить сотрудника?',
