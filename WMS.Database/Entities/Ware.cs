@@ -17,7 +17,7 @@ public class Ware : BaseEntity
 
     public int UnitOfMeasurementId { get; set; }
 
-    public int AddressId { get; set; }
+    public int? AddressId { get; set; }
 
     public int? IndividualId { get; set; }
 
@@ -31,7 +31,7 @@ public class Ware : BaseEntity
 
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
-    public Address Address { get; set; } = default!;
+    public Address? Address { get; set; }
 
     public Individual? Individual { get; set; }
 
