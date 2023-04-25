@@ -1,5 +1,6 @@
 ﻿namespace WMS.WebApi.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 using WMS.Core.Services.Abstractions;
 using WMS.Database.Constants;
 using WMS.Database.Entities;
+using WMS.Database.Entities.Addresses;
+using WMS.Database.Enums;
 
 public class WaresController : ODataController
 {
@@ -23,6 +26,7 @@ public class WaresController : ODataController
     /// <param name="wareCreateData">Ware' create data.</param>
     /// <returns>New ware.</returns>
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult<Ware>> Post([FromBody] Ware wareCreateData)
     {
         var ware = await this._wareService.AddAsync(wareCreateData);
@@ -30,13 +34,27 @@ public class WaresController : ODataController
     }
 
     /// <summary>
-    /// Deletes the ware.
+    /// Marks ware as deleted.
     /// </summary>
-    /// <param name="key">Ware' Id.</param>
-    [HttpDelete]
-    public async Task<ActionResult> Delete(int key)
+    /// <param name="wareId">Ware' Id.</param>
+    [HttpPut("api/[controller]/{wareId:int}/SoftDelete")]
+    [Authorize(Roles = nameof(Role.Administrator))]
+    public async Task<ActionResult> SoftDelete(int wareId)
     {
-        await this._wareService.DeleteAsync(key);
+        await this._wareService.SoftDelete(wareId);
+        return this.NoContent();
+    }
+    
+    /// <summary>
+    /// Restores ware.
+    /// </summary>
+    /// <param name="wareId">Ware' Id.</param>
+    /// <param name="address">New Address.</param>
+    [HttpPut("api/[controller]/{wareId:int}/Restore")]
+    [Authorize(Roles = nameof(Role.Administrator))]
+    public async Task<ActionResult> Restore(int wareId, [FromBody] Address address)
+    {
+        await this._wareService.Restore(wareId, address);
         return this.NoContent();
     }
 
@@ -54,6 +72,7 @@ public class WaresController : ODataController
     /// <param name="wareUpdateData">Ware' update data.</param>
     /// <param name="key">Ware' Id.</param>
     [HttpPut]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Put([FromBody] Ware wareUpdateData, int key)
     {
         await this._wareService.UpdateAsync(key, wareUpdateData);

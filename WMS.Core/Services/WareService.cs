@@ -9,14 +9,24 @@ using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
 using WMS.Database.Entities;
+using WMS.Database.Entities.Addresses;
+using WMS.Database.Enums;
 
 public class WareService : BaseService<Ware>, IWareService
 {
     private readonly WareValidator _wareValidator;
+    private readonly AddressValidator _addressValidator;
+    private readonly IUserService _userService;
 
-    public WareService(WmsDbContext dbContext, WareValidator wareValidator) : base(dbContext)
+    public WareService(
+        WmsDbContext dbContext, 
+        WareValidator wareValidator,
+        AddressValidator addressValidator,
+        IUserService userService) : base(dbContext)
     {
         this._wareValidator = wareValidator;
+        this._addressValidator = addressValidator;
+        this._userService = userService;
     }
 
     public override async Task DeleteAsync(int id)
@@ -31,6 +41,51 @@ public class WareService : BaseService<Ware>, IWareService
 
         this.DbSet.Remove(ware);
         this.DbContext.Addresses.Remove(ware.Address);
+
+        _ = await this.DbContext.SaveChangesAsync();
+    }
+    
+    public async Task SoftDelete(int wareId)
+    {
+        var ware = await this.DbSet
+            .Include(x => x.Address)
+            .FirstOrDefaultAsync(x => x.Id == wareId);
+        if (ware == null)
+        {
+            throw new EntityNotFoundException($"Can't soft delete the ware with Id = {wareId}, because it doesn't exist.");
+        }
+
+        ware.Status = WareStatus.ToBeDeleted;
+        ware.ShippingDate = DateTimeOffset.Now;
+        if (ware.Address is not null)
+        {
+            ware.AddressId = null;
+            this.DbContext.Addresses.Remove(ware.Address);
+        }
+
+        _ = await this.DbContext.SaveChangesAsync();
+    }
+
+    public async Task Restore(int wareId, Address address)
+    {
+        var ware = await this.DbSet.FirstOrDefaultAsync(x => x.Id == wareId);
+        if (ware == null)
+        {
+            throw new EntityNotFoundException($"Can't restore the ware with Id = {wareId}, because it doesn't exist.");
+        }
+
+        var addressValidationResult = await this._addressValidator.ValidateAsync(address);
+        if (!addressValidationResult.IsValid)
+        {
+            throw new ApiOperationFailedException($"The address is invalid. Errors: {addressValidationResult}");
+        }
+        
+        ware.Status = WareStatus.Active;
+        ware.ShippingDate = null;
+
+        address.Id = 0;
+        _ = await this.DbContext.Addresses.AddAsync(address);
+        ware.Address = address;
 
         _ = await this.DbContext.SaveChangesAsync();
     }
@@ -67,6 +122,17 @@ public class WareService : BaseService<Ware>, IWareService
 
         WareHelper.Populate(ware, entityUpdateData);
         _ = await this.DbContext.SaveChangesAsync();
+    }
+
+    public override IQueryable<Ware> GetAll()
+    {
+        var currentUser = this._userService.GetCurrentUser();
+        if (currentUser is null || currentUser.Role != Role.Administrator)
+        {
+            return this.DbSet.Where(x => x.Status == WareStatus.Active);
+        }
+
+        return this.DbSet;
     }
 
     protected override void Update(Ware entity, Ware entityUpdateData) =>
