@@ -3,6 +3,7 @@
 using WMS.Database.Entities.Dictionaries;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Tenants;
+using WMS.Database.Enums;
 
 public class Ware : BaseEntity
 {
@@ -25,6 +26,8 @@ public class Ware : BaseEntity
     public DateTimeOffset ReceivingDate { get; set; }
 
     public DateTimeOffset? ShippingDate { get; set; }
+
+    public WareStatus Status { get; set; }
 
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 

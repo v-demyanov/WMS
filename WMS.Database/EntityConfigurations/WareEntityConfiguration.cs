@@ -18,6 +18,9 @@ public class WareEntityConfiguration : IEntityTypeConfiguration<Ware>
         _ = builder.Property(x => x.ReceivingDate)
                    .IsRequired();
         
+        _ = builder.Property(x => x.Status)
+                   .IsRequired();
+        
         _ = builder.HasIndex(x => x.AddressId)
                    .IsUnique();
 
