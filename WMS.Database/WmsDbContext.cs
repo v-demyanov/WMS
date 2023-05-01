@@ -39,6 +39,8 @@ public sealed class WmsDbContext : DbContext
 
     public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();
 
+    public DbSet<Setting> Settings => this.Set<Setting>();
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())

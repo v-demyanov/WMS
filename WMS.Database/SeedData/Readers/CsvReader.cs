@@ -9,7 +9,7 @@ using CsvHelper.Configuration;
 using WMS.Database.Entities;
 
 public abstract class CsvReader<TEntity, TCsvRow>
-    where TEntity : BaseEntity, new()
+    where TEntity : new()
 {
     private readonly string _pathToFile;
 
