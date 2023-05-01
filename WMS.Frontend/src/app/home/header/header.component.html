@@ -89,8 +89,13 @@
   </button>
 
   <div class="spacer"></div>
+  <mat-icon
+    *ngIf="isAdmin"
+    matTooltip="Настройки системы"
+    class="system-setting"
+    (click)="onSettingsClick()"
+  >settings</mat-icon>
   <div class="user-info">
-    <!-- TODO: Replace user's avatar on dynamic data -->
     <div
       class="avatart-img"
       [style.background-image]="'url(' + (currentUser?.AvatarUrl ?? commonConstants.DEFAULT_USER_AVATAR) + ')'"

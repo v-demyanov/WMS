@@ -26,6 +26,17 @@
     }
   }
 
+  .system-setting {
+    cursor: pointer;
+    margin-right: 0.5rem;
+    transition: all 1s ease-out;
+    color: lightgray;
+
+    &:hover {
+      transform: rotate(90deg);
+    }
+  }
+
   .user-info {
     display: flex;
     align-items: center;

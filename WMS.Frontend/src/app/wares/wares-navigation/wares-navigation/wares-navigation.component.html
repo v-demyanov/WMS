@@ -14,6 +14,7 @@
       <mat-list-option
         *ngFor="let ware of wares"
         [value]="ware"
+        [matTooltip]="ware.Status === WareStatus.ToBeDeleted ? 'Товар отгружен': ''"
       >
         <mat-icon 
           matBadge="close"

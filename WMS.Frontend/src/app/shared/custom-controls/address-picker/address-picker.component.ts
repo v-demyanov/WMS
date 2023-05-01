@@ -97,6 +97,7 @@ export class AddressPickerComponent implements ControlValueAccessor {
     );
 
     const result: AddressPickerDialogData = await firstValueFrom(dialogRef.afterClosed());
+    this.markAsTouched();
 
     if (result) {
       this.address = result.Address;
@@ -105,7 +106,6 @@ export class AddressPickerComponent implements ControlValueAccessor {
       this.selectedVerticalSection = result.VerticalSection;
       this.selectedShelf = result.Shelf;
 
-      this.markAsTouched();
       this.onChange(this.address);
     }
   }
@@ -126,9 +126,7 @@ export class AddressPickerComponent implements ControlValueAccessor {
   private onTouched = (): void => {};
 
   private markAsTouched(): void {
-    if (!this.touched) {
-      this.onTouched();
-      this.touched = true;
-    }
+    this.onTouched();
+    this.touched = true;
   }
 }

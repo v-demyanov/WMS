@@ -8,6 +8,7 @@
       class="add-btn"
       (click)="onAddBtnClick()"
       [disabled]="isCreating"
+      matTooltip="Создать товар"
     >
       <mat-icon>add</mat-icon>
     </button>
@@ -18,6 +19,7 @@
       class="remove-btn"
       [disabled]="wareCount < 1 || !selectedWareId"
       (click)="onDeleteBtnClick()"
+      [matTooltip]="selectedWare?.Status === WareStatus.ToBeDeleted ? 'Восстановить товар' : 'Отгрузить товар'"
     >
       <mat-icon
         matBadge="undo"

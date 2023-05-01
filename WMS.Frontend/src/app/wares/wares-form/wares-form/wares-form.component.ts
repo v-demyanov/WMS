@@ -117,6 +117,8 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
   public onEditBtnClick(): void {
     this.isEditing = true;
+    this.wareForm.markAsPristine();
+    this.wareForm.markAsUntouched();
   }
 
   public async onResetBtnClick(): Promise<void> {
@@ -244,7 +246,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       TechnicalParameterValue: new FormControl(undefined, Validators.required),
       UnitOfMeasurementId: new FormControl(undefined, Validators.required),
       LegalEntityId: new FormControl(undefined),
-      Address: new FormControl(undefined),
+      Address: new FormControl(undefined, [Validators.required]),
       ReceivingDate: new FormControl(undefined, [Validators.required]),
       ShippingDate: new FormControl(undefined),
       Status: new FormControl(undefined),
@@ -266,7 +268,11 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
     if (this.isCreating) {
       this.wareForm.controls['ReceivingDate'].setValue(new Date());
+      this.wareForm.controls['Status'].setValue(WareStatus.Active.toString());
     }
+
+    this.wareForm.markAsPristine();
+    this.wareForm.markAsUntouched();
   }
 
   private loadUnitsOfMeasurements(): Subscription {

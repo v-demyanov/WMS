@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Настройки системы</h1>
+<form 
+  [formGroup]="systemSettingsForm"
+  mat-dialog-content
+>
+  <mat-form-field class="full-width-field" appearance="fill">
+    <mat-label>Срок уведомления до истчения срока выполнения задачи, дни</mat-label>
+    <input formControlName="ProblemExpirationNotificationDays" matInput />
+    <mat-error
+      *ngIf="systemSettingsForm.controls['ProblemExpirationNotificationDays'].hasError('required')"
+    >
+      Поле обязательное
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="full-width-field" appearance="fill">
+    <mat-label>Срок хранения отгруженных товаров, дни</mat-label>
+    <input formControlName="ShippedWaresStorageDays" matInput />
+    <mat-error
+      *ngIf="systemSettingsForm.controls['ShippedWaresStorageDays'].hasError('required')"
+    >
+      Поле обязательное
+    </mat-error>
+  </mat-form-field>
+</form>
+<div mat-dialog-actions align="end">
+  <button 
+    mat-raised-button
+    color="primary"
+    (click)="onCloseClick()"
+    cdkFocusInitial
+    class="close-btn"
+  >
+    Закрыть
+  </button>
+  <button
+    mat-button
+    (click)="onUpdateClick()"
+    [disabled]="systemSettingsForm.invalid"
+  >
+    Обновить
+  </button>
+</div>

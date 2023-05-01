@@ -19,11 +19,21 @@
           <mat-form-field appearance="fill">
             <mat-label>Название</mat-label>
             <input [readonly]="isReadonly" formControlName="Name" matInput />
+            <mat-error
+              *ngIf="wareForm.controls['Name'].hasError('required')"
+            >
+              Поле обязательное
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Значение</mat-label>
             <input [readonly]="isReadonly" type="number" formControlName="TechnicalParameterValue" matInput />
+            <mat-error
+              *ngIf="wareForm.controls['TechnicalParameterValue'].hasError('required')"
+            >
+              Поле обязательное
+            </mat-error>
           </mat-form-field>
         </div>
 
@@ -66,7 +76,7 @@
               [for]="shippingDatePicker"
             ></mat-datepicker-toggle>
             <mat-datepicker
-              [disabled]="isReadonly"
+              [disabled]="true"
               #shippingDatePicker
             ></mat-datepicker>
           </mat-form-field>
@@ -84,6 +94,11 @@
                 {{ unitOfMeasurements.Value }}
               </mat-option>
             </mat-select>
+            <mat-error
+              *ngIf="wareForm.controls['UnitOfMeasurementId'].hasError('required')"
+            >
+              Поле обязательное
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
@@ -103,10 +118,15 @@
         <app-address-picker 
           class="address-picker-field full-width-field"
           formControlName="Address"
-          controlLabel="Адрес"
+          controlLabel="Адрес*"
           [readonly]="isReadonly"
         >
         </app-address-picker>
+        <mat-error
+          *ngIf="wareForm.controls['Address'].hasError('required') && wareForm.controls['Address'].touched"
+        >
+          Поле обязательное
+        </mat-error>
 
         <mat-form-field appearance="fill" class="description-field full-width-field">
           <mat-label>Описание</mat-label>

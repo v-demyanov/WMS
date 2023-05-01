@@ -4,7 +4,6 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
@@ -36,7 +35,6 @@ export class ProblemsComponent implements OnInit, OnDestroy {
   private componentSubscriptions: Subscription[] = [];
 
   constructor(
-    private readonly dialog: MatDialog,
     private readonly problemService: ProblemsService,
     private readonly snackBar: MatSnackBar,
     private readonly permissionsService: PermissionsService,

@@ -12,7 +12,7 @@ using WMS.Database.Enums;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(Roles = nameof(Role.Administrator))]
+[Authorize(Roles = nameof(Role.Administrator))]
 public class SystemSettingsController : ControllerBase
 {
     private readonly ISettingService _settingService;
