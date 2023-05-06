@@ -2,11 +2,9 @@
 
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 using WMS.Core.Exceptions;
 using WMS.Core.Helpers;
-using WMS.Core.Models;
 using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
@@ -16,28 +14,29 @@ using WMS.Database.Enums;
 
 public class WareService : BaseService<Ware>, IWareService
 {
-    private readonly NotificationSettings _notificationSettings;
     private readonly WareValidator _wareValidator;
     private readonly AddressValidator _addressValidator;
     private readonly IUserService _userService;
+    private readonly ISettingService _settingService;
 
     public WareService(
         WmsDbContext dbContext, 
         WareValidator wareValidator,
         AddressValidator addressValidator,
-        IOptions<NotificationSettings> notificationSettings,
-        IUserService userService) : base(dbContext)
+        IUserService userService,
+        ISettingService settingService) : base(dbContext)
     {
         this._wareValidator = wareValidator;
         this._addressValidator = addressValidator;
         this._userService = userService;
-        this._notificationSettings = notificationSettings.Value;
+        this._settingService = settingService;
     }
 
     public async Task DeleteShippedAsync()
     {
+        var systemSettings = await this._settingService.GetSystemSettingsAsync();
         var today = DateTimeOffset.Now.Date;
-        var shippedWaresStorageDays = this._notificationSettings.ShippedWaresStorageDays;
+        var shippedWaresStorageDays = systemSettings.ShippedWaresStorageDays;
         var waresToDelete = new List<Ware>();
 
         var wares = this.DbSet.Include(x => x.Address);

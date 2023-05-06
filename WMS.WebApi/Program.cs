@@ -64,9 +64,9 @@ builder.Services
     .AddScoped(typeof(TextDictionaryService<>), typeof(TextDictionaryService<>))
     .AddScoped<ISettingService, SettingService>();
 
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
-                .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)))
-                .Configure<NotificationSettings>(builder.Configuration.GetSection(nameof(NotificationSettings)));
+builder.Services
+    .Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)))
+    .Configure<AuthOptions>(builder.Configuration.GetSection(nameof(AuthOptions)));
 
 string connectionString = builder.Configuration.GetConnectionString("WMSDatabase");
 builder.Services.AddDbContext<WmsDbContext>(options => options.UseSqlServer(connectionString, options =>

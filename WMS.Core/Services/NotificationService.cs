@@ -1,38 +1,36 @@
 ﻿namespace WMS.Core.Services;
 
-using Microsoft.Extensions.Options;
-
 using WMS.Core.Services.Abstractions;
-using WMS.Core.Models;
 using WMS.Database.Enums;
 using WMS.Core.Models.Templates;
 
 public class NotificationService : INotificationService
 {
-    private readonly NotificationSettings _notificationSettings;
     private readonly IMailService _mailService;
     private readonly IProblemService _problemService;
     private readonly IUserService _userService;
     private readonly ITemplateService _templateService;
+    private readonly ISettingService _settingService;
 
     public NotificationService(
-        IOptions<NotificationSettings> notificationSettings,
         IMailService mailService, 
         IProblemService problemService,
         IUserService userService,
-        ITemplateService templateService)
+        ITemplateService templateService,
+        ISettingService settingService)
     {
         this._mailService = mailService;
-        this._notificationSettings = notificationSettings.Value;
         this._problemService = problemService;
         this._userService = userService;
         this._templateService = templateService;
+        this._settingService = settingService;
     }
     
     public async Task NotifyAboutProblemExpirationAsync()
     {
+        var systemSettings = await this._settingService.GetSystemSettingsAsync();
         var today = DateTime.UtcNow.Date;
-        var expirationDate = today.AddDays(this._notificationSettings.ProblemExpirationNotificationDays);
+        var expirationDate = today.AddDays(systemSettings.ProblemExpirationNotificationDays);
 
         var expiredProblems = this._problemService
             .GetAll()
@@ -49,7 +47,7 @@ public class NotificationService : INotificationService
             problemExpirationObjects.Add(new ProblemExpirationObject()
             {
                 Title = problem.Title,
-                DaysBeforeExpiration = this._notificationSettings.ProblemExpirationNotificationDays,
+                DaysBeforeExpiration = systemSettings.ProblemExpirationNotificationDays,
                 DeadlineDate = expirationDate,
             });
         }
