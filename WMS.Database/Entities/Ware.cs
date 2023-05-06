@@ -1,6 +1,5 @@
 ﻿namespace WMS.Database.Entities;
 
-using WMS.Database.Entities.Dictionaries;
 using WMS.Database.Entities.Addresses;
 using WMS.Database.Entities.Tenants;
 using WMS.Database.Enums;
@@ -13,10 +12,6 @@ public class Ware : BaseEntity
 
     public string? ImagePath { get; set; }
 
-    public decimal TechnicalParameterValue { get; set; } = default!;
-
-    public int UnitOfMeasurementId { get; set; }
-
     public int? AddressId { get; set; }
 
     public int? IndividualId { get; set; }
@@ -28,8 +23,6 @@ public class Ware : BaseEntity
     public DateTimeOffset? ShippingDate { get; set; }
 
     public WareStatus Status { get; set; }
-
-    public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
     public Address? Address { get; set; }
 

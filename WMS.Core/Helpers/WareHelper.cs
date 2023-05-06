@@ -12,8 +12,6 @@ public static class WareHelper
         destination.AddressId = source.AddressId;
         destination.IndividualId = source.IndividualId;
         destination.ImagePath = source.ImagePath;
-        destination.UnitOfMeasurementId = source.UnitOfMeasurementId;
-        destination.TechnicalParameterValue = source.TechnicalParameterValue;
         destination.ReceivingDate = source.ReceivingDate;
         destination.ShippingDate = source.ShippingDate;
     }

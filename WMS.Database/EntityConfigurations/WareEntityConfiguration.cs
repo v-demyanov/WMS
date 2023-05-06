@@ -12,9 +12,6 @@ public class WareEntityConfiguration : IEntityTypeConfiguration<Ware>
         _ = builder.Property(x => x.Name)
                    .IsRequired();
 
-        _ = builder.Property(x => x.TechnicalParameterValue)
-                   .IsRequired();
-        
         _ = builder.Property(x => x.ReceivingDate)
                    .IsRequired();
         
