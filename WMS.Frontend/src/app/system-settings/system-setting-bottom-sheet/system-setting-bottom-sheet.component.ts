@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { SystemSettingsService } from '../services/system-settings.service';
 import { SystemSettings } from '../models/system-settings';
+import { integerValidator } from 'src/app/core/validators/validators';
 
 @Component({
   selector: 'app-system-setting-bottom-sheet',
@@ -81,8 +82,8 @@ export class SystemSettingBottomSheetComponent implements OnInit, OnDestroy {
 
   private createSystemSettingsForm(): FormGroup {
     return new FormGroup({
-      ProblemExpirationNotificationDays: new FormControl(undefined, Validators.required),
-      ShippedWaresStorageDays: new FormControl(undefined, Validators.required),
+      ProblemExpirationNotificationDays: new FormControl(undefined, [Validators.required, integerValidator()]),
+      ShippedWaresStorageDays: new FormControl(undefined, [Validators.required, integerValidator()]),
     });
   }
 

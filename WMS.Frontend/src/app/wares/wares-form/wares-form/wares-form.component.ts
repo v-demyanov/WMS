@@ -187,12 +187,13 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     if (!this.selectedWareId) {
       return;
     }
-
+    
     const wareUpdateData: IWare = {
       ...this.wareForm.value,
       AddressId: this.wareForm.value.Address.Id,
       Status: String(this.wareForm.value.Status),
     };
+    console.log(wareUpdateData);
     this.isLoading = true;
     const subscription: Subscription = this.waresService.update(this.selectedWareId, wareUpdateData)
       .subscribe({

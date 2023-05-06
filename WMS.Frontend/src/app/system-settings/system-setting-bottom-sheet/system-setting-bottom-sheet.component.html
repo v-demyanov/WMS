@@ -5,20 +5,30 @@
 >
   <mat-form-field class="full-width-field" appearance="fill">
     <mat-label>Срок уведомления до истчения срока выполнения задачи, дни</mat-label>
-    <input formControlName="ProblemExpirationNotificationDays" matInput />
+    <input type="number" formControlName="ProblemExpirationNotificationDays" matInput />
     <mat-error
       *ngIf="systemSettingsForm.controls['ProblemExpirationNotificationDays'].hasError('required')"
     >
       Поле обязательное
     </mat-error>
+    <mat-error
+      *ngIf="systemSettingsForm.controls['ProblemExpirationNotificationDays'].hasError('integerValidator')"
+    >
+      Значение должно быть целым числом
+    </mat-error>
   </mat-form-field>
   <mat-form-field class="full-width-field" appearance="fill">
     <mat-label>Срок хранения отгруженных товаров, дни</mat-label>
-    <input formControlName="ShippedWaresStorageDays" matInput />
+    <input type="number" formControlName="ShippedWaresStorageDays" matInput />
     <mat-error
       *ngIf="systemSettingsForm.controls['ShippedWaresStorageDays'].hasError('required')"
     >
       Поле обязательное
+    </mat-error>
+    <mat-error
+      *ngIf="systemSettingsForm.controls['ShippedWaresStorageDays'].hasError('integerValidator')"
+    >
+      Значение должно быть целым числом
     </mat-error>
   </mat-form-field>
 </form>
