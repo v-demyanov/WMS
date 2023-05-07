@@ -48,18 +48,9 @@ public abstract class BaseService<TEntity> : IBaseService<TEntity>
 
     public virtual IQueryable<TEntity> GetAll() => this.DbSet;
 
-    public virtual TEntity GetById(int id)
-    {
-        var entity = this.DbSet.FirstOrDefault(x => x.Id == id);
-        if (entity == null)
-        {
-            throw new EntityNotFoundException($"The {typeof(TEntity).Name} with Id = {id} doesn't exist.");
-        }
+    public virtual IQueryable<TEntity> GetById(int id) => this.DbSet.Where(entity => entity.Id == id);
 
-        return entity;
-    }
-
-    public async virtual Task UpdateAsync(int id, TEntity entityUpdateData)
+    public virtual async Task UpdateAsync(int id, TEntity entityUpdateData)
     {
         await this.ValidateAsync(entityUpdateData);
 

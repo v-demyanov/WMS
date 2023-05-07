@@ -10,7 +10,7 @@ public interface IBaseService<TEntity>
 {
     IQueryable<TEntity> GetAll();
 
-    TEntity GetById(int id);
+    IQueryable<TEntity> GetById(int id);
 
     Task<TEntity> AddAsync(TEntity entityCreateData);
 
