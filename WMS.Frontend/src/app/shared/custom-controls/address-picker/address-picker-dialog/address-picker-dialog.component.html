@@ -37,6 +37,7 @@
         <mat-select formControlName="ShelfId" (selectionChange)="onShelfSelected($event.value)">
           <mat-option 
             *ngFor="let shelf of shelfs"
+            [disabled]="shelf.InUse"
             [value]="shelf.Id"
           >
             {{ shelf.Index }}
