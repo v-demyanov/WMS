@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 import { AreasService } from 'src/app/dictionaries/addresses/areas/services/areas.service';
-import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 import { IArea } from 'src/app/dictionaries/addresses/models/area';
 import { IRack } from 'src/app/dictionaries/addresses/models/rack';
 import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
@@ -23,8 +22,6 @@ import { AddressPickerDialogData } from '../models/address-picker-dialog-data';
 export class AddressPickerDialogComponent implements OnInit, OnDestroy {
 
   public isLoading: boolean = false;
-
-  public address: IAddress | undefined;
 
   public areas: IArea[] = [];
 
@@ -59,13 +56,12 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.addressForm = this.createAddressForm();
-    this.address = this.dialogData.Address;
     this.selectedArea = this.dialogData.Area;
     this.selectedRack = this.dialogData.Rack;
     this.selectedVerticalSection = this.dialogData.VerticalSection;
     this.selectedShelf = this.dialogData.Shelf;
 
-    if (this.address) {
+    if (this.selectedShelf) {
       this.initializeAddressForm();
     }
 
@@ -85,20 +81,12 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const address = <IAddress> {
-      AreaId: this.addressForm.value.AreaId,
-      ShelfId: this.addressForm.value.ShelfId,
-    };
-
-    const dialogData: AddressPickerDialogData = {
-      Address: address,
+    this.dialogRef.close(<AddressPickerDialogData> {
       Area: this.selectedArea,
       Rack: this.selectedRack,
       VerticalSection: this.selectedVerticalSection,
       Shelf: this.selectedShelf,
-    };
-
-    this.dialogRef.close(dialogData);
+    });
   }
 
   public onAreaSelected(areaId: number): void {
@@ -107,9 +95,9 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     this.selectedVerticalSection = undefined;
     this.selectedShelf = undefined;
 
-    this.addressForm.value.RackId = null;
-    this.addressForm.value.VerticalSectionId = null;
-    this.addressForm.value.ShelfId = null;
+    this.addressForm.controls['RackId'].setValue(null);
+    this.addressForm.controls['VerticalSectionId'].setValue(null);
+    this.addressForm.controls['ShelfId'].setValue(null);
 
     this.racks = [];
     this.verticalSections = [];
@@ -124,8 +112,8 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
     this.selectedVerticalSection = undefined;
     this.selectedShelf = undefined;
 
-    this.addressForm.value.VerticalSectionId = null;
-    this.addressForm.value.ShelfId = null;
+    this.addressForm.controls['VerticalSectionId'].setValue(null);
+    this.addressForm.controls['ShelfId'].setValue(null);
 
     this.verticalSections = [];
     this.shelfs = [];
@@ -137,7 +125,7 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
   public onSectionSelected(sectionId: number): void {
     this.selectedVerticalSection = this.verticalSections.find(x => x.Id === sectionId);
     this.selectedShelf = undefined;
-    this.addressForm.value.ShelfId = null;
+    this.addressForm.controls['ShelfId'].setValue(null);
     this.shelfs = [];
 
     const subscription: Subscription = this.loadShelfs(sectionId);
@@ -219,9 +207,9 @@ export class AddressPickerDialogComponent implements OnInit, OnDestroy {
   private createAddressForm(): FormGroup {
     return new FormGroup({
       AreaId: new FormControl(undefined, Validators.required),
-      RackId: new FormControl(undefined),
-      VerticalSectionId: new FormControl(undefined),
-      ShelfId: new FormControl(undefined),
+      RackId: new FormControl(undefined, Validators.required),
+      VerticalSectionId: new FormControl(undefined, Validators.required),
+      ShelfId: new FormControl(undefined, Validators.required),
     });
   }
 

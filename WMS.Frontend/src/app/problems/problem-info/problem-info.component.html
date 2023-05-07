@@ -177,7 +177,7 @@
           <div class="item">
             <span class="header">Аудитор:</span>
             <span class="value">
-              {{ problem?.Auditor?.FirstName === null ? 'Не назначен' : problem?.Auditor?.FirstName ?? '' + ' ' + (problem?.Auditor?.LastName ?? '') }}
+              {{ problem?.Auditor?.FirstName === null ? 'Не назначен' : (problem?.Auditor?.FirstName ?? '') + ' ' + (problem?.Auditor?.LastName ?? '') }}
             </span>
           </div>
         </div>

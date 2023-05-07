@@ -25,7 +25,7 @@ export class WareRestoreDialogComponent implements OnInit {
 
   public createAddressForm(): FormGroup {
     return new FormGroup({
-      Address: new FormControl(null, [Validators.required]),
+      ShelfId: new FormControl(null, [Validators.required]),
     });
   }
 
@@ -34,6 +34,6 @@ export class WareRestoreDialogComponent implements OnInit {
   }
 
   public onRestoreBtnClick(): void {
-    this.dialogRef.close(this.addressForm.value.Address);
+    this.dialogRef.close(this.addressForm.value.ShelfId);
   }
 }

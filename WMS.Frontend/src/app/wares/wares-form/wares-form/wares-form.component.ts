@@ -12,9 +12,6 @@ import { LegalEntitiesService } from 'src/app/admin-panel/tenants/legal-entities
 import { ILegalEntity } from 'src/app/admin-panel/tenants/legal-entities/models/legal-entity';
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
 import { AuthenticationService, UserRole } from 'src/app/core/authentication';
-import { DictionariesService } from 'src/app/dictionaries/services/dictionaries.service';
-import { DictinaryItem } from 'src/app/dictionaries/models/dictionary-item';
-import { unitOfMeasurements } from 'src/app/dictionaries/constants/dictionaries.constants';
 import { WareStatus } from '../../enums/ware-status.enum';
 
 @Component({
@@ -36,8 +33,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
   public wareForm: FormGroup = new FormGroup({});
 
-  public unitsOfMeasurements: DictinaryItem[] = [];
-
   public legalEntities: ILegalEntity[] = [];
 
   private componentSubscriptions: Subscription[] = [];
@@ -47,7 +42,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly waresService: WaresService,
     private readonly snackBar: MatSnackBar,
-    private readonly dictionariesService: DictionariesService,
     private readonly legalEntitiesService: LegalEntitiesService,
     private readonly waresEventBusService: WaresEventBusService,
     private readonly authenticationService: AuthenticationService,
@@ -75,7 +69,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
           }
         }),
       this.subscribeOnRouteParamsChanges(),
-      this.loadUnitsOfMeasurements(),
       this.loadLegalEntities(),
     ];
   }
@@ -89,7 +82,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     const currentUserRole = this.authenticationService.getUserClaims()?.Role;
     return currentUserRole === UserRole.Administrator && this.selectedWare?.Status !== WareStatus.ToBeDeleted;
   }
-  
+
   public get isReadonly(): boolean {
     return !this.isEditing && !this.isCreating;
   }
@@ -187,13 +180,12 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     if (!this.selectedWareId) {
       return;
     }
-    
+
     const wareUpdateData: IWare = {
       ...this.wareForm.value,
-      AddressId: this.wareForm.value.Address.Id,
       Status: String(this.wareForm.value.Status),
     };
-    console.log(wareUpdateData);
+
     this.isLoading = true;
     const subscription: Subscription = this.waresService.update(this.selectedWareId, wareUpdateData)
       .subscribe({
@@ -244,10 +236,8 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     return new FormGroup({
       Name: new FormControl(undefined, Validators.required),
       Description: new FormControl(undefined),
-      TechnicalParameterValue: new FormControl(undefined, Validators.required),
-      UnitOfMeasurementId: new FormControl(undefined, Validators.required),
       LegalEntityId: new FormControl(undefined),
-      Address: new FormControl(undefined, [Validators.required]),
+      ShelfId: new FormControl(undefined, [Validators.required]),
       ReceivingDate: new FormControl(undefined, [Validators.required]),
       ShippingDate: new FormControl(undefined),
       Status: new FormControl(undefined),
@@ -258,10 +248,8 @@ export class WaresFormComponent implements OnInit, OnDestroy {
     this.wareForm.setValue({
       Name: this.selectedWare?.Name ?? null,
       Description: this.selectedWare?.Description ?? null,
-      TechnicalParameterValue: this.selectedWare?.TechnicalParameterValue ?? null,
-      UnitOfMeasurementId: this.selectedWare?.UnitOfMeasurementId ?? null,
       LegalEntityId: this.selectedWare?.LegalEntityId ?? null,
-      Address: this.selectedWare?.Address ?? null,
+      ShelfId: this.selectedWare?.ShelfId ?? null,
       ReceivingDate: this.selectedWare?.ReceivingDate ?? null,
       ShippingDate: this.selectedWare?.ShippingDate ?? null,
       Status: this.selectedWare?.Status ?? null,
@@ -274,23 +262,6 @@ export class WaresFormComponent implements OnInit, OnDestroy {
 
     this.wareForm.markAsPristine();
     this.wareForm.markAsUntouched();
-  }
-
-  private loadUnitsOfMeasurements(): Subscription {
-    this.isLoading = true;
-    return this.dictionariesService.getAll(unitOfMeasurements.name)
-      .subscribe({
-        next: (unitsOfMeasurements: DictinaryItem[]) => {
-          this.isLoading = false;
-          this.unitsOfMeasurements = unitsOfMeasurements;
-        },
-        error: () => {
-          this.isLoading = false;
-          this.snackBar.open('Ошибка при загрузке единиц измерения', 'Закрыть', {
-            duration: 3000,
-          });
-        },
-      });
   }
 
   private loadLegalEntities(): Subscription {

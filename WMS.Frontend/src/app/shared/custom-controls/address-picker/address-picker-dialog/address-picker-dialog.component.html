@@ -38,7 +38,6 @@
           <mat-option 
             *ngFor="let shelf of shelfs"
             [value]="shelf.Id"
-            [disabled]="!!shelf.Address"
           >
             {{ shelf.Index }}
           </mat-option>

@@ -175,7 +175,7 @@
     </mat-form-field>
 
     <app-address-picker
-      formControlName="TargetAddress"
+      formControlName="TargetShelfId"
       [readonly]="isReadonly"
       controlLabel="Адрес назначения"
       class="address-field full-width-field"
@@ -189,11 +189,17 @@
       <mat-label>Товар</mat-label>
       <mat-select formControlName="WareId" #waresList>
         <mat-option
-          [disabled]="isReadonly"
+          [disabled]="isReadonly || ware.Status === wareStatus.ToBeDeleted"
           *ngFor="let ware of wares"
           [value]="ware.Id"
         >
           {{ ware.Name }}
+          <mat-icon 
+            color="warn" 
+            *ngIf="ware.Status === wareStatus.ToBeDeleted"
+          >
+            cancel
+          </mat-icon>
         </mat-option>
       </mat-select>
       <button

@@ -27,13 +27,16 @@
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-            <mat-label>Значение</mat-label>
-            <input [readonly]="isReadonly" type="number" formControlName="TechnicalParameterValue" matInput />
-            <mat-error
-              *ngIf="wareForm.controls['TechnicalParameterValue'].hasError('required')"
-            >
-              Поле обязательное
-            </mat-error>
+            <mat-label>Владелец</mat-label>
+            <mat-select formControlName="LegalEntityId">
+              <mat-option
+                [disabled]="isReadonly"
+                *ngFor="let legalEntity of legalEntities"
+                [value]="legalEntity.Id"
+              >
+                {{ legalEntity.Name }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
@@ -82,48 +85,15 @@
           </mat-form-field>
         </div>
 
-        <div class="field-row">
-          <mat-form-field appearance="fill">
-            <mat-label>Единица измерения</mat-label>
-            <mat-select formControlName="UnitOfMeasurementId">
-              <mat-option
-                [disabled]="isReadonly"
-                *ngFor="let unitOfMeasurements of unitsOfMeasurements"
-                [value]="unitOfMeasurements.Id"
-              >
-                {{ unitOfMeasurements.Value }}
-              </mat-option>
-            </mat-select>
-            <mat-error
-              *ngIf="wareForm.controls['UnitOfMeasurementId'].hasError('required')"
-            >
-              Поле обязательное
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Владелец</mat-label>
-            <mat-select formControlName="LegalEntityId">
-              <mat-option
-                [disabled]="isReadonly"
-                *ngFor="let legalEntity of legalEntities"
-                [value]="legalEntity.Id"
-              >
-                {{ legalEntity.Name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
         <app-address-picker 
           class="address-picker-field full-width-field"
-          formControlName="Address"
+          formControlName="ShelfId"
           controlLabel="Адрес*"
           [readonly]="isReadonly"
         >
         </app-address-picker>
         <mat-error
-          *ngIf="wareForm.controls['Address'].hasError('required') && wareForm.controls['Address'].touched"
+          *ngIf="wareForm.controls['ShelfId'].hasError('required') && wareForm.controls['ShelfId'].touched"
         >
           Поле обязательное
         </mat-error>

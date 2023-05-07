@@ -9,7 +9,6 @@ import { IRawWare } from '../models/raw-ware';
 import { parseEnum } from 'src/app/core/helpers/enum.helper';
 import { WareStatus } from '../enums/ware-status.enum';
 import { IWareNavItem } from '../models/ware-nav-item';
-import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 
 @Injectable({
   providedIn: 'root',
@@ -27,10 +26,9 @@ export class WaresDataService {
   }
 
   public get(id: number): Observable<IWare | undefined> {
-    const expandQuery: string = '$expand=Address($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
     const filterQuery: string = `$filter=Id eq ${id}`;
 
-    return this.http.get<ODataValue<IRawWare>>(`${ApiEndpoints.Wares}?${filterQuery}&${expandQuery}`)
+    return this.http.get<ODataValue<IRawWare>>(`${ApiEndpoints.Wares}?${filterQuery}`)
       .pipe(map((odataValue: ODataValue<IRawWare>) => this.parseWare(odataValue.value[0])));
   }
 
@@ -41,8 +39,8 @@ export class WaresDataService {
   public softDelete = (id: number): Observable<void> => 
     this.http.put<void>(`${ApiEndpoints.Wares}${id}/SoftDelete`, null);
 
-  public restore = (id: number, address: IAddress): Observable<void> => 
-    this.http.put<void>(`${ApiEndpoints.Wares}${id}/Restore`, address);
+  public restore = (id: number, shelfId: number): Observable<void> => 
+    this.http.put<void>(`${ApiEndpoints.Wares}${id}/Restore?shelfId=${shelfId}`, null);
 
   public update = (id: number, wareUpdateData: IWare): Observable<void> =>
     this.http.put<void>(`${ApiEndpoints.Wares}${id}`, wareUpdateData);

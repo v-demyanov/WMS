@@ -5,7 +5,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
-import { UI_ERROR_LABEL } from 'src/app/core/constants/common.constants';
 import { formatDate } from 'src/app/core/helpers/date.helper';
 import { ProblemStatusColors, ProblemStatusTitles } from '../enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from '../enums/problem-status.enum';
@@ -233,10 +232,10 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
   }
 
   public getAddressDisplayValues(): string[] {
-    const name: string | undefined = this.problem?.TargetAddress?.Area?.Name;
-    const rackIndex: number | undefined = this.problem?.TargetAddress?.Shelf?.VerticalSection?.Rack?.Index;
-    const sectionIndex: number | undefined = this.problem?.TargetAddress?.Shelf?.VerticalSection?.Index;
-    const shelfIndex: number | undefined = this.problem?.TargetAddress?.Shelf?.Index;
+    const name: string | undefined = this.problem?.TargetShelf?.VerticalSection?.Rack?.Area?.Name;
+    const rackIndex: number | undefined = this.problem?.TargetShelf?.VerticalSection?.Rack?.Index;
+    const sectionIndex: number | undefined = this.problem?.TargetShelf?.VerticalSection?.Index;
+    const shelfIndex: number | undefined = this.problem?.TargetShelf?.Index;
 
     const areaDisplayName: string = name ? `Зона: ${name}` : '';
     const rackDisplayName: string = rackIndex ? `Стелаж: №${rackIndex}` : '';

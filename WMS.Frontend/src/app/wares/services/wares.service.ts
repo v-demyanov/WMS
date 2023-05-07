@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { WaresDataService } from './wares-data.service';
 import { IWare } from '../models/ware';
 import { IWareNavItem } from '../models/ware-nav-item';
-import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +24,8 @@ export class WaresService {
   public softDelete = (id: number): Observable<void> => 
     this.waresDataService.softDelete(id);
 
-  public restore = (id: number, address: IAddress): Observable<void> => 
-    this.waresDataService.restore(id, address);
+  public restore = (id: number, shelfId: number): Observable<void> => 
+    this.waresDataService.restore(id, shelfId);
 
   public update = (id: number, wareUpdateData: IWare) => 
     this.waresDataService.update(id, wareUpdateData);

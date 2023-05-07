@@ -1,15 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 
-import { IAddress } from 'src/app/dictionaries/addresses/models/address';
 import { AddressPickerDialogComponent } from './address-picker-dialog/address-picker-dialog.component';
 import { AddressPickerDialogData } from './models/address-picker-dialog-data';
 import { IArea } from 'src/app/dictionaries/addresses/models/area';
 import { IRack } from 'src/app/dictionaries/addresses/models/rack';
 import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
 import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
+import { ShelfsService } from 'src/app/dictionaries/addresses/racks/services/shelfs.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-address-picker',
@@ -21,7 +22,7 @@ import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
     multi: true,
   }],
 })
-export class AddressPickerComponent implements ControlValueAccessor {
+export class AddressPickerComponent implements ControlValueAccessor, OnDestroy {
 
   @Input()
   public readonly: boolean = true;
@@ -29,9 +30,11 @@ export class AddressPickerComponent implements ControlValueAccessor {
   @Input()
   public controlLabel: string = 'Адрес';
   
-  public address?: IAddress | null;
+  public shelfId?: number | null;
 
   public touched: boolean = false;
+
+  private componentSubscriptions: Subscription[] = [];
 
   private selectedArea?: IArea;
 
@@ -41,15 +44,21 @@ export class AddressPickerComponent implements ControlValueAccessor {
 
   private selectedShelf?: IShelf;
 
-  constructor(private readonly dialog: MatDialog) {}
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly shelfsService: ShelfsService,
+    private readonly snackBar: MatSnackBar,  
+  ) {}
 
-  public writeValue(address: IAddress): void {
-    this.address = address;
-    if (address !== null) {
-      this.selectedArea = this.address?.Area;
-      this.selectedRack = this.address.Shelf?.VerticalSection?.Rack;
-      this.selectedVerticalSection = this.address.Shelf?.VerticalSection;
-      this.selectedShelf = this.address.Shelf;
+  public ngOnDestroy = (): void =>
+    this.componentSubscriptions.forEach((subscription) =>
+      subscription.unsubscribe()
+    );
+
+  public writeValue(shelfId?: number | null): void {
+    this.shelfId = shelfId;
+    if (shelfId) {
+      this.loadShelf(shelfId);
     } else {
       this.selectedArea = undefined;
       this.selectedRack = undefined;
@@ -58,7 +67,7 @@ export class AddressPickerComponent implements ControlValueAccessor {
     }
   }
 
-  public registerOnChange(onChange: (address?: IAddress | null) => {}): void {
+  public registerOnChange(onChange: (shelfId?: number | null) => {}): void {
     this.onChange = onChange;
   }
 
@@ -87,7 +96,6 @@ export class AddressPickerComponent implements ControlValueAccessor {
         disableClose: true,
         width: '33.5rem',
         data: <AddressPickerDialogData> {
-          Address: this.address,
           Area: this.selectedArea,
           Rack: this.selectedRack,
           VerticalSection: this.selectedVerticalSection,
@@ -100,18 +108,18 @@ export class AddressPickerComponent implements ControlValueAccessor {
     this.markAsTouched();
 
     if (result) {
-      this.address = result.Address;
       this.selectedArea = result.Area;
       this.selectedRack = result.Rack;
       this.selectedVerticalSection = result.VerticalSection;
       this.selectedShelf = result.Shelf;
+      this.shelfId = result.Shelf?.Id;
 
-      this.onChange(this.address);
+      this.onChange(this.shelfId);
     }
   }
 
   public resetControl(): void {
-    this.address = undefined;
+    this.shelfId = undefined;
     this.selectedArea = undefined;
     this.selectedRack = undefined;
     this.selectedVerticalSection = undefined;
@@ -121,12 +129,31 @@ export class AddressPickerComponent implements ControlValueAccessor {
     this.onChange(null);
   }
 
-  private onChange = (address?: IAddress | null): void => {};
+  private onChange = (shelfId?: number | null): void => {};
 
   private onTouched = (): void => {};
 
   private markAsTouched(): void {
     this.onTouched();
     this.touched = true;
+  }
+
+  private loadShelf(shelfId: number): void {
+    const subscription = this.shelfsService
+      .getById(shelfId)
+      .subscribe({
+        next: (shelf: IShelf) => {
+          this.selectedArea = shelf?.VerticalSection?.Rack?.Area;
+          this.selectedRack = shelf?.VerticalSection?.Rack;
+          this.selectedVerticalSection = shelf?.VerticalSection;
+          this.selectedShelf = shelf;
+        },
+        error: () => {
+          this.snackBar.open('Ошибка при загрузке полки', 'Закрыть', {
+            duration: 3000,
+          });
+        },
+      });
+    this.componentSubscriptions.push(subscription);
   }
 }

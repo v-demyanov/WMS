@@ -15,10 +15,10 @@ import { AuthenticationService, PermissionsService, UserRole } from 'src/app/cor
 import { IProblem } from '../models/problem';
 import { ProblemDialogData } from '../models/problem-dialog-data';
 import { WaresService } from 'src/app/wares/services/wares.service';
-import { IWare } from 'src/app/wares/models/ware';
 import { ProblemsService } from '../services/problems.service';
 import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants';
 import { IWareNavItem } from 'src/app/wares/models/ware-nav-item';
+import { WareStatus } from 'src/app/wares/enums/ware-status.enum';
 
 @Component({
   selector: 'app-problem-dialog',
@@ -49,6 +49,8 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
   public problem?: IProblem;
 
   public problemStatus = ProblemStatus;
+
+  public wareStatus = WareStatus;
 
   public problemsDropDownValues: KeyValue<number, string>[] = [];
 
@@ -253,7 +255,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       AuthorId: new FormControl(undefined, [Validators.required]),
       AuditorId: new FormControl(undefined),
       WareId: new FormControl(undefined),
-      TargetAddress: new FormControl(undefined),
+      TargetShelfId: new FormControl(undefined),
     });
   }
 
@@ -270,7 +272,7 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       AuthorId: this.getAuthorId(),
       AuditorId: this.problem?.AuditorId ?? null,
       WareId: this.problem?.WareId ?? null,
-      TargetAddress: this.problem?.TargetAddress ?? null,
+      TargetShelfId: this.problem?.TargetShelfId ?? null,
     });
 
     if (this.isCreating) {

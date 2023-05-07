@@ -33,7 +33,7 @@ export class ProblemsService {
   }
 
   public get(problemId: number): Observable<IProblem> {
-    const expandQuery: string = '$expand=Author,Auditor,Performer,Ware,TargetAddress($expand=Shelf($expand=VerticalSection($expand=Rack))&$expand=Area)';
+    const expandQuery: string = '$expand=Author,Auditor,Performer,Ware,TargetShelf($expand=VerticalSection($expand=Rack($expand=Area)))';
     const filterQuery: string = `$filter=Id eq ${problemId}`;
     const odataQuery: string = `${filterQuery}&${expandQuery}`;
 
