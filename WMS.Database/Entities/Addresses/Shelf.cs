@@ -9,4 +9,6 @@ public class Shelf : BaseEntity
     public VerticalSection VerticalSection { get; set; } = default!;
     
     public Ware? Ware { get; set; }
+    
+    public Problem? Problem { get; set; }
 }
