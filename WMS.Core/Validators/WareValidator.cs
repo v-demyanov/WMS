@@ -25,8 +25,14 @@ public class WareValidator : AbstractValidator<Ware>
             .Must(ware => ware.ShelfId == null || !this.IsShelfTaken(ware.Id, ware.ShelfId))
             .WithMessage("The shelf has been already taken.");
     }
-    
-    private bool IsShelfTaken(int wareId, int? shelfId) => 
-        this._dbContext.Wares
+
+    private bool IsShelfTaken(int wareId, int? shelfId)
+    {
+        var isShelfTakenByWare = this._dbContext.Wares
             .Any(x => x.ShelfId == shelfId && x.Id != wareId);
+        var isShelfTakenByProblem = this._dbContext.Problems
+            .Any(x => x.TargetShelfId == shelfId);
+
+        return isShelfTakenByWare || isShelfTakenByProblem;
+    }
 }

@@ -36,5 +36,19 @@ public class ProblemValidator : AbstractValidator<Problem>
         this.RuleFor(problem => problem.TargetShelfId)
             .Must(targetShelfId => targetShelfId is null || dbContext.Shelfs.Any(x => x.Id == targetShelfId))
             .WithMessage("The shelf with such id has not been found.");
+        
+        this.RuleFor(problem => problem)
+            .Must(problem => problem.TargetShelfId == null || !this.IsShelfTaken(problem.Id, problem.TargetShelfId, problem.WareId))
+            .WithMessage("The shelf has been already taken.");
+    }
+    
+    private bool IsShelfTaken(int problemId, int? shelfId, int? wareId)
+    {
+        var isShelfTakenByWare = this._dbContext.Wares
+            .Any(x => x.ShelfId == shelfId && x.Id != wareId);
+        var isShelfTakenByProblem = this._dbContext.Problems
+            .Any(x => x.TargetShelfId == shelfId && x.Id != problemId);
+
+        return isShelfTakenByWare || isShelfTakenByProblem;
     }
 }

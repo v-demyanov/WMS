@@ -121,6 +121,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
     public override async Task UpdateAsync(int id, Problem entityUpdateData)
     {
+        entityUpdateData.Id = id;
         await this.ValidateAsync(entityUpdateData);
         
         var problem = this.DbSet
