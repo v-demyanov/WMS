@@ -33,8 +33,6 @@ public sealed class WmsDbContext : DbContext
 
     public DbSet<Area> Areas => this.Set<Area>();
 
-    public DbSet<Address> Addresses => this.Set<Address>();
-
     public DbSet<Individual> Individuals => this.Set<Individual>();
 
     public DbSet<LegalEntity> LegalEntities => this.Set<LegalEntity>();

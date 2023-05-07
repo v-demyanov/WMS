@@ -11,7 +11,6 @@ using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
 using WMS.Database.Entities;
-using WMS.Database.Entities.Addresses;
 using WMS.Database.Enums;
 
 public class ProblemService : BaseService<Problem>, IProblemService
@@ -39,7 +38,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
         var problem = this.GetWithLinkedEntities(problemId);
         if (problem == null)
         {
-            throw new EntityNotFoundException($"Can't delete problem with Id = {problemId}, " + 
+            throw new EntityNotFoundException($"Can't update problem's status, " + 
                 "because it doesn't exist.");
         }
 
@@ -77,7 +76,6 @@ public class ProblemService : BaseService<Problem>, IProblemService
     {
         var currentUser = this._userService.GetCurrentUser();
         var problemToDelete = this.DbSet
-            .Include(x => x.TargetAddress)
             .FirstOrDefault(x => x.Id == id);
 
         if (problemToDelete == null)
@@ -90,16 +88,10 @@ public class ProblemService : BaseService<Problem>, IProblemService
             throw new AuthorizationFailedException($"Can't delete problem with Id = {id}, because it belongs to another user.");
         }
 
-        var (problemsToDelete, addressesToDelete) = await this.GetChildProblemsAndAddressesToDeleteAsync(problemToDelete.Id);
+        var problemsToDelete = await this.GetChildProblemsToDeleteAsync(problemToDelete.Id);
         problemsToDelete.Add(problemToDelete);
 
-        if (problemToDelete.TargetAddress is not null)
-        {
-            addressesToDelete.Add(problemToDelete.TargetAddress);
-        }
-        
         this.DbSet.RemoveRange(problemsToDelete);
-        this.DbContext.Addresses.RemoveRange(addressesToDelete);
 
         _ = await this.DbContext.SaveChangesAsync();
     }
@@ -114,12 +106,16 @@ public class ProblemService : BaseService<Problem>, IProblemService
         
         if (user is null && userId is not null)
         {
-            throw new EntityNotFoundException($"Can't assign problem, because user with Id = {userId} doesn't exist.");
+            throw new EntityNotFoundException("Can't assign problem, because user doesn't exist.");
         }
         
-        var problem = this.GetById(problemId);
+        var problem = await this.GetById(problemId).FirstOrDefaultAsync();
+        if (problem is null)
+        {
+            throw new ApiOperationFailedException("Can't assign problem, because it doesn't exist.");
+        }
+        
         problem.PerformerId = userId;
-
         _ = await this.DbContext.SaveChangesAsync();
     }
 
@@ -128,37 +124,16 @@ public class ProblemService : BaseService<Problem>, IProblemService
         await this.ValidateAsync(entityUpdateData);
         
         var problem = this.DbSet
-            .Include(x => x.TargetAddress)
             .FirstOrDefault(x => x.Id == id);
         if (problem == null)
         {
-            throw new EntityNotFoundException($"Can't update problem with Id = {id}, because it doesn't exist.");
+            throw new EntityNotFoundException("Can't update problem, because it doesn't exist.");
         }
 
         var currentUser = this._userService.GetCurrentUser();
         if (currentUser?.Id != problem.AuthorId)
         {
-            throw new AuthorizationFailedException($"Can't update problem with Id = {id}, because it belongs to another user.");
-        }
-
-        if (AddressHelper.DoesNewAddressEqualOrigin(entityUpdateData.TargetAddress, problem.TargetAddress))
-        {
-            entityUpdateData.TargetAddressId = problem.TargetAddressId;
-        }
-        else
-        {
-            if (entityUpdateData.TargetAddress is not null)
-            {
-                _ = await this.DbContext.Addresses.AddAsync(entityUpdateData.TargetAddress);
-            }
-            
-            var addressToDelete = problem.TargetAddress;
-            problem.TargetAddress = entityUpdateData.TargetAddress;
-
-            if (addressToDelete is not null)
-            {
-                this.DbContext.Addresses.Remove(addressToDelete);
-            }
+            throw new AuthorizationFailedException("Can't update problem, because it belongs to another user.");
         }
 
         ProblemHelper.Populate(problem, entityUpdateData);
@@ -172,29 +147,22 @@ public class ProblemService : BaseService<Problem>, IProblemService
         throw new NotImplementedException();
     }
 
-    private async Task<(List<Problem>, List<Address>)> GetChildProblemsAndAddressesToDeleteAsync(int problemId)
+    private async Task<List<Problem>> GetChildProblemsToDeleteAsync(int problemId)
     {
         var childProblems = await this.DbSet
-            .Include(x => x.TargetAddress)
             .Where(x => x.ParentProblemId == problemId)
             .ToListAsync();
 
         var allChildProblems = new List<Problem>();
-        var allAddresses = new List<Address>();
         foreach (var childProblem in childProblems)
         {
             allChildProblems.Add(childProblem);
-            if (childProblem.TargetAddress is not null)
-            {
-                allAddresses.Add(childProblem.TargetAddress);
-            }
 
-            var (problems, addresses) = await GetChildProblemsAndAddressesToDeleteAsync(childProblem.Id);
+            var problems = await GetChildProblemsToDeleteAsync(childProblem.Id);
             allChildProblems.AddRange(problems);
-            allAddresses.AddRange(addresses);
         }
 
-        return (allChildProblems, allAddresses);
+        return allChildProblems;
     }
 
     private static bool CanUserSetDoneStatus(User user) =>
@@ -202,19 +170,12 @@ public class ProblemService : BaseService<Problem>, IProblemService
 
     private void UpdateWareAddress(Problem problem)
     {
-        if (problem.TargetAddress == null || problem.Ware == null)
+        if (problem.TargetShelfId is null || problem.Ware is null)
         {
             return;
         }
 
-        var oldAddress = problem.Ware!.Address;
-        problem.Ware!.Address = problem.TargetAddress;
-        problem.TargetAddressId = null;
-
-        if (problem.TargetAddress?.Id != oldAddress.Id)
-        {
-            this.DbContext.Addresses.Remove(oldAddress);
-        }
+        problem.Ware.ShelfId = problem.TargetShelfId;
     }
 
     private static string[] GetReceivers(Problem problem)
@@ -235,11 +196,10 @@ public class ProblemService : BaseService<Problem>, IProblemService
     }
 
     private Problem? GetWithLinkedEntities(int problemId) => this.DbContext.Problems
-        .Include(x => x.TargetAddress)
+        .Include(x => x.TargetShelf)
         .Include(x => x.Auditor)
         .Include(x => x.Author)
         .Include(x => x.Performer)
         .Include(x => x.Ware)
-            .ThenInclude(ware => ware.Address)
         .FirstOrDefault(x => x.Id == problemId);
 }

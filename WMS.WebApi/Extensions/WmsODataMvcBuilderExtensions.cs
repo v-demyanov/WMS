@@ -33,7 +33,6 @@ public static class WmsODataMvcBuilderExtensions
         _ = modelBuilder.EntitySet<Shelf>("Shelfs");
         _ = modelBuilder.EntitySet<Problem>("Problems");
         _ = modelBuilder.EntitySet<Comment>("Comments");
-        _ = modelBuilder.EntitySet<Address>("Addresses");
         _ = modelBuilder.EntitySet<UnitOfMeasurement>("UnitOfMeasurements");
 
         ConfigureUserEntityType(modelBuilder);

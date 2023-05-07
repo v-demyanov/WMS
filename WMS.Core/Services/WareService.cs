@@ -9,25 +9,21 @@ using WMS.Core.Services.Abstractions;
 using WMS.Core.Validators;
 using WMS.Database;
 using WMS.Database.Entities;
-using WMS.Database.Entities.Addresses;
 using WMS.Database.Enums;
 
 public class WareService : BaseService<Ware>, IWareService
 {
     private readonly WareValidator _wareValidator;
-    private readonly AddressValidator _addressValidator;
     private readonly IUserService _userService;
     private readonly ISettingService _settingService;
 
     public WareService(
         WmsDbContext dbContext, 
         WareValidator wareValidator,
-        AddressValidator addressValidator,
         IUserService userService,
         ISettingService settingService) : base(dbContext)
     {
         this._wareValidator = wareValidator;
-        this._addressValidator = addressValidator;
         this._userService = userService;
         this._settingService = settingService;
     }
@@ -39,8 +35,7 @@ public class WareService : BaseService<Ware>, IWareService
         var shippedWaresStorageDays = systemSettings.ShippedWaresStorageDays;
         var waresToDelete = new List<Ware>();
 
-        var wares = this.DbSet.Include(x => x.Address);
-        foreach (var ware in wares)
+        foreach (var ware in this.DbSet)
         {
             if (!ware.ShippingDate.HasValue)
             {
@@ -61,44 +56,43 @@ public class WareService : BaseService<Ware>, IWareService
     public async Task SoftDelete(int wareId)
     {
         var ware = await this.DbSet
-            .Include(x => x.Address)
             .FirstOrDefaultAsync(x => x.Id == wareId);
         if (ware == null)
         {
-            throw new EntityNotFoundException($"Can't soft delete the ware with Id = {wareId}, because it doesn't exist.");
+            throw new EntityNotFoundException("Can't soft delete ware, because it doesn't exist.");
         }
 
         ware.Status = WareStatus.ToBeDeleted;
         ware.ShippingDate = DateTimeOffset.Now;
-        if (ware.Address is not null)
-        {
-            ware.AddressId = null;
-            this.DbContext.Addresses.Remove(ware.Address);
-        }
+        ware.ShelfId = null;
 
         _ = await this.DbContext.SaveChangesAsync();
     }
 
-    public async Task Restore(int wareId, Address address)
+    public async Task Restore(int wareId, int shelfId)
     {
         var ware = await this.DbSet.FirstOrDefaultAsync(x => x.Id == wareId);
         if (ware == null)
         {
-            throw new EntityNotFoundException($"Can't restore the ware with Id = {wareId}, because it doesn't exist.");
+            throw new EntityNotFoundException("Can't restore ware, because it doesn't exist.");
         }
 
-        var addressValidationResult = await this._addressValidator.ValidateAsync(address);
-        if (!addressValidationResult.IsValid)
+        var shelf = await this.DbContext.Shelfs
+            .Include(x => x.Ware)
+            .FirstOrDefaultAsync(x => x.Id == shelfId);
+        if (shelf == null)
         {
-            throw new ApiOperationFailedException($"The address is invalid. Errors: {addressValidationResult}");
+            throw new EntityNotFoundException("Can't restore ware, because shelf doesn't exist.");
         }
-        
+
+        if (shelf.Ware is not null)
+        {
+            throw new ApiOperationFailedException("Can't restore ware, because shelf has been already taken.");
+        }
+
         ware.Status = WareStatus.Active;
         ware.ShippingDate = null;
-
-        address.Id = 0;
-        _ = await this.DbContext.Addresses.AddAsync(address);
-        ware.Address = address;
+        ware.ShelfId = shelf.Id;
 
         _ = await this.DbContext.SaveChangesAsync();
     }
@@ -109,28 +103,10 @@ public class WareService : BaseService<Ware>, IWareService
         await this.ValidateAsync(entityUpdateData);
         
         var ware = this.DbSet
-            .Include(x => x.Address)
             .FirstOrDefault(x => x.Id == id);
         if (ware == null)
         {
-            throw new EntityNotFoundException($"Can't update ware with Id = {id}, because it doesn't exist.");
-        }
-
-        if (entityUpdateData.AddressId != ware.AddressId)
-        {
-            if (AddressHelper.DoesNewAddressEqualOrigin(entityUpdateData.Address, ware.Address))
-            {
-                entityUpdateData.AddressId = ware.AddressId;
-            }
-            else
-            {
-                _ = await this.DbContext.Addresses.AddAsync(entityUpdateData.Address);
-
-                var addressToDelete = ware.Address;
-                ware.Address = entityUpdateData.Address;
-            
-                this.DbContext.Addresses.Remove(addressToDelete);
-            }
+            throw new EntityNotFoundException("Can't update ware, because it doesn't exist.");
         }
 
         WareHelper.Populate(ware, entityUpdateData);

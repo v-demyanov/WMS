@@ -40,7 +40,6 @@ builder.Services
 #pragma warning restore CS0618 // Type or member is obsolete
     .AddScoped<LegalEntityValidator, LegalEntityValidator>()
     .AddScoped<RackCreateDataValidator, RackCreateDataValidator>()
-    .AddScoped<AddressValidator, AddressValidator>()
     .AddScoped<WareValidator, WareValidator>()
     .AddScoped<ProblemValidator, ProblemValidator>();
 
@@ -60,7 +59,6 @@ builder.Services
     .AddScoped<IProblemService, ProblemService>()
     .AddScoped<ICommentService, CommentService>()
     .AddScoped<INotificationService, NotificationService>()
-    .AddScoped<IAddressService, AddressService>()
     .AddScoped(typeof(TextDictionaryService<>), typeof(TextDictionaryService<>))
     .AddScoped<ISettingService, SettingService>();
 

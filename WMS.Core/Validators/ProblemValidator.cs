@@ -32,5 +32,9 @@ public class ProblemValidator : AbstractValidator<Problem>
         this.RuleFor(problem => problem.WareId)
             .Must(wareId => wareId is null || dbContext.Wares.Any(x => x.Id == wareId))
             .WithMessage("The ware with such id has not been found.");
+        
+        this.RuleFor(problem => problem.TargetShelfId)
+            .Must(targetShelfId => targetShelfId is null || dbContext.Shelfs.Any(x => x.Id == targetShelfId))
+            .WithMessage("The shelf with such id has not been found.");
     }
 }

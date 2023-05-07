@@ -7,6 +7,6 @@ public class Shelf : BaseEntity
     public int Index { get; set; }
 
     public VerticalSection VerticalSection { get; set; } = default!;
-
-    public Address? Address { get; set; }
+    
+    public Ware? Ware { get; set; }
 }

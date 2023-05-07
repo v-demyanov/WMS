@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMS.Database;
 
@@ -11,9 +12,10 @@ using WMS.Database;
 namespace WMS.Database.Migrations
 {
     [DbContext(typeof(WmsDbContext))]
-    partial class WmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230506214501_RemoveAreaFromAddressAndMakeShelfRequired")]
+    partial class RemoveAreaFromAddressAndMakeShelfRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,25 @@ namespace WMS.Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("WMS.Database.Entities.Addresses.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ShelfId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShelfId")
+                        .IsUnique();
+
+                    b.ToTable("Addresses");
+                });
 
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Area", b =>
                 {
@@ -203,7 +224,7 @@ namespace WMS.Database.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TargetShelfId")
+                    b.Property<int?>("TargetAddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -223,7 +244,7 @@ namespace WMS.Database.Migrations
 
                     b.HasIndex("PerformerId");
 
-                    b.HasIndex("TargetShelfId");
+                    b.HasIndex("TargetAddressId");
 
                     b.HasIndex("WareId");
 
@@ -387,9 +408,9 @@ namespace WMS.Database.Migrations
                             Email = "system.wms@outlook.com",
                             FirstName = "Vladislav",
                             LastName = "Demyanov",
-                            Password = "8B166ECDF0558C4BB2456CF4FDBE56EB2D6C9304641DEC1941A3D09DE49AB29C",
+                            Password = "89C374875D6B7BF5F0178545074F5AD3C215C7C03EE9E8DCF1E362D74ADE52BC",
                             Role = 0,
-                            Salt = "AABF5E268BB0C455F734AD666789C2F6"
+                            Salt = "333607AB53A099821136616DBDD9D72A"
                         });
                 });
 
@@ -400,6 +421,9 @@ namespace WMS.Database.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -420,9 +444,6 @@ namespace WMS.Database.Migrations
                     b.Property<DateTimeOffset>("ReceivingDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int?>("ShelfId")
-                        .HasColumnType("int");
-
                     b.Property<DateTimeOffset?>("ShippingDate")
                         .HasColumnType("datetimeoffset");
 
@@ -431,15 +452,26 @@ namespace WMS.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
+
                     b.HasIndex("IndividualId");
 
                     b.HasIndex("LegalEntityId");
 
-                    b.HasIndex("ShelfId")
-                        .IsUnique()
-                        .HasFilter("[ShelfId] IS NOT NULL");
-
                     b.ToTable("Wares");
+                });
+
+            modelBuilder.Entity("WMS.Database.Entities.Addresses.Address", b =>
+                {
+                    b.HasOne("WMS.Database.Entities.Addresses.Shelf", "Shelf")
+                        .WithOne("Address")
+                        .HasForeignKey("WMS.Database.Entities.Addresses.Address", "ShelfId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Shelf");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Rack", b =>
@@ -517,9 +549,9 @@ namespace WMS.Database.Migrations
                         .HasForeignKey("PerformerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("WMS.Database.Entities.Addresses.Shelf", "TargetShelf")
-                        .WithMany()
-                        .HasForeignKey("TargetShelfId");
+                    b.HasOne("WMS.Database.Entities.Addresses.Address", "TargetAddress")
+                        .WithMany("Problems")
+                        .HasForeignKey("TargetAddressId");
 
                     b.HasOne("WMS.Database.Entities.Ware", "Ware")
                         .WithMany("Problems")
@@ -533,13 +565,18 @@ namespace WMS.Database.Migrations
 
                     b.Navigation("Performer");
 
-                    b.Navigation("TargetShelf");
+                    b.Navigation("TargetAddress");
 
                     b.Navigation("Ware");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Ware", b =>
                 {
+                    b.HasOne("WMS.Database.Entities.Addresses.Address", "Address")
+                        .WithOne("Ware")
+                        .HasForeignKey("WMS.Database.Entities.Ware", "AddressId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("WMS.Database.Entities.Tenants.Individual", "Individual")
                         .WithMany("Wares")
                         .HasForeignKey("IndividualId");
@@ -548,15 +585,19 @@ namespace WMS.Database.Migrations
                         .WithMany("Wares")
                         .HasForeignKey("LegalEntityId");
 
-                    b.HasOne("WMS.Database.Entities.Addresses.Shelf", "Shelf")
-                        .WithOne("Ware")
-                        .HasForeignKey("WMS.Database.Entities.Ware", "ShelfId");
+                    b.Navigation("Address");
 
                     b.Navigation("Individual");
 
                     b.Navigation("LegalEntity");
+                });
 
-                    b.Navigation("Shelf");
+            modelBuilder.Entity("WMS.Database.Entities.Addresses.Address", b =>
+                {
+                    b.Navigation("Problems");
+
+                    b.Navigation("Ware")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Area", b =>
@@ -571,7 +612,7 @@ namespace WMS.Database.Migrations
 
             modelBuilder.Entity("WMS.Database.Entities.Addresses.Shelf", b =>
                 {
-                    b.Navigation("Ware");
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("WMS.Database.Entities.Addresses.VerticalSection", b =>

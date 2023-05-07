@@ -1,8 +1,8 @@
 ﻿namespace WMS.WebApi.Controllers.Addresses;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 using WMS.Core.Models;
@@ -59,5 +59,9 @@ public class RacksController : ODataController
     /// <returns>Rack.</returns>
     [HttpGet]
     [EnableQuery]
-    public Rack Get(int key) => this._rackService.GetById(key);
+    public SingleResult<Rack> Get(int key)
+    {
+        var racks = this._rackService.GetById(key);
+        return SingleResult.Create(racks);
+    }
 }

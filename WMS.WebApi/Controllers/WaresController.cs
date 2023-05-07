@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 using WMS.Core.Services.Abstractions;
 using WMS.Database.Constants;
 using WMS.Database.Entities;
-using WMS.Database.Entities.Addresses;
 using WMS.Database.Enums;
 
 public class WaresController : ODataController
@@ -49,12 +48,12 @@ public class WaresController : ODataController
     /// Restores ware.
     /// </summary>
     /// <param name="wareId">Ware' Id.</param>
-    /// <param name="address">New Address.</param>
+    /// <param name="shelfId">Shelf's Id.</param>
     [HttpPut("api/[controller]/{wareId:int}/Restore")]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<ActionResult> Restore(int wareId, [FromBody] Address address)
+    public async Task<ActionResult> Restore(int wareId, int shelfId)
     {
-        await this._wareService.Restore(wareId, address);
+        await this._wareService.Restore(wareId, shelfId);
         return this.NoContent();
     }
 

@@ -28,7 +28,7 @@ public class Problem : BaseEntity, IAuditableEntity
 
     public int? WareId { get; set; }
 
-    public int? TargetAddressId { get; set; }
+    public int? TargetShelfId { get; set; }
 
     public Problem? ParentProblem { get; set; }
 
@@ -40,7 +40,7 @@ public class Problem : BaseEntity, IAuditableEntity
 
     public Ware? Ware { get; set; }
 
-    public Address? TargetAddress { get; set; }
+    public Shelf? TargetShelf { get; set; }
 
     public ICollection<Problem> ChildrenProblems { get; } = new HashSet<Problem>();
 

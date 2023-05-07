@@ -12,7 +12,7 @@ public class Ware : BaseEntity
 
     public string? ImagePath { get; set; }
 
-    public int? AddressId { get; set; }
+    public int? ShelfId { get; set; }
 
     public int? IndividualId { get; set; }
 
@@ -24,7 +24,7 @@ public class Ware : BaseEntity
 
     public WareStatus Status { get; set; }
 
-    public Address? Address { get; set; }
+    public Shelf? Shelf { get; set; }
 
     public Individual? Individual { get; set; }
 

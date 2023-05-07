@@ -2,9 +2,11 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 using WMS.Core.Services.Abstractions.Addresses;
+using WMS.Database.Constants;
 using WMS.Database.Entities.Addresses;
 
 public class ShelfsController : ODataController
@@ -21,6 +23,19 @@ public class ShelfsController : ODataController
     /// </summary>
     /// <returns>Collection of shelfs.</returns>
     [HttpGet]
-    [EnableQuery]
+    [EnableQuery(MaxExpansionDepth = ODataSettings.MaxExpansionDepth)]
     public IQueryable<Shelf> Get() => this._shelfService.GetAll();
+
+    /// <summary>
+    /// Gets shelf by Id.
+    /// </summary>
+    /// <param name="key">Shelf's Id.</param>
+    /// <returns>Shelf entity.</returns>
+    [HttpGet]
+    [EnableQuery(MaxExpansionDepth = ODataSettings.MaxExpansionDepth)]
+    public SingleResult<Shelf> Get(int key)
+    {
+        var shelfs = this._shelfService.GetById(key);
+        return SingleResult.Create(shelfs);
+    }
 }

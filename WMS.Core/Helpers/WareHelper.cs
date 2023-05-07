@@ -9,7 +9,7 @@ public static class WareHelper
         destination.Name = source.Name;
         destination.Description = source.Description;
         destination.LegalEntityId = source.LegalEntityId;
-        destination.AddressId = source.AddressId;
+        destination.ShelfId = source.ShelfId;
         destination.IndividualId = source.IndividualId;
         destination.ImagePath = source.ImagePath;
         destination.ReceivingDate = source.ReceivingDate;
