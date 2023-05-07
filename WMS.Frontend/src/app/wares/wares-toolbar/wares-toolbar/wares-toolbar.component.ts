@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';
@@ -13,6 +13,9 @@ import { IWareNavItem } from '../../models/ware-nav-item';
 import { WareStatus } from '../../enums/ware-status.enum';
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
 import { WareRestoreDialogComponent } from '../../ware-restore-dialog/ware-restore-dialog.component';
+import { WareFilterDescriptor } from '../../models/ware-filter-descriptor';
+import { WaresFilterDialogComponent } from '../../wares-filter-dialog/wares-filter-dialog.component';
+import { WareAdvancedFilterDescriptor } from '../../models/ware-advanced-filter-descriptor';
 
 @Component({
   selector: 'app-wares-toolbar',
@@ -35,7 +38,12 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
 
   public WareStatus = WareStatus;
 
+  public wareFilterDescriptor?: WareFilterDescriptor;
+
   private componentSubscriptions: Subscription[] = [];
+
+  @ViewChild('searchInput')
+  private searchInput?: ElementRef;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -87,6 +95,45 @@ export class WaresToolbarComponent implements OnInit, OnDestroy {
     } else {
       await this.softDelete(this.selectedWareId);
     }
+  }
+
+  public onSearch(searchValue: string): void {
+    if (!this.wareFilterDescriptor) {
+      this.wareFilterDescriptor = <WareFilterDescriptor>{};
+    }
+    this.wareFilterDescriptor.SearchValue = searchValue;
+
+    this.waresEventBusService.updateFilterDescriptor(this.wareFilterDescriptor);
+  }
+
+  public async openFilterDialog(): Promise<void> {
+    const dialogRef = this.dialog.open(WaresFilterDialogComponent, {
+      width: '33.5rem',
+      ariaModal: true,
+      disableClose: true,
+      data: this.wareFilterDescriptor?.AdvancedFilterDescriptor,
+    });
+    const advancedFilterDescriptor: WareAdvancedFilterDescriptor | undefined = await firstValueFrom(dialogRef.afterClosed());
+
+    if (!advancedFilterDescriptor) {
+      return;
+    }
+
+    if (!this.wareFilterDescriptor) {
+      this.wareFilterDescriptor = <WareFilterDescriptor>{};
+    }
+    this.wareFilterDescriptor.AdvancedFilterDescriptor = advancedFilterDescriptor;
+
+    this.waresEventBusService.updateFilterDescriptor(this.wareFilterDescriptor);
+  }
+
+  public resetFilters(): void {
+    this.wareFilterDescriptor = undefined;
+    if (this.searchInput) {
+      this.searchInput.nativeElement.value = '';
+    }
+    
+    this.waresEventBusService.updateFilterDescriptor(undefined);
   }
 
   private async softDelete(id: number): Promise<void> {

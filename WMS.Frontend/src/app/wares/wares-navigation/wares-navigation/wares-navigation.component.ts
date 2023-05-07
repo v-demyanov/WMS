@@ -10,6 +10,7 @@ import { NavigationUrls } from 'src/app/core/constants/navigation-urls.constants
 import { WaresEventBusService } from '../../services/wares-event-bus.service';
 import { IWareNavItem } from '../../models/ware-nav-item';
 import { WareStatus } from '../../enums/ware-status.enum';
+import { WareFilterDescriptor } from '../../models/ware-filter-descriptor';
 
 @Component({
   selector: 'app-wares-navigation',
@@ -43,8 +44,8 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    this.loadWares();
     this.componentSubscriptions = [
-      this.loadWares(),
       this.waresEventBusService.itemWasCreated$
         .subscribe(async (ware: IWare) => {
           this.wares.unshift(ware);
@@ -66,6 +67,10 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
           const wareIndex: number = this.wares.findIndex(x => x.Id === ware.Id);
           this.wares.splice(wareIndex, 1, ware);
           this.setSelectedWare();
+        }),
+      this.waresEventBusService.filterDescriptorWasChanged$
+        .subscribe((filterDescriptor?: WareFilterDescriptor) => {
+          this.loadWares(filterDescriptor);
         }),
       this.subscribeOnRouteParamsChanges(),
     ];
@@ -90,9 +95,9 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
     })
   }
 
-  private loadWares(): Subscription {
+  private loadWares(filterDescriptor?: WareFilterDescriptor): void {
     this.isLoading = true;
-    return this.waresService.getAllForNavigation()
+    const subscription = this.waresService.getAllForNavigation(filterDescriptor)
       .subscribe({
         next: (wares: IWareNavItem[]) => {
           this.wares = wares;
@@ -109,6 +114,7 @@ export class WaresNavigationComponent implements OnInit, OnDestroy {
           );
         },
       });
+    this.componentSubscriptions.push(subscription);
   }
 
   private setSelectedWare(): void {

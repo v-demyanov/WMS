@@ -9,6 +9,8 @@ import { IRawWare } from '../models/raw-ware';
 import { parseEnum } from 'src/app/core/helpers/enum.helper';
 import { WareStatus } from '../enums/ware-status.enum';
 import { IWareNavItem } from '../models/ware-nav-item';
+import { WareFilterDescriptor } from '../models/ware-filter-descriptor';
+import { WareAdvancedFilterDescriptor } from '../models/ware-advanced-filter-descriptor';
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +19,13 @@ export class WaresDataService {
 
   constructor(private readonly http: HttpClient) { }
 
-  public getAllForNavigation(): Observable<IWareNavItem[]> {
+  public getAllForNavigation(filterDescriptor?: WareFilterDescriptor): Observable<IWareNavItem[]> {
     const selectQuery: string = '$select=Id,Name,Status';
     const orderQuery: string = '$orderby=Id desc';
+    let filterQuery: string = this.prepareFilterQuery(filterDescriptor);
+    filterQuery = filterQuery ? '$filter=' + filterQuery : '';
 
-    return this.http.get<ODataValue<IRawWare>>(`${ApiEndpoints.Wares}?${selectQuery}&${orderQuery}`)
+    return this.http.get<ODataValue<IRawWare>>(`${ApiEndpoints.Wares}?${selectQuery}&${orderQuery}&${filterQuery}`)
       .pipe(map((odataValue: ODataValue<IRawWare>) => odataValue.value.map(x => this.parseWareInNavItem(x))));
   }
 
@@ -60,5 +64,45 @@ export class WaresDataService {
       Name: rawWare.Name,
       Status: parseEnum(WareStatus, rawWare.Status),
     };
+  }
+
+  private prepareFilterQuery(filterDescriptor?: WareFilterDescriptor): string {
+    if (!filterDescriptor) {
+      return '';
+    }
+    const filterOptions: string[] = [];
+
+    if (filterDescriptor.SearchValue) {
+      filterOptions.push(`contains(tolower(Name), tolower('${filterDescriptor.SearchValue}'))`);
+    }
+
+    if (filterDescriptor.AdvancedFilterDescriptor) {
+      const advancedFilterOptions = this.prepareAdvancedFilterOptions(filterDescriptor.AdvancedFilterDescriptor);
+      filterOptions.push(...advancedFilterOptions);
+    }
+
+    return filterOptions.join(' and ');
+  }
+
+  private prepareAdvancedFilterOptions(advancedFilterDescriptor: WareAdvancedFilterDescriptor): string[] {
+    const filterOptions: string[] = [];
+
+    if (advancedFilterDescriptor.AreaId) {
+      filterOptions.push(`Shelf/VerticalSection/Rack/AreaId eq ${advancedFilterDescriptor.AreaId}`);
+    }
+
+    if (advancedFilterDescriptor.RackId) {
+      filterOptions.push(`Shelf/VerticalSection/RackId eq ${advancedFilterDescriptor.RackId}`);
+    }
+
+    if (advancedFilterDescriptor.ShelfId) {
+      filterOptions.push(`Shelf/Id eq ${advancedFilterDescriptor.ShelfId}`);
+    }
+
+    if (advancedFilterDescriptor.VerticalSectionId) {
+      filterOptions.push(`Shelf/VerticalSectionId eq ${advancedFilterDescriptor.VerticalSectionId}`);
+    }
+
+    return filterOptions;
   }
 }

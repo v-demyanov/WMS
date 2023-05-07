@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { IWare } from '../models/ware';
+import { WareFilterDescriptor } from '../models/ware-filter-descriptor';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,8 @@ export class WaresEventBusService {
 
   private itemWasRestoredSource = new Subject<number>();
 
+  private filterDescriptorWasChangedSource = new Subject<WareFilterDescriptor | undefined>();
+
   public itemWasCreated$ = this.itemWasCreatedSource.asObservable();
 
   public itemWasSoftDeleted$ = this.itemWasSoftDeletedSource.asObservable();
@@ -24,6 +27,8 @@ export class WaresEventBusService {
 
   public itemWasUpdated$ = this.itemWasUpdatedSource.asObservable();
 
+  public filterDescriptorWasChanged$ = this.filterDescriptorWasChangedSource.asObservable();
+
   public create = (ware: IWare) => this.itemWasCreatedSource.next(ware);
 
   public softDelete = (wareId: number) => this.itemWasSoftDeletedSource.next(wareId);
@@ -31,4 +36,7 @@ export class WaresEventBusService {
   public restore = (wareId: number) => this.itemWasRestoredSource.next(wareId);
 
   public update = (ware: IWare) => this.itemWasUpdatedSource.next(ware);
+
+  public updateFilterDescriptor = (filterDescriptor: WareFilterDescriptor | undefined) => 
+    this.filterDescriptorWasChangedSource.next(filterDescriptor);
 }

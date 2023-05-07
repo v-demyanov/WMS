@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { WaresDataService } from './wares-data.service';
 import { IWare } from '../models/ware';
 import { IWareNavItem } from '../models/ware-nav-item';
+import { WareFilterDescriptor } from '../models/ware-filter-descriptor';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class WaresService {
 
   constructor(private readonly waresDataService: WaresDataService) { }
 
-  public getAllForNavigation = (): Observable<IWareNavItem[]> => 
-    this.waresDataService.getAllForNavigation();
+  public getAllForNavigation = (filterDescriptor?: WareFilterDescriptor): Observable<IWareNavItem[]> => 
+    this.waresDataService.getAllForNavigation(filterDescriptor);
 
   public get = (id: number): Observable<IWare | undefined> => 
     this.waresDataService.get(id);

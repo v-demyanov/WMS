@@ -1,0 +1,60 @@
+<h1 mat-dialog-title>Фильтры товаров</h1>
+<form [formGroup]="filterForm" class="dialog-content">
+  <mat-form-field appearance="fill">
+    <mat-label>Зона склада</mat-label>
+    <mat-select formControlName="AreaId" (selectionChange)="onAreaSelected($event.value)">
+      <mat-option *ngFor="let area of areas" [value]="area.Id">
+        {{ area.Name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Стелаж</mat-label>
+    <mat-select formControlName="RackId" (selectionChange)="onRackSelected($event.value)">
+      <mat-option *ngFor="let rack of racks" [value]="rack.Id">
+        {{ rack.Index }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Секция</mat-label>
+    <mat-select formControlName="VerticalSectionId" (selectionChange)="onSectionSelected($event.value)">
+      <mat-option
+        *ngFor="let verticalSection of verticalSections"
+        [value]="verticalSection.Id"
+      >
+        {{ verticalSection.Index }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Полка</mat-label>
+    <mat-select formControlName="ShelfId" (selectionChange)="onShelfSelected($event.value)">
+      <mat-option 
+        *ngFor="let shelf of shelfs"
+        [value]="shelf.Id"
+      >
+        {{ shelf.Index }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+<div mat-dialog-actions align="end">
+  <button 
+    mat-button
+    (click)="onCancelBtnClick()"
+  >
+    Отмена
+  </button>
+  <button
+    mat-raised-button
+    cdkFocusInitial
+    color="primary"
+    (click)="onApplyBtnClick()"
+  >
+    Применить
+  </button>
+</div>
