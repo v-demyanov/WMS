@@ -5,11 +5,11 @@ import { Subscription, firstValueFrom } from 'rxjs';
 
 import { AddressPickerDialogComponent } from './address-picker-dialog/address-picker-dialog.component';
 import { AddressPickerDialogData } from './models/address-picker-dialog-data';
-import { IArea } from 'src/app/dictionaries/addresses/models/area';
-import { IRack } from 'src/app/dictionaries/addresses/models/rack';
-import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
-import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
-import { ShelfsService } from 'src/app/dictionaries/addresses/racks/services/shelfs.service';
+import { IArea } from 'src/app/addresses/models/area';
+import { IRack } from 'src/app/addresses/models/rack';
+import { IVerticalSection } from 'src/app/addresses/models/vertical-section';
+import { IShelf } from 'src/app/addresses/models/shelf';
+import { ShelfsService } from 'src/app/addresses/services/shelfs.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

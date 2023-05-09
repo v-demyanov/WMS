@@ -26,6 +26,17 @@ const routes: Routes = [
     component: HomePageComponent,
     children: [
       {
+        path: `${HomeRoute.Addresses}`,
+        loadChildren: () => import('../addresses/addresses.module')
+          .then(m => m.AddressesModule),
+      },
+    ],
+  },
+  {
+    path: HomeRoute.Default,
+    component: HomePageComponent,
+    children: [
+      {
         path: `${HomeRoute.Dictionaries}`,
         loadChildren: () => import('../dictionaries/dictionaries.module')
           .then(m => m.DictionariesModule),

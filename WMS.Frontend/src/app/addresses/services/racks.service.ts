@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { ApiEndpoints } from 'src/app/core/constants/api-endpoints.constants';
 import { ODataValue } from 'src/app/core/models/odata-value';
-import { IRack } from '../../models/rack';
+import { IRack } from '../models/rack';
 
 @Injectable({
   providedIn: 'root'

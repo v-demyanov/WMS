@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 
 import { ApiEndpoints } from 'src/app/core/constants/api-endpoints.constants';
 import { ODataValue } from 'src/app/core/models/odata-value';
-import { IArea } from '../../models/area';
+import { IArea } from '../models/area';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,12 @@ export class AreasService {
 
   public getAll(): Observable<IArea[]> {
     return this.http.get<ODataValue<IArea>>(ApiEndpoints.Areas)
+      .pipe(map((odataValue: ODataValue<IArea>) => odataValue.value));
+  }
+
+  public getAllForTree(): Observable<IArea[]> {
+    const expandQuery: string = '$expand=Racks($expand=VerticalSections($expand=Shelfs))';
+    return this.http.get<ODataValue<IArea>>(`${ApiEndpoints.Areas}?${expandQuery}`)
       .pipe(map((odataValue: ODataValue<IArea>) => odataValue.value));
   }
 }

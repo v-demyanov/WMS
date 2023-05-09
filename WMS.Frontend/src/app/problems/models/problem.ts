@@ -1,6 +1,6 @@
 import { ProblemStatus } from '../enums/problem-status.enum';
 import { IEmployee } from 'src/app/admin-panel/employees/models/employee';
-import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
+import { IShelf } from 'src/app/addresses/models/shelf';
 import { IWare } from 'src/app/wares/models/ware';
 
 export interface IProblem {

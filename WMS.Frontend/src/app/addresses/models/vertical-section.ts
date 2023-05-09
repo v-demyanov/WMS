@@ -1,4 +1,5 @@
 import { IRack } from './rack';
+import { IShelf } from './shelf';
 
 export interface IVerticalSection {
   Id: number;
@@ -6,4 +7,5 @@ export interface IVerticalSection {
   Index: number;
 
   Rack?: IRack;
+  Shelfs?: IShelf[];
 }

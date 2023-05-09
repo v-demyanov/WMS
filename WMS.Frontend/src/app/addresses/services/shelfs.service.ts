@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 
 import { ApiEndpoints } from 'src/app/core/constants/api-endpoints.constants';
 import { ODataValue } from 'src/app/core/models/odata-value';
-import { IShelf } from '../../models/shelf';
+import { IShelf } from '../models/shelf';
 
 @Injectable({
   providedIn: 'root'

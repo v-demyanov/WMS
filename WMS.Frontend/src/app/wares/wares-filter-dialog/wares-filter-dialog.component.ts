@@ -3,14 +3,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { IArea } from 'src/app/dictionaries/addresses/models/area';
-import { IRack } from 'src/app/dictionaries/addresses/models/rack';
-import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
-import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
-import { AreasService } from 'src/app/dictionaries/addresses/areas/services/areas.service';
-import { RacksService } from 'src/app/dictionaries/addresses/racks/services/racks.service';
-import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
-import { ShelfsService } from 'src/app/dictionaries/addresses/racks/services/shelfs.service';
+import { IArea } from 'src/app/addresses/models/area';
+import { IRack } from 'src/app/addresses/models/rack';
+import { IVerticalSection } from 'src/app/addresses/models/vertical-section';
+import { IShelf } from 'src/app/addresses/models/shelf';
+import { AreasService } from 'src/app/addresses/services/areas.service';
+import { RacksService } from 'src/app/addresses/services/racks.service';
+import { VerticalSectionsService } from 'src/app/addresses/services/vertical-sections.service';
+import { ShelfsService } from 'src/app/addresses/services/shelfs.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WareAdvancedFilterDescriptor } from '../models/ware-advanced-filter-descriptor';
 

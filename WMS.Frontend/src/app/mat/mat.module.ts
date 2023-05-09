@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,6 +23,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatTreeModule } from '@angular/material/tree';
 
 @NgModule({
   exports: [
@@ -51,6 +51,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     MatBadgeModule,
     MatTooltipModule,
     MatBottomSheetModule,
+    MatTreeModule,
   ],
 })
 export class MatModule {}

@@ -4,14 +4,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
-import { AreasService } from 'src/app/dictionaries/addresses/areas/services/areas.service';
-import { IArea } from 'src/app/dictionaries/addresses/models/area';
-import { IRack } from 'src/app/dictionaries/addresses/models/rack';
-import { IShelf } from 'src/app/dictionaries/addresses/models/shelf';
-import { IVerticalSection } from 'src/app/dictionaries/addresses/models/vertical-section';
-import { RacksService } from 'src/app/dictionaries/addresses/racks/services/racks.service';
-import { ShelfsService } from 'src/app/dictionaries/addresses/racks/services/shelfs.service';
-import { VerticalSectionsService } from 'src/app/dictionaries/addresses/racks/services/vertical-sections.service';
+import { AreasService } from 'src/app/addresses/services/areas.service';
+import { IArea } from 'src/app/addresses/models/area';
+import { IRack } from 'src/app/addresses/models/rack';
+import { IShelf } from 'src/app/addresses/models/shelf';
+import { IVerticalSection } from 'src/app/addresses/models/vertical-section';
+import { RacksService } from 'src/app/addresses/services/racks.service';
+import { ShelfsService } from 'src/app/addresses/services/shelfs.service';
+import { VerticalSectionsService } from 'src/app/addresses/services/vertical-sections.service';
 import { AddressPickerDialogData } from '../models/address-picker-dialog-data';
 
 @Component({

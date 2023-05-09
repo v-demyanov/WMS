@@ -1,4 +1,5 @@
 import { IArea } from './area';
+import { IVerticalSection } from './vertical-section';
 
 export interface IRack {
   Id: number;
@@ -6,4 +7,5 @@ export interface IRack {
   Index: number;
 
   Area?: IArea;
+  VerticalSections?: IVerticalSection[];
 }
