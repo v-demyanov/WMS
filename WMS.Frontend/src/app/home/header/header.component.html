@@ -4,7 +4,7 @@
 >
   <a
     class="logo-section"
-    routerLink="/"
+    [routerLink]="homeRoute.Default"
   >
     <img src="assets/logo.png" alt="logo-wms" class="logo">
     <span class="name">WMS</span>
@@ -13,13 +13,24 @@
   <a
     mat-button
     class="menu-item"
-    routerLink="tasks"
-  >Задачи</a>
+    [routerLink]="homeRoute.Wares"
+  >
+    Товары
+  </a>
   <a
     mat-button
     class="menu-item"
-    routerLink="wares"
-  >Товары</a>
+    [routerLink]="homeRoute.Addresses"
+  >
+    Адреса
+  </a>
+  <a
+    mat-button
+    class="menu-item"
+    [routerLink]="homeRoute.Tasks"
+  >
+    Задачи
+  </a>
 
   <button
     mat-button
@@ -32,23 +43,10 @@
   <mat-menu #dictionaries="matMenu">
     <button
       mat-menu-item
-      routerLink="dictionaries/unitOfMeasurements"
-    >Ед. измерения</button>
-    <button
-      mat-menu-item
-      [matMenuTriggerFor]="addresses"
-    >Адреса</button>
-  </mat-menu>
-
-  <mat-menu #addresses="matMenu">
-    <button
-      mat-menu-item
-      routerLink="dictionaries/addresses/racks"
-    >Стелажи</button>
-    <button
-      mat-menu-item
-      routerLink="dictionaries/addresses/areas"
-    >Зоны</button>
+      [routerLink]="homeRoute.Dictionaries + '/' + dictionariesRoute.UnitOfMeasurements"
+    >
+      Ед. измерения
+    </button>
   </mat-menu>
 
   <button
@@ -63,7 +61,7 @@
   <mat-menu #administration="matMenu">
     <button
       mat-menu-item
-      routerLink="admin-panel/employees"
+      [routerLink]="homeRoute.AdminPanel + '/' + adminPanelRoute.Employees"
     >Сотрудники</button>
     <button mat-menu-item [matMenuTriggerFor]="tenants">Арендаторы</button>
   </mat-menu>
@@ -71,11 +69,11 @@
   <mat-menu #tenants="matMenu">
     <button
       mat-menu-item
-      routerLink="admin-panel/tenants/individuals"
+      [routerLink]="homeRoute.AdminPanel + '/' + adminPanelRoute.Individuals"
     >Физ. лица</button>
     <button
       mat-menu-item
-      routerLink="admin-panel/tenants/legal-entities"
+      [routerLink]="homeRoute.AdminPanel + '/' + adminPanelRoute.LegalEntities"
     >Юр. лица</button>
   </mat-menu>
 

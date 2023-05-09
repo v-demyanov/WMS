@@ -8,6 +8,9 @@ import { ProblemDialogData } from 'src/app/problems/models/problem-dialog-data';
 import { ProblemDialogComponent } from 'src/app/problems/problem-dialog/problem-dialog.component';
 import * as commonConstants from 'src/app/core/constants/common.constants';
 import { SystemSettingBottomSheetComponent } from 'src/app/system-settings/system-setting-bottom-sheet/system-setting-bottom-sheet.component';
+import { HomeRoute } from '../home-routing.constants';
+import { DictionariesRoute } from 'src/app/dictionaries/dictionaries-routing.constants';
+import { AdminPanelRoute } from 'src/app/admin-panel/admin-panel-routing.constants';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +22,12 @@ export class HeaderComponent implements OnInit {
   public currentUser: IUserClaims | null = null;
 
   public commonConstants = commonConstants;
+
+  public homeRoute = HomeRoute;
+
+  public dictionariesRoute = DictionariesRoute;
+
+  public adminPanelRoute = AdminPanelRoute;
 
   constructor(
     private readonly authenticationService: AuthenticationService,

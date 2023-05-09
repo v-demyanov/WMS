@@ -5,6 +5,8 @@ export class HomeRoute {
 
   public static readonly AdminPanel: string = 'admin-panel';
 
+  public static readonly Addresses: string = 'addresses';
+
   public static readonly Dictionaries: string = 'dictionaries';
 
   public static readonly Wares: string = 'wares';
