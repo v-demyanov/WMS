@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 using WMS.Core.Services.Abstractions.Addresses;
+using WMS.Database.Constants;
 using WMS.Database.Entities.Addresses;
 
 public class AreasController : ODataController
@@ -21,6 +22,6 @@ public class AreasController : ODataController
     /// </summary>
     /// <returns>Collection of racks.</returns>
     [HttpGet]
-    [EnableQuery]
+    [EnableQuery(MaxExpansionDepth = ODataSettings.MaxExpansionDepth)]
     public IQueryable<Area> Get() => this._areaService.GetAll();
 }
