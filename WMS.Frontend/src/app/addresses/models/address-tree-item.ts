@@ -4,6 +4,8 @@ export interface IAddressTreeItem {
   Id: number;
   Type: AddressTreeItemType;
   Name: string;
+  InUse: boolean;
 
   Children?: IAddressTreeItem[];
+  Parent?: IAddressTreeItem;
 }

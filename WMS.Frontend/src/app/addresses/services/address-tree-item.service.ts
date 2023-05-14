@@ -24,32 +24,53 @@ export class AddressTreeItemService {
 
   private parseAreaToTreeItem(area: IArea): IAddressTreeItem {
     const children = area.Racks?.map(x => this.parseRackToTreeItem(x));
-    return <IAddressTreeItem>{
+    const treeItem = <IAddressTreeItem>{
       Id: area.Id,
       Type: AddressTreeItemType.Area,
       Name: area.Name,
       Children: children,
     };
+
+    treeItem.Children = treeItem.Children?.map(x => {
+      x.Parent = treeItem;
+      return x;
+    });
+
+    return treeItem;
   }
 
   private parseRackToTreeItem(rack: IRack): IAddressTreeItem {
     const children = rack.VerticalSections?.map(x => this.parseVerticalSectionToTreeItem(x));
-    return <IAddressTreeItem>{
+    const treeItem = <IAddressTreeItem>{
       Id: rack.Id,
       Type: AddressTreeItemType.Rack,
       Name: String(rack.Index),
       Children: children,
     };
+
+    treeItem.Children = treeItem.Children?.map(x => {
+      x.Parent = treeItem;
+      return x;
+    });
+
+    return treeItem;
   }
 
   private parseVerticalSectionToTreeItem(verticalSection: IVerticalSection): IAddressTreeItem {
     const children = verticalSection.Shelfs?.map(x => this.parseShelfToTreeItem(x)); 
-    return <IAddressTreeItem>{
+    const treeItem = <IAddressTreeItem>{
       Id: verticalSection.Id,
       Type: AddressTreeItemType.VerticalSection,
       Name: String(verticalSection.Index),
       Children: children,
     };
+
+    treeItem.Children = treeItem.Children?.map(x => {
+      x.Parent = treeItem;
+      return x;
+    });
+
+    return treeItem;
   }
 
   private parseShelfToTreeItem(shelf: IShelf): IAddressTreeItem {
@@ -57,6 +78,7 @@ export class AddressTreeItemService {
       Id: shelf.Id,
       Type: AddressTreeItemType.Shelf,
       Name: String(shelf.Index),
+      InUse: !!shelf.Problem || !!shelf.Ware,
     };
   }
 }
