@@ -1,0 +1,59 @@
+<div class="wrapper">
+  <form [formGroup]="shelfForm" class="shelf-form">
+    <div class="form-field">
+      <label class="shelf-form-lebel" for="shelfId">Идентификатор</label>
+      <mat-form-field>
+        <input [readonly]="true" id="shelfId" matInput formControlName="Id" />
+      </mat-form-field>
+    </div>
+  
+    <div class="form-field">
+      <label class="shelf-form-lebel" for="shelfIndex">Порядковый индекс</label>
+      <mat-form-field>
+        <input [readonly]="true" id="shelfIndex" matInput formControlName="Index" />
+      </mat-form-field>
+    </div>
+  
+    <div class="form-field">
+      <label class="shelf-form-lebel" for="shelfStatus">Статус</label>
+      <mat-form-field>
+        <input [readonly]="true" id="shelfStatus" matInput formControlName="Status" />
+      </mat-form-field>
+    </div>
+  
+    <div class="form-field" *ngIf="shelf?.Ware">
+      <label class="shelf-form-lebel" for="shelfWare">Товар</label>
+      <mat-form-field>
+        <input [readonly]="true" id="shelfWare" matInput formControlName="Ware" />
+      </mat-form-field>
+    </div>
+  
+    <div class="form-field" *ngIf="shelf?.Problem">
+      <label class="shelf-form-lebel" for="shelfProblem">Задача</label>
+      <mat-form-field>
+        <input [readonly]="true" id="shelfProblem" matInput formControlName="Problem" />
+      </mat-form-field>
+    </div>
+  </form>
+  
+  <div class="shelf-action">
+    <button 
+      *ngIf="shelf?.Problem"
+      mat-raised-button
+      color="primary"
+      (click)="navigateToProblem()"
+    >
+      Перейти к задаче
+    </button>
+    <button 
+      *ngIf="shelf?.Ware"
+      mat-raised-button 
+      color="primary"
+      (click)="navigateToWare()"
+    >
+      Перейти к товару
+    </button>
+  </div>
+</div>
+
+

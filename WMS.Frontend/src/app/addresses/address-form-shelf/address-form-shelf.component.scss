@@ -1,0 +1,27 @@
+.wrapper {
+  padding: 1.5rem;
+  height: calc(100% - 3rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .shelf-form {
+    .form-field {
+      display: grid;
+      grid-template-columns: 2fr 8fr;
+  
+      .shelf-form-lebel {
+        font-size: 16px;
+        padding-top: 0.5rem;
+      }
+    }
+  }
+
+  .shelf-action {
+    display: flex;
+    justify-content: end;
+  }
+}
+
+
+
