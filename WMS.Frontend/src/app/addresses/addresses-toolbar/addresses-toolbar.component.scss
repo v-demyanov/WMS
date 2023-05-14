@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+
+    .toolbar-action-btn {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .toolbar-info {
+    display: flex;
+    align-items: center;
+    padding-right: 1rem;
+
+    .stat-item {
+      margin-left: 0.5rem;
+    }
+  }
+}

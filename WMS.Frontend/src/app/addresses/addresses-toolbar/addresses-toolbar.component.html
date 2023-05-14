@@ -1,0 +1,24 @@
+<div class="wrapper">
+  <div class="toolbar-actions">
+    <button
+      mat-mini-fab
+      color="primary"
+      class="toolbar-action-btn"
+      [matMenuTriggerFor]="addressAddMenu"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <mat-menu #addressAddMenu="matMenu">
+      <button mat-menu-item>Зона</button>
+      <button mat-menu-item>Стелаж</button>
+    </mat-menu>
+    <button mat-mini-fab color="warn" class="toolbar-action-btn">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <div class="toolbar-info">
+    <span class="stat-item">Занятых мест: <b>{{ numberOfOccupiedShelves }}</b></span>
+    <span class="stat-item">Свободных мест: <b>{{ numberOfFreeShelves }}</b></span>
+    <span class="stat-item">Всего: <b>{{ numberOfOccupiedShelves + numberOfFreeShelves }}</b></span>
+  </div>
+</div>
