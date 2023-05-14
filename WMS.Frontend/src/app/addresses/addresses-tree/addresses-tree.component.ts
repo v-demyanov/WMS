@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AddressesRoute } from '../addresses-routing.constants';
 
 import { IAddressTreeItem } from '../models/address-tree-item';
 import { AddressTreeItemType } from '../enums/address-tree-item-type';
@@ -21,11 +23,17 @@ export class AddressesTreeComponent {
 
   public isLoading: boolean = false;
 
+  public selectedItemId?: number;
+
+  public addressTreeItemType = AddressTreeItemType;
+
   private componentSubscriptions: Subscription[] = [];
 
   constructor(
     private readonly addressTreeItemService: AddressTreeItemService,
     private readonly snackBar: MatSnackBar,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {
   }
 
@@ -38,16 +46,16 @@ export class AddressesTreeComponent {
 
   public hasChild = (_: number, node: IAddressTreeItem): boolean => !!node.Children && node.Children.length > 0;
 
-  public getTreeItemIcon(treeItemType: AddressTreeItemType): string {
+  public getTreeItemIcon(treeItemType: AddressTreeItemType, treeItemId: number): string {
     switch (treeItemType) {
       case AddressTreeItemType.Area:
-        return 'assets/area.jpg';
-      case AddressTreeItemType.Rack:
-        return 'assets/rack.jpg';
+        return treeItemId === this.selectedItemId ? 'assets/area-white.png' : 'assets/area-black.png';
+      case  AddressTreeItemType.Rack:
+        return treeItemId === this.selectedItemId ? 'assets/rack-white.png' : 'assets/rack-black.png';
       case AddressTreeItemType.VerticalSection:
-        return 'assets/vertical-section.png';
+        return treeItemId === this.selectedItemId ? 'assets/vertical-section-white.png' : 'assets/vertical-section-black.png';
       case AddressTreeItemType.Shelf:
-        return 'assets/shelf.jpg';
+        return treeItemId === this.selectedItemId ? 'assets/shelf-white.png' : 'assets/shelf-black.png';
     }
   }
 
@@ -62,6 +70,31 @@ export class AddressesTreeComponent {
       case AddressTreeItemType.Shelf:
         return `Полка - ${treeItemName}`;
     }
+  }
+
+  public async onSelectItem(node: IAddressTreeItem): Promise<void> {
+    this.selectedItemId = node.Id;
+
+    let targetPath: string = '';
+    switch (node.Type) {
+      case AddressTreeItemType.Area:
+        targetPath = `${AddressesRoute.Area}/${node.Id}`;
+        break;
+      case AddressTreeItemType.Rack:
+        targetPath = `${AddressesRoute.Area}/${node.Parent?.Id}/${AddressesRoute.Rack}/${node.Id}`;
+        break;
+      case AddressTreeItemType.VerticalSection:
+        targetPath = `${AddressesRoute.Area}/${node.Parent?.Parent?.Id}/${AddressesRoute.Rack}/${node.Parent?.Id}/${AddressesRoute.VerticalSection}/${node.Id}`;
+        break;
+      case AddressTreeItemType.Shelf:
+        targetPath = `${AddressesRoute.Area}/${node.Parent?.Parent?.Parent?.Id}/${AddressesRoute.Rack}/${node.Parent?.Parent?.Id}/${AddressesRoute.VerticalSection}/${node.Parent?.Id}/${AddressesRoute.Shelf}/${node.Id}`;
+        break;
+    }
+
+    await this.router.navigate(
+      [targetPath],
+      {relativeTo: this.route},
+    );
   }
 
   private loadTree(): void {

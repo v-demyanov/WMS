@@ -1,3 +1,5 @@
+@import 'src/styles/variables.scss';
+
 .example-tree-invisible {
   display: none;
 }
@@ -24,4 +26,24 @@
 
 .root {
   padding-left: 48px;
+}
+
+.tree-node {
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+
+  ::ng-deep .mat-badge-content {
+    font-family: 'Material Icons';
+    top: 1rem;
+    left: 1rem;
+  }
+}
+
+.selected-item {
+  background: $primary;
+  color: white;
 }
