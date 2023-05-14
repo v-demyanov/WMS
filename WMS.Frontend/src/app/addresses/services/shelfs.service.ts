@@ -27,6 +27,18 @@ export class ShelfsService {
       .pipe(map(shelf => this.populateInUseField(shelf)));
   }
 
+  public getNumberOfOccupiedShelves(): Observable<number | undefined> {
+    const filterQuery: string = '$filter=(Ware ne null) or (Problem ne null)';
+    return this.http.get<ODataValue<IShelf>>(`${ApiEndpoints.Shelfs}?$count=true&$top=0&${filterQuery}`)
+      .pipe(map((odataValue: ODataValue<IShelf>) => odataValue['@odata.count']));
+  }
+
+  public getNumberOfFreeShelves(): Observable<number | undefined> {
+    const filterQuery: string = '$filter=(Ware eq null) and (Problem eq null)';
+    return this.http.get<ODataValue<IShelf>>(`${ApiEndpoints.Shelfs}?$count=true&$top=0&${filterQuery}`)
+      .pipe(map((odataValue: ODataValue<IShelf>) => odataValue['@odata.count']));
+  }
+
   private populateInUseField(shelf: IShelf): IShelf {
     if (shelf.Problem || shelf.Ware) {
       shelf.InUse = true;
