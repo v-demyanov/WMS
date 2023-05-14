@@ -19,7 +19,7 @@ export class AreasService {
   }
 
   public getAllForTree(): Observable<IArea[]> {
-    const expandQuery: string = '$expand=Racks($expand=VerticalSections($expand=Shelfs))';
+    const expandQuery: string = '$expand=Racks($expand=VerticalSections($expand=Shelfs($expand=Ware,Problem)))';
     return this.http.get<ODataValue<IArea>>(`${ApiEndpoints.Areas}?${expandQuery}`)
       .pipe(map((odataValue: ODataValue<IArea>) => odataValue.value));
   }
