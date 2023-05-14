@@ -42,6 +42,8 @@ export class ShelfsService {
   private populateInUseField(shelf: IShelf): IShelf {
     if (shelf.Problem || shelf.Ware) {
       shelf.InUse = true;
+    } else {
+      shelf.InUse = false;
     }
 
     return shelf;
