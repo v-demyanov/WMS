@@ -229,7 +229,7 @@ export class WaresFormComponent implements OnInit, OnDestroy {
       } else {
         this.initializeWareForm();
       }
-    })
+    });
   }
 
   private createWareForm(): FormGroup {
