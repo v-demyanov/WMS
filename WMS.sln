@@ -13,8 +13,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4641AF1B-CECA-4F96-A27D-E9AC3B50AA43}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		README.md = README.md
 		database.env = database.env
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Database", "WMS.Database\WMS.Database.csproj", "{C1188D3B-BE26-40B2-8145-FBBE95143BE7}"
@@ -25,7 +25,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Core", "WMS.Core\WMS.Core.csproj", "{3750664D-51DF-44AF-AE7A-EA0F8E64C011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMS.Utils", "WMS.Utils\WMS.Utils.csproj", "{182A6BB8-07F5-4ADE-B54F-0CCD841C1F61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Utils", "WMS.Utils\WMS.Utils.csproj", "{182A6BB8-07F5-4ADE-B54F-0CCD841C1F61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +33,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF968484-FBA5-42AC-9E29-93CCBAC09982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF968484-FBA5-42AC-9E29-93CCBAC09982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF968484-FBA5-42AC-9E29-93CCBAC09982}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BF968484-FBA5-42AC-9E29-93CCBAC09982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF968484-FBA5-42AC-9E29-93CCBAC09982}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF968484-FBA5-42AC-9E29-93CCBAC09982}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{AB982F41-3927-49EC-9C63-6BCA078E5F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB982F41-3927-49EC-9C63-6BCA078E5F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB982F41-3927-49EC-9C63-6BCA078E5F76}.Release|Any CPU.ActiveCfg = Release|Any CPU

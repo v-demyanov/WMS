@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="WMS.Core.Services.Abstractions.IWareService">
+    <Position X="2.5" Y="6.25" Width="1.75" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.438" Y="6.623" />
+        <Point X="5.438" Y="7.062" />
+        <Point X="4.25" Y="7.062" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAQCAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\IWareService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.IUserService">
+    <Position X="9.75" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAQAAACAAAgAAgAAAIAAAIA=</HashCode>
+      <FileName>Services\Abstractions\IUserService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.ITemplateService">
+    <Position X="5.25" Y="8.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\ITemplateService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.ISettingService">
+    <Position X="9.5" Y="7.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\ISettingService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.IProblemService">
+    <Position X="7.75" Y="6.5" Width="1.5" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="7" Y="6.375" />
+        <Point X="7.357" Y="6.375" />
+        <Point X="7.357" Y="7.213" />
+        <Point X="7.75" Y="7.213" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\IProblemService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.INotificationService">
+    <Position X="2.5" Y="8.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\INotificationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.IMailService">
+    <Position X="7.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\IMailService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.ICommentService" Collapsed="true">
+    <Position X="5.25" Y="7.25" Width="1.75" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="6.125" Y="6.623" />
+        <Point X="6.125" Y="7.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\ICommentService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;">
+    <Position X="5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAgAAgAAAAAAAIA=</HashCode>
+      <FileName>Services\Abstractions\IBaseService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.IAuthService">
+    <Position X="9.5" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\IAuthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.Tenants.IIndividualService" Collapsed="true">
+    <Position X="2.5" Y="5.25" Width="1.75" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="5" Y="5.75" />
+        <Point X="4.25" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\Tenants\IIndividualService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.Tenants.ILegalEntityService" Collapsed="true">
+    <Position X="2.5" Y="4" Width="1.75" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="5.438" />
+        <Point X="4.7" Y="5.438" />
+        <Point X="4.7" Y="4.991" />
+        <Point X="3.438" Y="4.991" />
+        <Point X="3.438" Y="4.691" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\Tenants\ILegalEntityService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.Addresses.IAreaService" Collapsed="true">
+    <Position X="6" Y="3" Width="1.5" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.188" Y="4.75" />
+        <Point X="6.188" Y="3.815" />
+        <Point X="6.188" Y="3.815" />
+        <Point X="6.188" Y="3.691" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\Addresses\IAreaService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.Addresses.IRackService">
+    <Position X="7.75" Y="3" Width="1.5" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="6.812" Y="4.75" />
+        <Point X="6.812" Y="4.479" />
+        <Point X="8.5" Y="4.479" />
+        <Point X="8.5" Y="4.233" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\Addresses\IRackService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.Addresses.IShelfService" Collapsed="true">
+    <Position X="4.25" Y="3" Width="1.5" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.188" Y="4.75" />
+        <Point X="5.188" Y="3.815" />
+        <Point X="5.188" Y="3.815" />
+        <Point X="5.188" Y="3.691" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\Addresses\IShelfService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WMS.Core.Services.Abstractions.Addresses.IVerticalSectionService" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="2" />
+    <InheritanceLine Type="WMS.Core.Services.Abstractions.IBaseService&lt;TEntity&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7" Y="5.812" />
+        <Point X="7.5" Y="5.812" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Abstractions\Addresses\IVerticalSectionService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

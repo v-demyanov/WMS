@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WMS.Database.SeedData.Readers.CsvReader&lt;TEntity, TCsvRow&gt;">
+    <Position X="1.5" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAgACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SeedData\Readers\CsvReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WMS.Database.SeedData.Models.UserCsv">
+    <Position X="4.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAkAAACAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>SeedData\Models\UserCsv.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WMS.Database.SeedData.Readers.SettingsCsvReader">
+    <Position X="1.75" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SeedData\Readers\SettingsCsvReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WMS.Database.SeedData.Readers.UsersCsvReader">
+    <Position X="4.5" Y="2.25" Width="1.5" />
+    <InheritanceLine Type="WMS.Database.SeedData.Readers.CsvReader&lt;TEntity, TCsvRow&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="3.75" Y="3" />
+        <Point X="4.5" Y="3" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SeedData\Readers\UsersCsvReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
