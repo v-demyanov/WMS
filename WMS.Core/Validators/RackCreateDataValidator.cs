@@ -15,6 +15,12 @@ public class RackCreateDataValidator : AbstractValidator<RackCreateData>
             .WithMessage("The area with such id has not been found.");
 
         this.RuleFor(rackCreateData => rackCreateData.VerticalSectionsCount)
+            .GreaterThan(0);
+        
+        this.RuleFor(rackCreateData => rackCreateData.ShelfsCount)
+            .GreaterThanOrEqualTo(0);
+
+        this.RuleFor(rackCreateData => rackCreateData.VerticalSectionsCount)
             .Must((rackCreateData, count) =>
             {
                 var area = dbContext.Areas
