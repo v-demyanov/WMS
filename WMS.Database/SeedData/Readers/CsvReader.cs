@@ -6,8 +6,6 @@ using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 
-using WMS.Database.Entities;
-
 public abstract class CsvReader<TEntity, TCsvRow>
     where TEntity : new()
 {
