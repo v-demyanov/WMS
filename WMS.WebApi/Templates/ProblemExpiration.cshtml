@@ -31,7 +31,16 @@
             <tr>
                 <td>@problemExpirationObject.Title</td>
                 <td>@problemExpirationObject.DeadlineDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)</td>
-                <td>@problemExpirationObject.DaysBeforeExpiration</td>
+                <td>
+                    @if (@problemExpirationObject.DaysBeforeExpiration < 0)
+                    {
+                        <span>Задача просрочена</span>
+                    }
+                    else
+                    {
+                        @problemExpirationObject.DaysBeforeExpiration
+                    }
+                </td>
             </tr>
         }
     }
