@@ -88,7 +88,7 @@ public class ProblemService : BaseService<Problem>, IProblemService
             throw new AuthorizationFailedException($"Can't delete problem with Id = {id}, because it belongs to another user.");
         }
 
-        var problemsToDelete = await this.GetChildProblemsToDeleteAsync(problemToDelete.Id);
+        var problemsToDelete = await this.GetChildProblemsAsync(problemToDelete.Id);
         problemsToDelete.Add(problemToDelete);
 
         this.DbSet.RemoveRange(problemsToDelete);
@@ -140,15 +140,8 @@ public class ProblemService : BaseService<Problem>, IProblemService
         ProblemHelper.Populate(problem, entityUpdateData);
         _ = await this.DbContext.SaveChangesAsync();
     }
-
-    protected override AbstractValidator<Problem>? GetValidator() => this._problemValidator;
-
-    protected override void Update(Problem entity, Problem entityUpdateData)
-    {
-        throw new NotImplementedException();
-    }
-
-    private async Task<List<Problem>> GetChildProblemsToDeleteAsync(int problemId)
+    
+    public async Task<List<Problem>> GetChildProblemsAsync(int problemId)
     {
         var childProblems = await this.DbSet
             .Where(x => x.ParentProblemId == problemId)
@@ -159,11 +152,18 @@ public class ProblemService : BaseService<Problem>, IProblemService
         {
             allChildProblems.Add(childProblem);
 
-            var problems = await GetChildProblemsToDeleteAsync(childProblem.Id);
+            var problems = await GetChildProblemsAsync(childProblem.Id);
             allChildProblems.AddRange(problems);
         }
 
         return allChildProblems;
+    }
+
+    protected override AbstractValidator<Problem>? GetValidator() => this._problemValidator;
+
+    protected override void Update(Problem entity, Problem entityUpdateData)
+    {
+        throw new NotImplementedException();
     }
 
     private static bool CanUserSetDoneStatus(User user) =>
