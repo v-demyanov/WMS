@@ -1,7 +1,8 @@
 ﻿namespace WMS.Core.Services;
 
+using Microsoft.EntityFrameworkCore;
+
 using WMS.Core.Services.Abstractions;
-using WMS.Database.Enums;
 using WMS.Core.Models.Templates;
 
 public class NotificationService : INotificationService
@@ -30,39 +31,45 @@ public class NotificationService : INotificationService
     {
         var systemSettings = await this._settingService.GetSystemSettingsAsync();
         var today = DateTime.UtcNow.Date;
-        var expirationDate = today.AddDays(systemSettings.ProblemExpirationNotificationDays);
+        var notificationDate = today.AddDays(systemSettings.ProblemExpirationNotificationDays);
 
         var expiredProblems = this._problemService
             .GetAll()
-            .Where(x => x.DeadlineDate.HasValue && x.DeadlineDate.Value.Date == expirationDate);
+            .Include(x => x.Author)
+            .AsEnumerable()
+            .Where(x => x.DeadlineDate.HasValue && x.DeadlineDate.Value.Date <= notificationDate)
+            .ToList();
 
         if (!expiredProblems.Any())
         {
             return;
         }
 
-        var problemExpirationObjects = new List<ProblemExpirationObject>();
-        foreach (var problem in expiredProblems)
+        var authorGroups = expiredProblems.GroupBy(x => x.Author);
+        foreach (var group in authorGroups)
         {
-            problemExpirationObjects.Add(new ProblemExpirationObject()
+            var problemExpirationObjects = new List<ProblemExpirationObject>();
+            foreach (var expiredProblem in group)
             {
-                Title = problem.Title,
-                DaysBeforeExpiration = systemSettings.ProblemExpirationNotificationDays,
-                DeadlineDate = expirationDate,
-            });
+                if (!expiredProblem.DeadlineDate.HasValue)
+                {
+                    continue;
+                }
+                problemExpirationObjects.Add(new ProblemExpirationObject()
+                {
+                    Title = expiredProblem.Title,
+                    DaysBeforeExpiration = (expiredProblem.DeadlineDate.Value.Date - today).Days,
+                    DeadlineDate = expiredProblem.DeadlineDate.Value.Date,
+                });
+            }
+            
+            var problemExpirationObjectsModel = new ProblemExpirationObjectsModel(problemExpirationObjects);
+            var body = await this._templateService.CompileTemplateAsync("ProblemExpiration.cshtml", problemExpirationObjectsModel);
+                
+            this._mailService.SendMail(
+                body, 
+                "Уведомление об истечении срока выполнения задач", 
+                new [] { group.Key.Email });
         }
-
-        var problemExpirationObjectsModel = new ProblemExpirationObjectsModel(problemExpirationObjects);
-        var body = await this._templateService.CompileTemplateAsync("ProblemExpiration.cshtml", problemExpirationObjectsModel);
-
-        var userEmails = this._userService
-            .GetAll()
-            .Where(x => x.Role == Role.Administrator)
-            .Select(x => x.Email);
-        
-        this._mailService.SendMail(
-            body, 
-            "Уведомление об истечении срока выполнения задач", 
-            userEmails);
     }
 }
