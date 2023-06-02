@@ -1,6 +1,7 @@
 <div class="wrapper">
   <div class="toolbar-actions">
     <button
+      *ngIf="permissionsService.isAdmin()"
       mat-mini-fab
       color="primary"
       class="toolbar-action-btn"
@@ -12,7 +13,12 @@
       <button mat-menu-item>Зона</button>
       <button mat-menu-item>Стелаж</button>
     </mat-menu>
-    <button mat-mini-fab color="warn" class="toolbar-action-btn">
+    <button
+      *ngIf="permissionsService.isAdmin()"
+      mat-mini-fab
+      color="warn" 
+      class="toolbar-action-btn"
+    >
       <mat-icon>delete</mat-icon>
     </button>
   </div>

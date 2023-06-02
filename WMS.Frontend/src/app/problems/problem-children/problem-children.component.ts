@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { KeyValue } from '@angular/common';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -13,6 +13,7 @@ import { ProblemStatus } from '../enums/problem-status.enum';
 import * as commonConstants from 'src/app/core/constants/common.constants';
 import { ProblemDialogComponent } from '../problem-dialog/problem-dialog.component';
 import { ProblemDialogData } from '../models/problem-dialog-data';
+import { PermissionsService } from 'src/app/core/authentication';
 
 @Component({
   selector: 'app-problem-children',
@@ -45,6 +46,7 @@ export class ProblemChildrenComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    public readonly permissionsService: PermissionsService,
   ) {}
 
   public ngOnInit(): void {

@@ -167,13 +167,32 @@ export class ProblemInfoComponent implements OnInit, OnDestroy {
     this.componentSubscriptions.push(subscription);
   }
 
-  public get canUserDeleteProblem(): boolean {
+  public canUserDeleteProblem(): boolean {
     return this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId;
   }
 
-  public get canUserUpdateProblem(): boolean {
+  public canUserUpdateProblem(): boolean {
+    return this.permissionsService.isAdmin() &&
+      (this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId);
+  }
+
+  public canUserAssignProblem(): boolean {
     return this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId;
   }
+
+  public canUserUpdateStatus(status: ProblemStatus): boolean {
+    switch (status) {
+      case ProblemStatus.Done:
+        return this.permissionsService.isAuditor() && (this.authenticationService.getUserClaims()?.Id === this.problem?.AuditorId);
+      default:
+        return this.authenticationService.getUserClaims()?.Id === this.problem?.PerformerId
+        || this.authenticationService.getUserClaims()?.Id === this.problem?.AuthorId
+        || this.authenticationService.getUserClaims()?.Id === this.problem?.AuditorId;
+    }
+  }
+
+  public isAdmin = (): boolean =>
+    this.permissionsService.isAdmin();
 
   public async onAssignBtnClick(): Promise<void> {
     const dialogRef = this.dialog.open(ProblemAssignDialogComponent, {

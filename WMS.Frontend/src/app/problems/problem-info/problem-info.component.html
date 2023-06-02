@@ -11,7 +11,8 @@
   <h1 class="problem-title">{{ problem?.Title }}</h1>
   <div class="toolbar">
     <button 
-      [disabled]="isLoading || !canUserUpdateProblem"
+      *ngIf="canUserUpdateProblem()"
+      [disabled]="isLoading"
       class="spec-button"
       mat-flat-button
       (click)="onEditBtnClick()"
@@ -30,6 +31,7 @@
     </button>
 
     <button 
+      *ngIf="permissionsService.isAdmin()"
       class="spec-button"
       mat-flat-button
       [matMenuTriggerFor]="more"
@@ -43,13 +45,17 @@
       <button mat-menu-item (click)="onAddSubProblemBtnClick()">
         Добавить подзадачу
       </button>
-      <button (click)="onAssignBtnClick()" mat-menu-item>
+      <button 
+        mat-menu-item 
+        (click)="onAssignBtnClick()"
+        [disabled]="!canUserAssignProblem()"
+      >
         Назначить
       </button>
       <button 
-        (click)="onDeleteBtnClick()"
         mat-menu-item
-        [disabled]="!canUserDeleteProblem"
+        (click)="onDeleteBtnClick()"
+        [disabled]="!canUserDeleteProblem()"
       >
         Удалить
       </button>
@@ -73,7 +79,7 @@
         *ngFor="let statusItem of problemStatusTitles"
         mat-menu-item
         (click)="onStatusChange(statusItem.key)"
-        [disabled]="!permissionsService.isAuditor() && statusItem.key === problemStatus.Done"
+        [disabled]="!canUserUpdateStatus(statusItem.key)"
       >
         {{statusItem.value}}
       </button>

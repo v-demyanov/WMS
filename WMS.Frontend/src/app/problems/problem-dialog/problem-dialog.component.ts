@@ -254,8 +254,8 @@ export class ProblemDialogComponent implements OnInit, OnDestroy {
       PerformerId: new FormControl(undefined),
       AuthorId: new FormControl(undefined, [Validators.required]),
       AuditorId: new FormControl(undefined),
-      WareId: new FormControl(undefined),
-      TargetShelfId: new FormControl(undefined),
+      WareId: new FormControl(undefined, [Validators.required]),
+      TargetShelfId: new FormControl(undefined, [Validators.required]),
     });
   }
 

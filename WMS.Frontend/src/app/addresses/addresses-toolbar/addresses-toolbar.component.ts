@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 import { ShelfsService } from '../services/shelfs.service';
+import { PermissionsService } from 'src/app/core/authentication';
 
 @Component({
   selector: 'app-addresses-toolbar',
@@ -22,6 +23,7 @@ export class AddressesToolbarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly shelfService: ShelfsService,
     private readonly snackBar: MatSnackBar,
+    public readonly permissionsService: PermissionsService,
   ) {}
 
   public ngOnInit(): void {

@@ -177,10 +177,15 @@
     <app-address-picker
       formControlName="TargetShelfId"
       [readonly]="isReadonly"
-      controlLabel="Адрес назначения"
+      controlLabel="Адрес назначения*"
       class="address-field full-width-field"
     >
     </app-address-picker>
+    <mat-error
+      *ngIf="problemForm.controls['TargetShelfId'].hasError('required') && problemForm.controls['TargetShelfId'].touched"
+    >
+      Поле обязательное
+    </mat-error>
 
     <mat-form-field 
       appearance="fill"
@@ -211,6 +216,9 @@
       >
         <mat-icon>close</mat-icon>
       </button>
+      <mat-error *ngIf="problemForm.controls['WareId'].hasError('required')">
+        Поле обязательное
+      </mat-error>
     </mat-form-field>
 
     <div class="description-section">

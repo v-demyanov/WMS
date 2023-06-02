@@ -25,6 +25,7 @@
   class="create-child-problem-btn-wrapper"
 >
   <button 
+    *ngIf="permissionsService.isAdmin()"
     mat-flat-button
     class="create-child-problem-btn"
     (click)="openProblemDialog()"

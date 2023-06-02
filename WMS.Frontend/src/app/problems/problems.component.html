@@ -12,12 +12,17 @@
         cdkDropList
         #todoList="cdkDropList"
         [cdkDropListData]="toDo"
-        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [doneList,inProgressList,awaitingForApprovalList] : [inProgressList,awaitingForApprovalList]"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone() ? [doneList, inProgressList, awaitingForApprovalList] : [inProgressList, awaitingForApprovalList]"
         [cdkDropListDisabled]="isLoading"
         class="list"
         (cdkDropListDropped)="drop($event)"
       >
-        <div class="box" *ngFor="let item of toDo" cdkDrag>
+        <div 
+          class="box" 
+          *ngFor="let item of toDo" 
+          cdkDrag 
+          [cdkDragDisabled]="!canUserChangeStatus(item)"
+        >
           <app-problem-card class="task-card" [item]="item"></app-problem-card>
         </div>
       </div>
@@ -31,12 +36,17 @@
         cdkDropList
         #inProgressList="cdkDropList"
         [cdkDropListData]="inProgress"
-        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, awaitingForApprovalList, doneList] : [todoList, awaitingForApprovalList]"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone() ? [todoList, awaitingForApprovalList, doneList] : [todoList, awaitingForApprovalList]"
         [cdkDropListDisabled]="isLoading"
         class="list"
         (cdkDropListDropped)="drop($event)"
       >
-        <div class="box" *ngFor="let item of inProgress" cdkDrag>
+        <div 
+          class="box" 
+          *ngFor="let item of inProgress" 
+          cdkDrag
+          [cdkDragDisabled]="!canUserChangeStatus(item)"
+        >
           <app-problem-card class="task-card" [item]="item"></app-problem-card>
         </div>
       </div>
@@ -50,12 +60,17 @@
         cdkDropList
         #awaitingForApprovalList="cdkDropList"
         [cdkDropListData]="awaitingForApproval"
-        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, inProgressList, doneList] : [todoList, inProgressList]"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone() ? [todoList, inProgressList, doneList] : [todoList, inProgressList]"
         [cdkDropListDisabled]="isLoading"
         class="list"
         (cdkDropListDropped)="drop($event)"
       >
-        <div class="box" *ngFor="let item of awaitingForApproval" cdkDrag>
+        <div 
+          class="box" 
+          *ngFor="let item of awaitingForApproval" 
+          cdkDrag
+          [cdkDragDisabled]="!canUserChangeStatus(item)"
+        >
           <app-problem-card class="task-card" [item]="item"></app-problem-card>
         </div>
       </div>
@@ -69,12 +84,17 @@
         cdkDropList
         #doneList="cdkDropList"
         [cdkDropListData]="done"
-        [cdkDropListConnectedTo]="canUserChangeStatusToDone ? [todoList, awaitingForApprovalList, inProgressList] : []"
+        [cdkDropListConnectedTo]="canUserChangeStatusToDone() ? [todoList, awaitingForApprovalList, inProgressList] : []"
         [cdkDropListDisabled]="isLoading"
         class="list"
         (cdkDropListDropped)="drop($event)"
       >
-        <div class="box" *ngFor="let item of done" cdkDrag>
+        <div 
+          class="box" 
+          *ngFor="let item of done" 
+          cdkDrag
+          [cdkDragDisabled]="!canUserChangeStatus(item)"
+        >
           <app-problem-card class="task-card" [item]="item"></app-problem-card>
         </div>
       </div>

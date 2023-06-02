@@ -11,7 +11,7 @@ import { ProblemStatusTitles } from './enums/enum-titles/problem-status-titles';
 import { ProblemStatus } from './enums/problem-status.enum';
 import { IProblem } from './models/problem';
 import { ProblemsService } from './services/problems.service';
-import { PermissionsService } from '../core/authentication';
+import { AuthenticationService, PermissionsService } from '../core/authentication';
 
 @Component({
   selector: 'app-problems',
@@ -38,6 +38,7 @@ export class ProblemsComponent implements OnInit, OnDestroy {
     private readonly problemService: ProblemsService,
     private readonly snackBar: MatSnackBar,
     private readonly permissionsService: PermissionsService,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   public ngOnDestroy = (): void =>
@@ -47,12 +48,14 @@ export class ProblemsComponent implements OnInit, OnDestroy {
     this.componentSubscriptions = [this.loadProblems()];
   }
 
-  public get canUserChangeStatusToDone(): boolean {
+  public canUserChangeStatusToDone(): boolean {
     return this.permissionsService.isAuditor();
   }
 
-  public get canUserEditProblem(): boolean {
-    return this.permissionsService.isAdmin();
+  public canUserChangeStatus(problem: IProblem): boolean {
+    return problem?.PerformerId === this.authenticationService.getUserClaims()?.Id 
+    || problem?.AuthorId === this.authenticationService.getUserClaims()?.Id
+    || problem?.AuditorId === this.authenticationService.getUserClaims()?.Id;
   }
 
   public getAllTasksCount(): number {
@@ -66,6 +69,11 @@ export class ProblemsComponent implements OnInit, OnDestroy {
         event.previousIndex,
         event.currentIndex
       );
+      return;
+    }
+
+    const currentUserId = this.authenticationService.getUserClaims()?.Id;
+    if (event.container.id === 'Done' && event.previousContainer.data[event.previousIndex].AuthorId === currentUserId) {
       return;
     }
 
