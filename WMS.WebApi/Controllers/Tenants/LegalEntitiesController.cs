@@ -1,11 +1,13 @@
 ﻿namespace WMS.WebApi.Controllers.Tenants;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 using WMS.Core.Services.Abstractions.Tenants;
 using WMS.Database.Entities.Tenants;
+using WMS.Database.Enums;
 
 /// <summary>
 /// Manages lega entities.
@@ -33,6 +35,7 @@ public class LegalEntitiesController : ODataController
     /// <param name="legalEntityCreateData">Data to create new legal entity.</param>
     /// <returns>Created legal entity.</returns>
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult<LegalEntity>> Post([FromBody] LegalEntity legalEntityCreateData)
     {
         var legalEntity = await this._legalEntityService.AddAsync(legalEntityCreateData);
@@ -44,6 +47,7 @@ public class LegalEntitiesController : ODataController
     /// </summary>
     /// <param name="key">Legal entity' Id.</param>
     [HttpDelete]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Delete(int key)
     {
         await this._legalEntityService.DeleteAsync(key);
@@ -56,6 +60,7 @@ public class LegalEntitiesController : ODataController
     /// <param name="key">Legal entity' Id.</param>
     /// <param name="legalEntityUpdateData">Data to update legal entity.</param>
     [HttpPut]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Put(int key, [FromBody] LegalEntity legalEntityUpdateData)
     {
         await this._legalEntityService.UpdateAsync(key, legalEntityUpdateData);

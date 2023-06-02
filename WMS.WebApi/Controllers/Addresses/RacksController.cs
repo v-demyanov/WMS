@@ -1,5 +1,6 @@
 ﻿namespace WMS.WebApi.Controllers.Addresses;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 using WMS.Core.Models;
 using WMS.Core.Services.Abstractions.Addresses;
 using WMS.Database.Entities.Addresses;
+using WMS.Database.Enums;
 
 /// <summary>
 /// Manages racks.
@@ -27,6 +29,7 @@ public class RacksController : ODataController
     /// <param name="rackCreateData">Data to generate a new rack.</param>
     /// <returns>Generated rack.</returns>
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult<Rack>> Post([FromBody] RackCreateData rackCreateData)
     {
         Rack rack = await this._rackService.GenerateAsync(rackCreateData);
@@ -38,6 +41,7 @@ public class RacksController : ODataController
     /// </summary>
     /// <param name="key">Rack's Id.</param>
     [HttpDelete]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Delete(int key)
     {
         await this._rackService.DeleteAsync(key);

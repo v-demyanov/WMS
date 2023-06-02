@@ -35,6 +35,7 @@ public class SystemSettingsController : ControllerBase
     /// </summary>
     /// <param name="systemSettings">Updated system settings.</param>
     [HttpPut]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task Put([FromBody] SystemSettings systemSettings) =>
         await this._settingService.UpdateSystemSettingsAsync(systemSettings);
 }

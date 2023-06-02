@@ -33,7 +33,7 @@ public class ProblemsController : ODataController
     /// <param name="problemCreateData">Problem's create data.</param>
     /// <returns>New problem.</returns>
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult<Problem>> Post([FromBody] Problem problemCreateData)
     {
         var problem = await this._problemService.AddAsync(problemCreateData);
@@ -59,7 +59,7 @@ public class ProblemsController : ODataController
     /// </summary>
     /// <param name="key">Problem's Id.</param>
     [HttpDelete]
-    [Authorize]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Delete(int key)
     {
         await this._problemService.DeleteAsync(key);
@@ -72,7 +72,7 @@ public class ProblemsController : ODataController
     /// <param name="problemId">Problem's Id.</param>
     /// <param name="userId">User's Id.</param>
     [HttpPut("api/[controller]/{problemId:int}/Assign")]
-    [Authorize]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Assign(int problemId, int? userId)
     {
         await this._problemService.AssignAsync(problemId, userId);
@@ -85,7 +85,7 @@ public class ProblemsController : ODataController
     /// <param name="problemUpdateData">Problem's update data.</param>
     /// <param name="key">Problem's Id.</param>
     [HttpPut]
-    [Authorize]
+    [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<ActionResult> Put([FromBody] Problem problemUpdateData, int key)
     {
         await this._problemService.UpdateAsync(key, problemUpdateData);
