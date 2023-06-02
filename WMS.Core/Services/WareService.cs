@@ -16,16 +16,19 @@ public class WareService : BaseService<Ware>, IWareService
     private readonly WareValidator _wareValidator;
     private readonly IUserService _userService;
     private readonly ISettingService _settingService;
+    private readonly IProblemService _problemService;
 
     public WareService(
         WmsDbContext dbContext, 
         WareValidator wareValidator,
         IUserService userService,
+        IProblemService problemService,
         ISettingService settingService) : base(dbContext)
     {
         this._wareValidator = wareValidator;
         this._userService = userService;
         this._settingService = settingService;
+        this._problemService = problemService;
     }
 
     public async Task DeleteShippedAsync()
@@ -56,12 +59,15 @@ public class WareService : BaseService<Ware>, IWareService
     public async Task SoftDelete(int wareId)
     {
         var ware = await this.DbSet
+            .Include(x => x.Problems)
             .FirstOrDefaultAsync(x => x.Id == wareId);
         if (ware == null)
         {
             throw new EntityNotFoundException("Can't soft delete ware, because it doesn't exist.");
         }
 
+        await this.RemoveRelatedProblemsAsync(ware.Problems);
+        
         ware.Status = WareStatus.ToBeDeleted;
         ware.ShippingDate = DateTimeOffset.Now;
         ware.ShelfId = null;
@@ -128,4 +134,21 @@ public class WareService : BaseService<Ware>, IWareService
          WareHelper.Populate(entity, entityUpdateData);
 
     protected override AbstractValidator<Ware>? GetValidator() => this._wareValidator;
+
+    private async Task RemoveRelatedProblemsAsync(IEnumerable<Problem> problems)
+    {
+        foreach (var problem in problems)
+        {
+            var doesProblemExist = this.DbContext.Problems.Any(x => x.Id == problem.Id);
+            if (doesProblemExist)
+            {
+                var problemsToDelete = await this._problemService.GetChildProblemsAsync(problem.Id);
+                problemsToDelete.Add(problem);
+
+                this.DbContext.Problems.RemoveRange(problemsToDelete);
+
+                _ = await this.DbContext.SaveChangesAsync();
+            }
+        }
+    }
 }
