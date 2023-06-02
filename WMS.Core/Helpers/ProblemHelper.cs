@@ -15,6 +15,7 @@ public static class ProblemHelper
         destination.PerformerId = source.PerformerId;
         destination.ParentProblemId = source.ParentProblemId;
         destination.AuthorId = source.AuthorId;
+        destination.AuditorId = source.AuditorId;
         destination.WareId = source.WareId;
         destination.TargetShelfId = source.TargetShelfId;
     }
